@@ -12,7 +12,6 @@
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": true,
-    "tipo_armadura": "toughness1",
     "tipo_mod": "Internacional",
     "alias_properties": "ZombieTutorialDefault"
   },
@@ -6109,7 +6108,7 @@
     "zombie_class": "ZombieBasic",
     "properties_rtid": "RTID(ZombieCarnieDefault@ZombieProperties)",
     "home_world": "rift2",
-    "categorie": "rift2",
+     "categorie": "circus",
     "is_basic_zombie": true,
     "hitpoints": 190,
     "speed": 0.185,

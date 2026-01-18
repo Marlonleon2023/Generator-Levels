@@ -855,7 +855,7 @@ generateMowerModalOptions() {
         col.className = 'col-md-6 col-sm-6';
         
         const displayName = MOWER_DISPLAY_NAMES[mowerType] || mowerType;
-        const imagePath = MOWER_IMAGES[mowerType] || 'Assets/Mowers/default.webp';
+        const imagePath = MOWER_IMAGES[mowerType] || 'Assets/Mowers/Modern.webp';
         
         col.innerHTML = `
             <div class="mower-option" data-mower="${mowerType}">
@@ -918,7 +918,7 @@ updateSelectedMowerDisplay() {
     
     // USAR LAS CONSTANTES IMPORTADAS
     const displayName = MOWER_DISPLAY_NAMES[mowerType] || mowerType;
-    const imagePath = MOWER_IMAGES[mowerType] || 'Assets/Mowers/default.webp';
+    const imagePath = MOWER_IMAGES[mowerType] || 'Assets/Mowers/Modern.webp';
     
     // Actualizar imagen
     selectedMowerImage.src = imagePath;
@@ -1546,7 +1546,7 @@ initializeUIWithFallbacks() {
         }
         
         // Actualizar controles que SÍ existen
-        this.updateAllControlsWithFallbacks();
+        this.updateAllControls(); 
         
         console.log('✓ UI básica inicializada con fallbacks');
     } catch (error) {
@@ -2967,9 +2967,13 @@ isBasicZombie(zombieName) {
         const enableSeedSlots = document.getElementById('enableSeedSlots').checked;
         const seedSlotsCount = document.getElementById('seedSlotsCount');
 
-        seedSlotsCount.disabled = !enableSeedSlots;
+        if (!enableSeedSlots || !seedSlotsCount) return;
+            
+         // Deshabilitar el input si el checkbox está desmarcado
+        seedSlotsCount.disabled = !enableSeedSlots.checked;
 
-        if (!enableSeedSlots) {
+
+        if (!enableSeedSlots.checked) {
             seedSlotsCount.value = 8;
             this.levelData.seed_slots_count = 8;
         }
@@ -3106,42 +3110,105 @@ updateStages() {
         this.showMessage('Zombies Limpiados', 'Todos los zombies han sido removidos', 'success');
     }
 
-    updateSelectedZombiesDisplay() {
-        const container = document.getElementById('selectedZombies');
-        if (!container) return;
+   updateSelectedZombiesDisplay() {
+    const container = document.getElementById('selectedZombies');
+    const noSelectedMessage = document.getElementById('noSelectedZombiesMessage');
+    
+    if (!container || !noSelectedMessage) return;
 
-        container.innerHTML = '';
+    container.innerHTML = '';
 
-        if (this.levelData.zombies.length === 0) {
-            container.innerHTML = '<p class="text-muted text-center mb-0">No hay zombies seleccionados. Selecciona algunos de la lista.</p>';
-            return;
-        }
+    if (this.levelData.zombies.length === 0) {
+        noSelectedMessage.style.display = 'block';
+        return;
+    }
 
-        this.levelData.zombies.forEach(zombieName => {
-            const tag = document.createElement('span');
-            tag.className = 'selected-zombie-tag';
-            tag.innerHTML = `
-                ${zombieName}
-                <button class="remove-btn" data-zombie="${zombieName}">&times;</button>
-            `;
+    noSelectedMessage.style.display = 'none';
 
-            tag.querySelector('.remove-btn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.removeZombie(zombieName);
-                this.markTabAsChanged('waves');
-            });
+    // Crear una fila para organizar las imágenes
+    const row = document.createElement('div');
+    row.className = 'row g-3';
 
-            container.appendChild(tag);
+    this.levelData.zombies.forEach(zombieName => {
+        const info = this.getZombieInfo(zombieName);
+        const threat = this.calculateZombieThreatLevel(zombieName);
+        
+        // Crear tarjeta con imagen
+        const col = document.createElement('div');
+        col.className = 'col-md-3 col-sm-4 col-6';
+        
+        // Ruta de la imagen del zombie
+        const zombieImagePath = `Assets/Zombies/${zombieName}.webp`;
+        const errorImagePath = 'Assets/Zombies/error.webp';
+        
+        col.innerHTML = `
+            <div class="selected-zombie-card" data-zombie="${zombieName}">
+                <button class="selected-zombie-remove" data-zombie="${zombieName}">
+                    <i class="bi bi-x"></i>
+                </button>
+                <div class="selected-zombie-img-container">
+                    <img src="${zombieImagePath}" 
+                         alt="${zombieName}" 
+                         class="selected-zombie-img"
+                         onerror="
+                            this.src = '${errorImagePath}';
+                            this.style.filter = 'grayscale(20%) opacity(90%)';
+                         ">
+                </div>
+                <div class="selected-zombie-info">
+                    <div class="selected-zombie-name">${zombieName}</div>
+                    <div class="selected-zombie-stats">
+                        <span>HP: ${info?.hitpoints || 'N/A'}</span>
+                        <span>Amen: ${threat.toFixed(1)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        row.appendChild(col);
+    });
+
+    container.appendChild(row);
+    
+    // Añadir event listeners para los botones de eliminar
+    container.querySelectorAll('.selected-zombie-remove').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const zombieName = button.dataset.zombie;
+            this.removeZombie(zombieName);
+            this.markTabAsChanged('waves');
         });
-    }
+    });
+    
+    // Actualizar contador en la pestaña
+    this.updateSelectedZombiesCount();
+}
 
-    removeZombie(zombieName) {
-        const index = this.levelData.zombies.indexOf(zombieName);
-        if (index > -1) {
-            this.levelData.zombies.splice(index, 1);
-            this.updateSelectedZombiesDisplay();
-        }
+
+updateSelectedZombiesCount() {
+    const count = this.levelData.zombies.length;
+    
+    // Actualizar badge en la pestaña
+    const tabBadge = document.getElementById('tabSelectedCount');
+    if (tabBadge) {
+        tabBadge.textContent = count;
     }
+    
+    // También puedes actualizar otros contadores si los tienes
+    const zombiesCountBadge = document.getElementById('selectedZombiesCount');
+    if (zombiesCountBadge) {
+        zombiesCountBadge.textContent = count;
+    }
+}
+
+removeZombie(zombieName) {
+    const index = this.levelData.zombies.indexOf(zombieName);
+    if (index > -1) {
+        this.levelData.zombies.splice(index, 1);
+        this.updateSelectedZombiesDisplay();
+        this.updateSelectedZombiesCount();
+    }
+}
 
 getZombieInfo(zombieName) {
         // PRIMERO: Buscar en datos del JSON

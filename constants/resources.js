@@ -69,7 +69,7 @@ export const STAGE_IMAGES = {
     //"FutureNightStage": `${PATHS.IMAS.BOARD}FutureNightStage.webp`,
     //"WestNightStage": `${PATHS.IMAGES.BOARD}WestNightStage.webp`,
     // "PirateNightStage": `${PATHS.IMAGES.BOARD}PirateNightStage.webp`,
-    "default": `${PATHS.IMAGES.BOARD}default.webp`
+    //"default": `${PATHS.IMAGES.BOARD}default.webp`
 };
 
 // Efectos visuales
@@ -118,7 +118,7 @@ export const MOWER_IMAGES = {
     "IceageMowers": `${PATHS.IMAGES.MOWERS}IceageMowers.webp`,
     "BeachMowers": `${PATHS.IMAGES.MOWERS}BeachMowers.webp`,
     "RenaiMowers": `${PATHS.IMAGES.MOWERS}RenaiMowers.webp`,
-    "default": `${PATHS.IMAGES.MOWERS}default.webp`
+   // "default": `${PATHS.IMAGES.MOWERS}default.webp`
 };
 
 // Mapeo de mundos a sus escenarios disponibles
