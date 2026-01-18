@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Niveles PvZ2</title>
+    <link rel="stylesheet" href="/Styles/sweetalert2.min.css">
+    <link href="/Styles/bootstrap.min.css" rel="stylesheet">
+    <!-- Por esta -->
+    <link href="/Styles/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Styles/style.css">
+    <link rel="stylesheet" href="/Styles/board.css">
+</head>
+
+<body>
+
+
+
+    <div id="notificationContainer" class="notification-container"></div>
+
+
+
+    <div class="container-dev">
+
+        <div class="container-fluid mt-3">
+            <!-- Pestañas principales -->
+            <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic"
+                        type="button" role="tab">
+                        <i class="bi bi-gear me-1"></i>Configuración Básica
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="waves-tab" data-bs-toggle="tab" data-bs-target="#waves" type="button"
+                        role="tab">
+                        <i class="bi bi-robot me-1"></i>Zombies y Oleadas
+                    </button>
+                </li>
+                <!-- En el <ul class="nav nav-tabs mb-4" id="mainTabs" ...> -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="challenges-tab" data-bs-toggle="tab" data-bs-target="#challenges"
+                        type="button" role="tab">
+                        <i class="bi bi-trophy me-1"></i>Desafíos
+                    </button>
+                </li>
+
+                <!-- Añadir esta nueva pestaña en las pestañas principales -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="board-tab" data-bs-toggle="tab" data-bs-target="#board" type="button"
+                        role="tab">
+                        <i class="bi bi-grid-3x3 me-1"></i>Escenario
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview"
+                        type="button" role="tab">
+                        <i class="bi bi-eye me-1"></i>Vista Previa
+                    </button>
+                </li>
+
+                <!-- En el <ul class="nav nav-tabs mb-4" id="mainTabs" ...> -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="converter-tab" data-bs-toggle="tab" data-bs-target="#converter"
+                        type="button" role="tab">
+                        <i class="bi bi-arrow-left-right me-1"></i>Convertidor
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button"
+                        role="tab">
+                        <i class="bi bi-graph-up me-1"></i>Estadísticas
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Pestaña: Configuración Básica -->
+                <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <!-- Configuración Principal -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Configuración Principal del Nivel
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Nombre del Nivel:</label>
+                                            <input type="text" class="form-control form-control-lg" id="levelName"
+                                                value="Mi Nivel Personalizado"
+                                                placeholder="Ingresa un nombre para el nivel">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Número de Nivel:</label>
+                                            <input type="number" class="form-control" id="levelNumber" value="1" min="1"
+                                                max="100">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Sol Inicial:</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="startingSun" value="50"
+                                                    min="0" max="1000">
+                                                <span class="input-group-text">☀️⛅🌤️</span>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row g-3">
+                                                <!-- Mundo - Columna izquierda -->
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold d-flex align-items-center">
+                                                        <i class="bi bi-globe-americas me-2"></i>Mundo:
+                                                    </label>
+                                                    <div class="world-selection-container">
+                                                        <div class="selected-world-card" id="selectedWorldCard">
+                                                            <div class="world-image-container">
+                                                                <img id="selectedWorldImage"
+                                                                    src="Assets/Mundos/modern.png" alt="Mundo Moderno"
+                                                                    class="world-img loading"
+                                                                    onload="this.classList.remove('loading')"
+                                                                    onerror="this.src='Assets/Mundos/default.png'; this.classList.remove('loading')">
+                                                                <div class="world-overlay">
+                                                                    <span class="world-name"
+                                                                        id="selectedWorldName">Moderno</span>
+                                                                    <i class="bi bi-chevron-down ms-2"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Escenario - Columna derecha -->
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold d-flex align-items-center">
+                                                        <i class="bi bi-grid-3x3 me-2"></i>Escenario:
+                                                    </label>
+                                                    <div class="scenario-selection-container">
+                                                        <div class="selected-scenario-card" id="selectedScenarioCard">
+                                                            <div class="scenario-image-container">
+                                                                <img id="selectedScenarioImage"
+                                                                    src="Assets/Board/ModernStage.webp"
+                                                                    alt="Escenario Moderno" class="scenario-img loading"
+                                                                    onload="this.classList.remove('loading')"
+                                                                    onerror="this.src='Assets/Board/ModernStage.webp'; this.classList.remove('loading')">
+                                                                <div class="scenario-overlay">
+                                                                    <span class="scenario-name"
+                                                                        id="selectedScenarioName">Seleccionar
+                                                                        Escenario</span>
+                                                                    <i class="bi bi-chevron-down ms-2"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- LOS MODALES DEBEN PERMANECER EXACTAMENTE IGUAL, FUERA DE LAS COLUMNAS -->
+
+
+
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Efecto Visual:</label>
+                                            <select class="form-select" id="effectSelect">
+                                                <option value="">Sin efecto</option>
+                                                <option value="RTID(VolcanoPattern1@LevelModules)">🌋 Volcán</option>
+                                                <option value="RTID(SnowRain@LevelModules)">❄️ Nieve</option>
+                                                <option value="RTID(PoolDay@LevelModules)">💧 Agua Día</option>
+                                                <option value="RTID(PoolNight@LevelModules)">🌙 Agua Noche</option>
+                                                <option value="RTID(TormPattern1@LevelModules)">⛈️ Tormenta</option>
+                                                <option value="RTID(RainPattern2@LevelModules)">🌧️ Lluvia</option>
+                                                <option value="RTID(AtlantisPattern1@LevelModules)">🐚 Atlantis</option>
+                                                <option value="RTID(WestNight@LevelModules)">🌫️ Fog West</option>
+                                                <option value="RTID(EgyptSandStormT@LevelModules)">🌪️ Torm Egypt
+                                                </option>
+                                            </select>
+                                        </div>
+
+
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Nivel Zombies:</label>
+                                            <input type="number" class="form-control" id="zombieLevel" value="1" min="1"
+                                                max="10">
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Nivel Gravestone:</label>
+                                            <input type="number" class="form-control" id="gridLevel" value="1" min="1"
+                                                max="10">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Podadoras:</label>
+                                            <div class="mower-selection-container">
+                                                <div class="selected-mower-card" id="selectedMowerCard">
+                                                    <div class="mower-image-container">
+                                                        <img id="selectedMowerImage"
+                                                            src="Assets/Mowers/ModernMowers.webp"
+                                                            alt="Podadoras Modernas" class="mower-img loading"
+                                                            onload="this.classList.remove('loading')"
+                                                            onerror="this.src='Assets/Mowers/default.webp'; this.classList.remove('loading')">
+                                                        <div class="mower-overlay">
+                                                            <span class="mower-name"
+                                                                id="selectedMowerName">Modernas</span>
+                                                            <i class="bi bi-chevron-down ms-2"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <!-- En el archivo HTML, dentro de la pestaña basic, después del campo startingSun -->
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Caída de Soles:</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="enableSunDropper" checked>
+                                                <label class="form-check-label" for="enableSunDropper">
+                                                    Caída periódica
+                                                </label>
+                                            </div>
+                                            <div class="form-text small">
+                                                Desactívalo para niveles sin soles del cielo
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Método de Selección de Plantas:</label>
+                                            <select class="form-select" id="seedSelectionMethod">
+                                                <option value="chooser">Elegir plantas (chooser)</option>
+                                                <option value="preset">Plantas preestablecidas (preset)</option>
+                                            </select>
+                                            <div class="form-text small">
+                                                "chooser": El jugador elige las plantas<br>
+                                                "preset": Plantas predefinidas (Ya las plantas secionadas al comenzar no
+                                                de deja selecionar mas plantas)
+                                            </div>
+                                        </div>
+
+                                        <!-- En la pestaña basic, después del campo startingSun o enableSunDropper -->
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Ranuras de Semillas:</label>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="enableSeedSlots" checked>
+                                                <label class="form-check-label" for="enableSeedSlots">
+                                                    Personalizar ranuras
+                                                </label>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="seedSlotsCount" value="7"
+                                                    min="1" max="10" disabled>
+                                                <span class="input-group-text">ranuras</span>
+                                            </div>
+                                            <div class="form-text small">
+                                                Desactívalo para usar el valor por defecto (normalmente 8)
+                                            </div>
+                                        </div>
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4">
+                            <!-- Configuración de Plantas -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Configuración de Plantas</h5>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="enablePlantSelection" checked>
+                                        <label class="form-check-label" for="enablePlantSelection">
+                                        </label>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="card-body" id="plantConfigSection">
+                                    <!-- Selección de Plantas -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="mb-0">Pre-set Plants (max 8)</h6>
+                                            <button class="btn btn-sm btn-outline-primary" id="selectPlantsBtn">
+                                                <i class="bi bi-plus-circle me-1"></i>Seleccionar
+                                            </button>
+                                        </div>
+                                        <div class="selected-plants-container" id="selectedPlantsContainer">
+                                            <div class="alert alert-secondary text-center py-3 mb-0">
+                                                <p class="mb-0">No hay plantas seleccionadas</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Plantas Excluidas -->
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="mb-0">Excluded Plants</h6>
+                                            <button class="btn btn-sm btn-outline-danger" id="excludePlantsBtn">
+                                                <i class="bi bi-dash-circle me-1"></i>Excluir
+                                            </button>
+                                        </div>
+                                        <div class="excluded-plants-container" id="excludedPlantsContainer">
+                                            <div class="alert alert-secondary text-center py-3 mb-0">
+                                                <p class="mb-0">No hay plantas excluidas</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Panel de Ayuda -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Información Rápida</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <h6><i class="bi bi-lightbulb me-2"></i>Consejo:</h6>
+                                        <p class="mb-0">Asegúrate de darle generar Nivel el nivel para poder
+                                            previsualizarlo correctamente.</p>
+                                    </div>
+
+                                    <div class="alert alert-warning">
+                                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Nota:</h6>
+                                        <p class="mb-0">Las oleadas subterráneas aparecerán según la configuración de
+                                            frecuencia establecida.</p>
+                                    </div>
+
+                                    <div class="alert alert-success">
+                                        <h6><i class="bi bi-check-circle me-2"></i>Sugerencia:</h6>
+                                        <p class="mb-0">Para niveles balanceados, selecciona 4-6 zombies del mismo
+                                            mundo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Configuración de Spawn -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-bounding-box me-2"></i>Configuración de Spawn</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label">Columna inicial de spawn:</label>
+                                            <input type="number" class="form-control" id="spawnColStart" value="6"
+                                                min="0" max="9">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label">Columna final de spawn:</label>
+                                            <input type="number" class="form-control" id="spawnColEnd" value="9" min="0"
+                                                max="9">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="d-grid">
+                                                <button class="btn btn-primary" id="autoDetectBtn">
+                                                    <i class="bi bi-magic me-2"></i>Auto-Detectar Configuración
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Después de la pestaña de Estadísticas, antes de cerrar div.tab-content -->
+                <div class="tab-pane fade" id="challenges" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Configuración de Desafíos</h5>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="challengesEnabled" style="width: 3em; height: 1.5em;" checked>
+                                            <label class="form-check-label fw-bold" for="challengesEnabled">
+                                                Activar desafíos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row g-4" id="challengesContainer">
+                                        <!-- Desafío: ZombieDistance -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_zombieDistance" checked
+                                                            data-challenge="ZombieDistance">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_zombieDistance">
+                                                            Distancia de Zombies
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isLine.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">No permitir que zombies se acerquen
+                                                        más de:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="zombieDistance_value" value="5.5" min="1" max="10"
+                                                            step="0.1" data-challenge="ZombieDistance">
+                                                        <span class="input-group-text">casillas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SunUsed -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_sunUsed" checked
+                                                            data-challenge="SunUsed">
+                                                        <label class="form-check-label fw-bold" for="challenge_sunUsed">
+                                                            Sol Usado Máximo
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isSunUsed.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Usar máximo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="sunUsed_value" value="500" min="50" max="5000" step="50"
+                                                            data-challenge="SunUsed">
+                                                        <span class="input-group-text">☀️</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SunProduced -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_sunProduced" checked
+                                                            data-challenge="SunProduced">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_sunProduced">
+                                                            Sol Producido
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isSunProduced.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Producir al menos:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="sunProduced_value" value="500" min="50" max="5000"
+                                                            step="50" data-challenge="SunProduced">
+                                                        <span class="input-group-text">☀️</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SunHoldout -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_sunHoldout" checked
+                                                            data-challenge="SunHoldout">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_sunHoldout">
+                                                            Retener Sol
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isSunHoldout.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Mantener mínimo 50 sol por:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="sunHoldout_value" value="60" min="10" max="300" step="5"
+                                                            data-challenge="SunHoldout">
+                                                        <span class="input-group-text">segundos</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: KillZombies -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_killZombies" checked
+                                                            data-challenge="KillZombies">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_killZombies">
+                                                            Matar Zombies Rápido
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isKillZombies.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Matar zombies en tiempo:</p>
+                                                    <div class="row g-2">
+                                                        <div class="col-6">
+                                                            <div class="input-group">
+                                                                <input type="number"
+                                                                    class="form-control challenge-input"
+                                                                    id="killZombies_count" value="15" min="5" max="50"
+                                                                    data-challenge="KillZombies">
+                                                                <span class="input-group-text">zombies</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="input-group">
+                                                                <input type="number"
+                                                                    class="form-control challenge-input"
+                                                                    id="killZombies_time" value="10" min="5" max="60"
+                                                                    data-challenge="KillZombies">
+                                                                <span class="input-group-text">seg</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: PlantsLost -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_plantsLost" checked
+                                                            data-challenge="PlantsLost">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_plantsLost">
+                                                            Plantas Perdidas Máx
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isPlantsLost.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Perder máximo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="plantsLost_value" value="5" min="0" max="20"
+                                                            data-challenge="PlantsLost">
+                                                        <span class="input-group-text">plantas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SimultaneousPlants -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_simultaneousPlants" checked
+                                                            data-challenge="SimultaneousPlants">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_simultaneousPlants">
+                                                            Plantas Simultáneas
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isPlantsSimultaneous.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Máximo plantas al mismo tiempo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="simultaneousPlants_value" value="15" min="5" max="30"
+                                                            data-challenge="SimultaneousPlants">
+                                                        <span class="input-group-text">plantas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SaveMowers -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_saveMowers" checked
+                                                            data-challenge="SaveMowers">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_saveMowers">
+                                                            Salvar Podadoras
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isMowers.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Mantener mínimo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="saveMowers_value" value="3" min="1" max="5"
+                                                            data-challenge="SaveMowers">
+                                                        <span class="input-group-text">podadoras</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <h6><i class="bi bi-info-circle me-2"></i>Información sobre Desafíos</h6>
+                                        <div class="alert alert-info">
+                                            <p class="mb-2"><strong>Los desafíos son objetivos secundarios que el
+                                                    jugador puede completar:</strong></p>
+                                            <ul class="mb-0">
+                                                <li>Aparecerán como estrellas en la selección de nivel</li>
+                                                <li>Completarlos otorga recompensas adicionales</li>
+                                                <li>Pueden activarse/desactivarse individualmente</li>
+                                                <li>Si todos están desactivados, no aparecerá la pestaña de estrellas
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Zombies y Oleadas -->
+                <!-- Pestaña: Zombies y Oleadas -->
+                <div class="tab-pane fade" id="waves" role="tabpanel">
+
+                    <!-- Configuración de Oleadas -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-flag me-2"></i>Configuración de Oleadas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">N° Oleadas:</label>
+                                    <input type="number" class="form-control" id="waveCount" value="10" min="1"
+                                        max="20">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Intervalo Bandera:</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="flagInterval" value="4" min="1"
+                                            max="10">
+                                        <span class="input-group-text">🏁</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Puntos Oleada:</label>
+                                    <input type="number" class="form-control" id="wavePoints" value="150" min="50"
+                                        max="500">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Incremento Puntos:</label>
+                                    <input type="number" class="form-control" id="waveIncrement" value="75" min="10"
+                                        max="200">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración Subterránea -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-arrow-down-up me-2"></i>Zombies Subterráneos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-4">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useUnderground"
+                                    style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label fw-bold fs-5" for="useUnderground">
+                                    Activar zombies subterráneos
+                                </label>
+                            </div>
+
+                            <div class="row g-3" id="undergroundConfig">
+                                <div class="col-md-6">
+                                    <label class="form-label">Comenzar en oleada:</label>
+                                    <input type="number" class="form-control" id="undergroundStart" value="5" min="1"
+                                        max="20">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Frecuencia (cada X oleadas):</label>
+                                    <input type="number" class="form-control" id="undergroundInterval" value="3" min="1"
+                                        max="10">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Columna inicial spawn:</label>
+                                    <input type="number" class="form-control" id="undergroundColStart" value="2" min="0"
+                                        max="8">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Columna final spawn:</label>
+                                    <input type="number" class="form-control" id="undergroundColEnd" value="4" min="0"
+                                        max="8">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Mín zombies/oleada:</label>
+                                    <input type="number" class="form-control" id="undergroundMin" value="3" min="1"
+                                        max="10">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Máx zombies/oleada:</label>
+                                    <input type="number" class="form-control" id="undergroundMax" value="8" min="1"
+                                        max="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row g-4">
+                        <!-- Panel completo con tabs -->
+                        <div class="col-lg-12">
+                            <div class="card shadow-sm border-0">
+                                <!-- Cabecera con tabs mejorada -->
+                                <div class="card-header bg-light p-0">
+                                    <div class="border-bottom px-3 py-2 bg-light-subtle">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="mb-0"><i class="bi bi-robot me-2"></i>Gestión de Zombies y
+                                                    Oleadas</h5>
+                                                <small class="text-muted">Selecciona zombies y configura las oleadas
+                                                    para tu nivel</small>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-primary px-3 py-2">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    <span id="tabZombiesCount">0</span> seleccionados
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <ul class="nav nav-tabs px-3" id="zombiesTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active py-3 px-4" id="select-tab"
+                                                data-bs-toggle="tab" data-bs-target="#select-panel" type="button"
+                                                role="tab">
+                                                <i class="bi bi-robot me-2 fs-5"></i>
+                                                <span class="fw-medium">Selección de Zombies</span>
+                                                <span class="badge bg-primary ms-2" id="tabZombiesCount">0</span>
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link py-3 px-4" id="selected-tab" data-bs-toggle="tab"
+                                                data-bs-target="#selected-panel" type="button" role="tab">
+                                                <i class="bi bi-check-circle me-2 fs-5"></i>
+                                                <span class="fw-medium">Zombies Seleccionados</span>
+                                                <span class="badge bg-success ms-2" id="tabSelectedCount">0</span>
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link py-3 px-4" id="waves-tab" data-bs-toggle="tab"
+                                                data-bs-target="#waves-panel" type="button" role="tab">
+                                                <i class="bi bi-lightning-charge me-2 fs-5"></i>
+                                                <span class="fw-medium">Configuración de Oleadas</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Contenido de las tabs -->
+                                <div class="tab-content" id="zombiesTabContent">
+
+                                    <!-- TAB 1: Selección de Zombies -->
+                                    <div class="tab-pane fade show active" id="select-panel" role="tabpanel">
+                                        <div class="p-3">
+                                            <div class="card shadow-sm border">
+                                                <div class="card-header bg-light-subtle py-3">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-md-4">
+                                                            <h6 class="mb-0"><i class="bi bi-search me-2"></i>Buscar
+                                                                Zombies</h6>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text bg-white border-end-0">
+                                                                    <i class="bi bi-search text-muted"></i>
+                                                                </span>
+                                                                <input type="text" class="form-control border-start-0"
+                                                                    id="zombieSearchGlobal"
+                                                                    placeholder="Buscar zombie en todas las categorías...">
+                                                                <button class="btn btn-outline-secondary" type="button"
+                                                                    id="clearSearchBtn">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="d-flex justify-content-end gap-2">
+                                                                <button class="btn btn-success btn-sm"
+                                                                    id="addSelectedZombiesBtn">
+                                                                    <i class="bi bi-plus-circle me-1"></i>Añadir
+                                                                </button>
+                                                                <button class="btn btn-danger btn-sm"
+                                                                    id="clearAllZombiesBtn">
+                                                                    <i class="bi bi-eraser me-1"></i>Limpiar
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card-body p-0">
+                                                    <div class="row g-0" style="min-height: 500px;">
+                                                        <!-- Lado izquierdo: Categorías -->
+                                                        <div class="col-md-3 border-end bg-light-subtle"
+                                                            style="overflow-y: auto; max-height: 500px;">
+                                                            <div class="p-3">
+                                                                <div
+                                                                    class="d-flex justify-content-between align-items-center mb-3">
+                                                                    <h6 class="mb-0"><i
+                                                                            class="bi bi-folder me-2"></i>Categorías
+                                                                    </h6>
+                                                                    <span class="badge bg-secondary"
+                                                                        id="categoriesCount">0</span>
+                                                                </div>
+                                                                <div id="zombieCategoriesPanel" class="categories-list">
+                                                                    <!-- Las categorías se generarán dinámicamente aquí -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Lado derecho: Contenido de zombies -->
+                                                        <div class="col-md-9"
+                                                            style="overflow-y: auto; max-height: 500px;">
+                                                            <div class="p-3">
+                                                                <div id="zombieCategoriesContent">
+                                                                    <!-- El contenido de las categorías se generará aquí -->
+                                                                </div>
+
+                                                                <!-- Mensaje cuando no hay resultados -->
+                                                                <div id="noResultsMessage"
+                                                                    class="text-center d-none py-5">
+                                                                    <div class="py-5">
+                                                                        <i
+                                                                            class="bi bi-search display-4 text-muted mb-3"></i>
+                                                                        <h5 class="text-muted">No se encontraron zombies
+                                                                        </h5>
+                                                                        <p class="text-muted mb-4">Intenta con otros
+                                                                            términos de búsqueda</p>
+                                                                        <button class="btn btn-outline-primary"
+                                                                            id="showAllZombiesBtn">
+                                                                            <i class="bi bi-eye me-1"></i>Mostrar todos
+                                                                            los zombies
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 2: Zombies Seleccionados -->
+                                    <div class="tab-pane fade" id="selected-panel" role="tabpanel">
+                                        <div class="p-3">
+                                            <div class="card shadow-sm border">
+                                                <div
+                                                    class="card-header bg-light-subtle d-flex justify-content-between align-items-center py-3">
+                                                    <div>
+                                                        <h6 class="mb-0"><i class="bi bi-check-circle me-2"></i>Zombies
+                                                            Seleccionados</h6>
+                                                        <small class="text-muted">Estos zombies aparecerán en tu
+                                                            nivel</small>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <button class="btn btn-success btn-sm"
+                                                            id="addSelectedZombiesBtn2">
+                                                            <i class="bi bi-plus-circle me-1"></i>Añadir Seleccionados
+                                                        </button>
+                                                        <button class="btn btn-danger btn-sm" id="clearAllZombiesBtn2">
+                                                            <i class="bi bi-eraser me-1"></i>Limpiar Todos
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="selectedZombies" class="selected-zombies-container">
+                                                        <div class="text-center py-5">
+                                                            <i class="bi bi-inboxes display-4 text-muted mb-3"></i>
+                                                            <h5 class="text-muted mb-3">No hay zombies seleccionados
+                                                            </h5>
+                                                            <p class="text-muted mb-4">Ve a la pestaña "Selección de
+                                                                Zombies" para elegir algunos</p>
+                                                            <button class="btn btn-primary"
+                                                                onclick="document.getElementById('select-tab').click()">
+                                                                <i class="bi bi-arrow-left me-2"></i>Ir a Selección de
+                                                                Zombies
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 3: Configuración de Oleadas -->
+                                    <div class="tab-pane fade" id="waves-panel" role="tabpanel">
+                                        <div class="p-3">
+                                            <div class="row g-4">
+                                                <!-- Columna de Dificultad -->
+                                                <div class="col-md-6">
+                                                    <div class="card shadow-sm border h-100">
+                                                        <div class="card-header bg-light-subtle">
+                                                            <h6 class="mb-0"><i
+                                                                    class="bi bi-speedometer2 me-2"></i>Dificultad</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="mb-4">
+                                                                <label class="form-label fw-bold mb-3">Selecciona el
+                                                                    nivel de dificultad:</label>
+                                                                <div class="btn-group-vertical w-100" role="group"
+                                                                    id="difficultyGroup">
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="difficulty" id="difficultyEasy"
+                                                                        value="facil" autocomplete="off" checked>
+                                                                    <label
+                                                                        class="btn btn-outline-success mb-2 px-4 py-3"
+                                                                        for="difficultyEasy">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-smile fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold">Fácil</div>
+                                                                                <small class="text-muted">Para
+                                                                                    principiantes</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="difficulty" id="difficultyMedium"
+                                                                        value="media" autocomplete="off">
+                                                                    <label
+                                                                        class="btn btn-outline-warning mb-2 px-4 py-3"
+                                                                        for="difficultyMedium">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i
+                                                                                class="bi bi-emoji-neutral fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold">Media</div>
+                                                                                <small class="text-muted">Jugadores
+                                                                                    casuales</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="difficulty" id="difficultyHard"
+                                                                        value="dificil" autocomplete="off">
+                                                                    <label class="btn btn-outline-danger mb-2 px-4 py-3"
+                                                                        for="difficultyHard">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-frown fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold">Difícil</div>
+                                                                                <small class="text-muted">Para
+                                                                                    expertos</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="difficulty" id="difficultyExtreme"
+                                                                        value="extrema" autocomplete="off">
+                                                                    <label class="btn btn-outline-dark mb-2 px-4 py-3"
+                                                                        for="difficultyExtreme">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-dizzy fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold">Extrema</div>
+                                                                                <small class="text-muted">Desafío
+                                                                                    máximo</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Columna de Plant Food y Botones -->
+                                                <div class="col-md-6">
+                                                    <div class="card shadow-sm border h-100">
+                                                        <div class="card-header bg-light-subtle">
+                                                            <h6 class="mb-0"><i
+                                                                    class="bi bi-lightning-charge me-2"></i>Opciones de
+                                                                Oleadas</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="mb-4">
+                                                                <label class="form-label fw-bold">
+                                                                    <i class="bi bi-flower1 me-2"></i>Oleadas con Plant
+                                                                    Food
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">
+                                                                        <i class="bi bi-123"></i>
+                                                                    </span>
+                                                                    <input type="text" class="form-control"
+                                                                        id="plantFoodWaves" value="3,6,9"
+                                                                        placeholder="Ej: 3,6,9">
+                                                                </div>
+                                                                <div class="form-text">Separa los números con comas
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-grid gap-2 mt-4">
+                                                                <button class="btn btn-warning btn-lg py-3"
+                                                                    id="generateWavesBtn">
+                                                                    <i class="bi bi-lightning-charge me-2"></i>Generar
+                                                                    Oleadas
+                                                                </button>
+
+                                                                <button class="btn btn-success btn-lg py-3"
+                                                                    id="generateThematicBtn">
+                                                                    <i class="bi bi-stars me-2"></i>Nivel Temático
+                                                                </button>
+                                                            </div>
+
+                                                            <!-- Información adicional -->
+                                                            <div class="mt-4 pt-3 border-top">
+                                                                <div class="alert alert-info mb-0">
+                                                                    <i class="bi bi-info-circle me-2"></i>
+                                                                    <strong>Sugerencia:</strong> Selecciona primero los
+                                                                    zombies antes de configurar las oleadas.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel de estado rápido -->
+                            <div class="card shadow-sm mt-4 border">
+                                <div class="card-body py-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-4 text-center border-end">
+                                            <div class="small text-muted">Zombies Disponibles</div>
+                                            <div class="h4 fw-bold text-primary mb-0" id="availableZombiesCount">0</div>
+                                        </div>
+                                        <div class="col-md-4 text-center border-end">
+                                            <div class="small text-muted">Zombies Seleccionados</div>
+                                            <div class="h4 fw-bold text-success mb-0" id="totalSelectedZombies">0</div>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <div class="small text-muted">Dificultad</div>
+                                            <div class="h4 fw-bold text-warning mb-0" id="currentDifficulty">Fácil</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Pestaña: Convertidor -->
+                <div class="tab-pane fade" id="converter" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-arrow-left-right me-2"></i>Convertidor JSON ↔ RTON
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-4">
+                                        <!-- Panel izquierdo: JSON a RTON -->
+                                        <div class="col-md-6">
+                                            <div class="card h-100">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h6 class="mb-0"><i class="bi bi-arrow-right-circle me-2"></i>JSON a
+                                                        RTON</h6>
+                                                </div>
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">JSON de entrada:</label>
+                                                        <textarea class="form-control font-monospace" id="jsonInput"
+                                                            rows="12"
+                                                            placeholder='Pega tu JSON aquí. Ejemplo: {"key": "value"}'></textarea>
+                                                    </div>
+
+                                                    <div class="mt-auto">
+                                                        <div class="d-grid gap-2">
+                                                            <button class="btn btn-primary" id="jsonToRtonBtn">
+                                                                <i class="bi bi-arrow-right me-2"></i>Convertir a RTON
+                                                            </button>
+                                                            <button class="btn btn-outline-secondary"
+                                                                id="loadJsonFileBtn">
+                                                                <i class="bi bi-upload me-2"></i>Cargar archivo JSON
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Panel derecho: RTON a JSON -->
+                                        <div class="col-md-6">
+                                            <div class="card h-100">
+                                                <div class="card-header bg-success text-white">
+                                                    <h6 class="mb-0"><i class="bi bi-arrow-left-circle me-2"></i>RTON a
+                                                        JSON</h6>
+                                                </div>
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">RTON de entrada
+                                                            (hexadecimal):</label>
+                                                        <textarea class="form-control font-monospace" id="rtonInput"
+                                                            rows="12"
+                                                            placeholder="Pega tu RTON en hexadecimal aquí. Ejemplo: 52544F4E00000000..."></textarea>
+                                                    </div>
+
+                                                    <div class="mt-auto">
+                                                        <div class="d-grid gap-2">
+                                                            <button class="btn btn-success" id="rtonToJsonBtn">
+                                                                <i class="bi bi-arrow-left me-2"></i>Convertir a JSON
+                                                            </button>
+                                                            <button class="btn btn-outline-secondary"
+                                                                id="loadRtonFileBtn">
+                                                                <i class="bi bi-upload me-2"></i>Cargar archivo RTON
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Resultado -->
+                                        <div class="col-12">
+                                            <div class="card mt-4">
+                                                <div
+                                                    class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                    <h6 class="mb-0"><i class="bi bi-code-slash me-2"></i>Resultado</h6>
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-sm btn-outline-primary"
+                                                            id="copyResultBtn">
+                                                            <i class="bi bi-clipboard me-1"></i>Copiar
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-success"
+                                                            id="downloadResultBtn">
+                                                            <i class="bi bi-download me-1"></i>Descargar
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-secondary"
+                                                            id="clearResultBtn">
+                                                            <i class="bi bi-trash me-1"></i>Limpiar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Formato de salida:</label>
+                                                        <select class="form-select" id="outputFormat">
+                                                            <option value="pretty">JSON formateado</option>
+                                                            <option value="compact">JSON compacto</option>
+                                                            <option value="hex">Hexadecimal RTON</option>
+                                                            <option value="array">Array de bytes</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <pre id="conversionResult" class="json-preview mb-0"
+                                                        style="max-height: 300px; overflow-y: auto; min-height: 200px;">Resultado aparecerá aquí...</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Escenario -->
+                <div class="tab-pane fade" id="board" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-grid-3x3 me-2"></i>Tablero del Escenario (5x9)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Tablero visual -->
+                                    <div class="board-container mb-4">
+                                        <div id="board-controls" class="mb-3">
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <!-- Selector de elemento -->
+                                                <div class="btn-group" role="group">
+
+                                                </div>
+
+                                                <!-- Botones de acción -->
+                                                <div class="btn-group ms-auto" role="group">
+                                                    <button type="button" class="btn btn-danger" id="btn-clear-board">
+                                                        <i class="bi bi-eraser me-1"></i>Limpiar Todo
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modificadores para plantas -->
+                                            <div class="modifiers-section d-none" id="plant-modifiers">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="check-defeat">
+                                                    <label class="form-check-label" for="check-defeat">
+                                                        <i class="bi bi-shield-check me-1"></i>Planta con derrota
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="check-frozen">
+                                                    <label class="form-check-label" for="check-frozen">
+                                                        <i class="bi bi-snow me-1"></i>Congelada
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="number" id="plant-level"
+                                                        min="0" max="20" style="width: 80px;"
+                                                        placeholder="Nivel (0=jugador)">
+                                                </div>
+                                            </div>
+
+                                            <!-- Modificadores para zombies -->
+                                            <div class="modifiers-section d-none" id="zombie-modifiers">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        id="check-zombie-frozen">
+                                                    <label class="form-check-label" for="check-zombie-frozen">
+                                                        <i class="bi bi-snow me-1"></i>Congelado
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Tablero interactivo -->
+                                        <table class="table table-bordered board-table" id="game-board">
+                                            <!-- Se generará dinámicamente con JavaScript -->
+                                        </table>
+
+
+                                        <!-- Info de celda seleccionada -->
+                                        <div class="mt-3 alert alert-info" id="cell-info">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span><i class="bi bi-info-circle me-2"></i>Selecciona una celda para
+                                                    colocar elementos</span>
+                                                <button class="btn btn-sm btn-outline-info" id="btn-edit-cell">
+                                                    <i class="bi bi-pencil me-1"></i>Editar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Vista previa JSON de los módulos generados -->
+                                    <div class="accordion" id="board-accordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseBoardJson">
+                                                    <i class="bi bi-code-slash me-2"></i>Vista previa de módulos
+                                                    generados
+                                                </button>
+                                            </h2>
+                                            <div id="collapseBoardJson" class="accordion-collapse collapse">
+                                                <div class="accordion-body">
+                                                    <pre id="board-json-preview" class="json-preview mb-0"
+                                                        style="max-height: 300px; overflow-y: auto;"></pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Pestaña: Vista Previa -->
+                <div class="tab-pane fade" id="preview" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-code-slash me-2"></i>Vista Previa JSON</h5>
+                                    <div class="d-flex align-items-center">
+                                        <!-- Selector de formato -->
+                                        <div class="me-3" style="min-width: 120px;">
+                                            <select class="form-select form-select-sm" id="formatSelect">
+                                                <option value="json">JSON</option>
+                                                <option value="rton">RTON</option>
+                                            </select>
+                                        </div>
+                                        <!-- Botones -->
+                                        <div class="btn-group ms-2">
+                                            <button class="btn btn-primary" id="generateLevelBtn">
+                                                <i class="bi bi-play-circle me-2"></i>Generar Nivel
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary" id="copyJsonBtn">
+                                                <i class="bi bi-clipboard me-1"></i>Copiar
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" id="saveLevelBtn">
+                                                <i class="bi bi-download me-1"></i>Descargar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-3">
+                                    <pre id="jsonPreview" class="json-preview mb-0"
+                                        style="max-height: 500px; overflow-y: auto;"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Pestaña: Estadísticas -->
+                <div class="tab-pane fade" id="stats" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Estadísticas del Nivel</h5>
+                                    <button class="btn btn-sm btn-outline-primary" id="updateStatsBtn">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="statsContent" class="stats-content">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="bi bi-graph-up display-1 mb-3"></i>
+                                            <h4>Genera un nivel para ver estadísticas</h4>
+                                            <p>Haz clic en "Generar Nivel" para calcular las estadísticas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="lawn-modal modal fade" id="editCellModal-${row}-${col}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-sliders me-2"></i>Lawn Modifier - Editar Celda (Fila ${row}, Columna ${col})
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Selector de tipo -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo de Elemento</label>
+                                <select class="form-select lawn-element-type">
+                                    <option value="plants">Plantas</option>
+                                    <option value="zombies">Zombies</option>
+                                    <option value="gravestones">Lápidas</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Buscar</label>
+                                <input type="text" class="form-control lawn-element-search"
+                                    placeholder="Buscar elemento...">
+                            </div>
+                        </div>
+
+                        <!-- Contenedor de elementos disponibles -->
+                        <div class="mb-3">
+                            <h6>Elementos Disponibles</h6>
+                            <div class="elements-grid lawn-elements-list" style="max-height: 250px; overflow-y: auto;">
+                                <!-- Los elementos se cargarán aquí dinámicamente -->
+                            </div>
+                        </div>
+
+                        <!-- Modificadores específicos para plantas -->
+                        <div class="modifiers-section lawn-plant-modifiers">
+                            <h6>Modificadores de Plantas</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="lawn-plant-level" class="form-label">Nivel (0 = jugador)</label>
+                                    <input type="number" class="form-control lawn-plant-level" min="0" max="10"
+                                        value="0">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input lawn-check-frozen" type="checkbox">
+                                        <label class="form-check-label">
+                                            Congelada
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input lawn-check-defeat" type="checkbox">
+                                        <label class="form-check-label">
+                                            En garde
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modificadores específicos para zombies -->
+                        <div class="modifiers-section lawn-zombie-modifiers" style="display: none;">
+                            <h6>Modificadores de Zombies</h6>
+                            <div class="form-check">
+                                <input class="form-check-input lawn-check-zombie-frozen" type="checkbox">
+                                <label class="form-check-label">
+                                    Congelado
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Info de celda actual -->
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span class="lawn-current-cell-info">Celda: Fila ${row}, Columna ${col}</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger lawn-btn-remove">
+                            <i class="bi bi-trash me-1"></i>Eliminar
+                        </button>
+                        <button type="button" class="btn btn-success lawn-btn-add">
+                            <i class="bi bi-plus-circle me-2"></i>Añadir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para mensajes -->
+        <div class="modal fade" id="messageModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Mensaje</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalMessage">
+                        <!-- Mensaje aquí -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Minimalista -->
+        <footer class="minimalist-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <!-- Información del proyecto -->
+                    <div class="footer-section">
+                        <h5 class="footer-title">
+                            <i class="bi bi-controller me-2"></i>Generador de Niveles PvZ2
+                        </h5>
+                        <p class="footer-description">
+                            Herramienta para crear niveles personalizados de Plants vs Zombies 2.
+                            Genera configuraciones JSON/RTON compatibles con el juego.
+                        </p>
+                    </div>
+
+                    <!-- Enlaces rápidos -->
+                    <div class="footer-section">
+                        <h6 class="footer-subtitle">Enlaces Rápidos</h6>
+                        <ul class="footer-links">
+                            <li><a href="#basic" class="footer-link" onclick="showTab('basic')">
+                                    <i class="bi bi-gear me-1"></i>Configuración
+                                </a></li>
+                            <li><a href="#waves" class="footer-link" onclick="showTab('waves')">
+                                    <i class="bi bi-robot me-1"></i>Zombies
+                                </a></li>
+                            <li><a href="#preview" class="footer-link" onclick="showTab('preview')">
+                                    <i class="bi bi-eye me-1"></i>Vista Previa
+                                </a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Recursos -->
+                    <div class="footer-section">
+                        <h6 class="footer-subtitle">Recursos</h6>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="https://github.com" target="_blank" class="footer-link">
+                                    <i class="bi bi-github me-1"></i>GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://plantsvszombies.fandom.com" target="_blank" class="footer-link">
+                                    <i class="bi bi-book me-1"></i>Wiki PvZ
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="footer-link" id="exportSettingsFooterBtn">
+                                    <i class="bi bi-download me-1"></i>Exportar Config
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="Importan-footer">
+                    <span>Este es un proyecto no oficial para uso educativo y personal.</span>
+                </div>
+
+                <!-- Línea divisoria -->
+                <hr class="footer-divider">
+
+                <!-- Información inferior -->
+                <div class="footer-bottom">
+                    <div class="copyright">
+                        <i class="bi bi-c-circle me-1"></i>
+                        <span id="current-year">2025</span> - Generador de Niveles PvZ2 Creador LeoPvz2
+                    </div>
+
+                    <div class="footer-stats">
+                        <span class="stat-item">
+                            <i class="bi bi-eye me-1"></i>
+                            <span id="view-count">Cargando...</span> visitas
+                        </span>
+                        <span class="stat-item">
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+                            <span id="last-update">v1.0.0</span>
+                        </span>
+                    </div>
+
+                    <div class="footer-actions">
+                        <button class="btn-footer-action" id="backToTopBtn">
+                            <i class="bi bi-arrow-up-circle me-1"></i>Volver arriba
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+
+        <!-- Barra de acciones flotante -->
+        <div class="floating-actions">
+            <div class="container-fluid">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center flex-wrap gap-2 p-2">
+                            <button class="btn btn-primary" id="generateLevelBtn">
+                                <i class="bi bi-play-circle me-2"></i>Generar Nivel
+                            </button>
+
+                            <button class="btn btn-outline-primary" id="loadConfigBtn">
+                                <i class="bi bi-upload me-2"></i>Cargar Config
+                            </button>
+
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear me-2"></i>Opciones
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item" id="resetBtn"><i
+                                                class="bi bi-arrow-clockwise me-2"></i>Restablecer</button></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><button class="dropdown-item" id="exportSettingsBtn"><i
+                                                class="bi bi-save me-2"></i>Exportar Configuración</button></li>
+                                    <li><button class="dropdown-item" id="importSettingsBtn"><i
+                                                class="bi bi-file-earmark me-2"></i>Importar Configuración</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Modal personalizado para selección de escenario -->
+    <!-- Modal personalizado para selección de escenario -->
+    <div class="custom-modal-overlay" id="scenarioModalOverlay">
+        <div class="custom-modal" id="scenarioModal">
+            <div class="custom-modal-header bg-success text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-grid-3x3 me-2"></i>Seleccionar Escenario
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="scenarioSearch"
+                        placeholder="Buscar escenario...">
+                </div>
+                <button type="button" class="custom-modal-close" id="scenarioModalClose">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="scenarioGrid">
+                    <!-- Los escenarios se generarán dinámicamente -->
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="scenarioModalCancel">Cancelar</button>
+                <button type="button" class="btn btn-success" id="scenarioModalAccept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal personalizado para selección de podadoras -->
+    <!-- Modal personalizado para selección de podadoras -->
+    <div class="custom-modal-overlay" id="mowerModalOverlay">
+        <div class="custom-modal" id="mowerModal">
+            <div class="custom-modal-header bg-warning text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-scissors me-2"></i>Seleccionar Podadoras
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="mowerSearch"
+                        placeholder="Buscar podadoras...">
+                </div>
+                <button type="button" class="custom-modal-close" id="mowerModalClose">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="custom-modal-body">
+                <!-- Añade esta clase al contenedor del grid -->
+                <div class="mower-grid-container" id="mowerGrid">
+                    <!-- Las podadoras se generarán dinámicamente -->
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="mowerModalCancel">Cancelar</button>
+                <button type="button" class="btn btn-warning" id="mowerModalAccept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal personalizado para selección de mundo -->
+    <div class="custom-modal-overlay" id="worldModalOverlay">
+        <div class="custom-modal" id="worldModal">
+            <div class="custom-modal-header bg-primary text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-globe-americas me-2"></i>Seleccionar Mundo
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="worldSearch"
+                        placeholder="Buscar mundo...">
+                </div>
+                <button type="button" class="custom-modal-close" id="worldModalClose">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="worldGrid">
+                    <!-- Los mundos se generarán dinámicamente -->
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="worldModalCancel">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="worldModalAccept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="wave-separator">
+        <img src="/Assets/Icons/pvz2font.png" alt="olas">
+    </div>
+
+
+    <script src="/Js/bootstrap.bundle.min.js"></script>
+    <script src="/Js/sweetalert2.min.js"></script>
+
+    <script type="module" src="/Js/main.js"></script>
+    <script src="/Js/plant-manager.js"></script>
+    <script src="/Js/RTONConverter.js"></script>
+    <script src="/Js/RTONAJSON.js"></script>
+    <script type="module" src="/Js/board-manager.js"></script>
+    <script src="/Js/footer.js"></script>
+
+
+
+    <script>
+        fetch("https://generatorleveshexius.goatcounter.com/counter/all.json")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("gc-visitas").textContent = data.count;
+            })
+            .catch(() => {
+                document.getElementById("gc-visitas").textContent = "—";
+            });
+    </script>
+
+
+
+
+</body>
+
+</html>
