@@ -104,7 +104,7 @@ function loadZombies(category) {
         card.innerHTML = `
             <div class="card-body text-center p-2">
                 <div class="zombie-img-container mb-2" style="height: 80px; display: flex; align-items: center; justify-content: center;">
-                    <img src="${PATHS.IMAGES.ZOMBIES}${zombieId}.png" 
+                    <img src="${PATHS.IMAGES.ZOMBIES}${zombieId}.webp" 
                          alt="${displayName}"
                          class="img-fluid"
                          style="max-height: 70px;"

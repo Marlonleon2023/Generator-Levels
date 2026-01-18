@@ -91,7 +91,7 @@ class ImageCache {
                 this.stats.errors++;
                 
                 // Intentar formato alternativo
-                if (!url.includes('.png') && !url.includes('.jpg')) {
+                if (!url.includes('.webp') && !url.includes('.jpg')) {
                     setTimeout(() => this.tryAlternativeFormat(url), 1000);
                 }
                 
@@ -117,9 +117,9 @@ class ImageCache {
     async tryAlternativeFormat(url) {
         let altUrl = url;
         if (url.includes('.webp')) {
-            altUrl = url.replace('.webp', '.png');
-        } else if (url.includes('.png')) {
-            altUrl = url.replace('.png', '.jpg');
+            altUrl = url.replace('.webp', '.webp');
+        } else if (url.includes('.webp')) {
+            altUrl = url.replace('.webp', '.jpg');
         }
         
         try {
@@ -132,11 +132,11 @@ class ImageCache {
 
     precacheRelatedFormats(webpUrl) {
         // Pre-cargar formatos alternativos en segundo plano
-        const pngUrl = webpUrl.replace('.webp', '.png');
+        const webpUrl = webpUrl.replace('.webp', '.webp');
         const jpgUrl = webpUrl.replace('.webp', '.jpg');
         
         setTimeout(() => {
-            [pngUrl, jpgUrl].forEach(url => {
+            [webpUrl, jpgUrl].forEach(url => {
                 this.loadImage(url, { priority: 'low' })
                     .catch(() => {}); // Ignorar errores
             });
@@ -322,7 +322,7 @@ class ImageOptimizer {
     static getOptimalFormat() {
         if (this.supportsAvif()) return 'avif';
         if (this.supportsWebP()) return 'webp';
-        return 'png';
+        return 'webp';
     }
 
     static async compressImage(url, maxWidth = 100, quality = 0.8) {
@@ -369,7 +369,7 @@ class ImageOptimizer {
                         quality
                     );
                 } else {
-                    // PNG o JPEG
+                    // webp o JPEG
                     const compressedUrl = canvas.toDataURL(mimeType, quality);
                     resolve(compressedUrl);
                 }
@@ -440,7 +440,7 @@ class OptimizedBoardManager extends BoardManager {
         const optimalUrl = `${basePath}${normalizedName}.${format}`;
         
         // Si no es WebP/AVIF, usar el método original
-        if (format === 'png' || format === 'jpg') {
+        if (format === 'webp' || format === 'jpg') {
             switch(type) {
                 case 'plants': return this.getPlantImageUrl(elementName);
                 case 'zombies': return this.getZombieImageUrl(elementName);

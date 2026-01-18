@@ -34,7 +34,7 @@ class BoardManager {
         
          this.fallbackImages = {
         plants: FALLBACK_IMAGES.plants, // Usa el valor de las constantes
-        zombies: `${this.imagePaths.ZOMBIES}error.png`, // Solo zombies usa error.png
+        zombies: `${this.imagePaths.ZOMBIES}error.webp`, // Solo zombies usa error.webp
         gravestones: FALLBACK_IMAGES.gravestones // Usa el valor de las constantes
     };
         
@@ -113,14 +113,14 @@ class BoardManager {
         if (!plantName) return this.fallbackImages.plants;
         
         const normalizedName = plantName.toLowerCase().replace(/\s+/g, '');
-        return `${this.imagePaths.PLANTS}${normalizedName}.png`; // <- USAR this.imagePaths.PLANTS
+        return `${this.imagePaths.PLANTS}${normalizedName}.webp`; // <- USAR this.imagePaths.PLANTS
     }
 
     getZombieImageUrl(zombieName) {
-    if (!zombieName) return `${this.imagePaths.ZOMBIES}error.png`;
+    if (!zombieName) return `${this.imagePaths.ZOMBIES}error.webp`;
     
     const normalizedName = zombieName.toLowerCase().replace(/\s+/g, '');
-    return `${this.imagePaths.ZOMBIES}${normalizedName}.png`;
+    return `${this.imagePaths.ZOMBIES}${normalizedName}.webp`;
 }
 
 
@@ -128,7 +128,7 @@ class BoardManager {
         if (!gravestoneName) return this.fallbackImages.gravestones;
         
         const normalizedName = gravestoneName.toLowerCase().replace(/\s+/g, '');
-        return `${this.imagePaths.GRAVESTONES}${normalizedName}.png`; // <- USAR this.imagePaths.GRAVESTONES
+        return `${this.imagePaths.GRAVESTONES}${normalizedName}.webp`; // <- USAR this.imagePaths.GRAVESTONES
     }
 
     initializeBoard() {

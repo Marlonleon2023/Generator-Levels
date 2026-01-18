@@ -88,13 +88,13 @@ class PlantManager {
         
         // PRIMERO: Usar ruta desde constants/resources.js si está disponible
         if (this.PATHS.IMAGES && this.PATHS.IMAGES.PLANTS) {
-            const url = `${this.PATHS.IMAGES.PLANTS}${normalizedName}.png`;
+            const url = `${this.PATHS.IMAGES.PLANTS}${normalizedName}.webp`;
             console.log(`Imagen desde PATHS: ${url}`);
             return url;
         }
         
         // SEGUNDO: Fallback a la ruta anterior
-        const fallbackUrl = `Assets/Plants/${normalizedName}.png`;
+        const fallbackUrl = `Assets/Plants/${normalizedName}.webp`;
         console.log(`Imagen desde fallback: ${fallbackUrl}`);
         return fallbackUrl;
     }

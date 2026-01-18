@@ -410,8 +410,12 @@ body.modal-open {
 }
 
 .zombie-image[src*="error.png"] {
-    filter: grayscale(100%) opacity(70%);
-    padding: 5px;
+  filter: 
+        grayscale(100%)
+        brightness(55%)
+        contrast(60%)
+        opacity(70%);
+    padding: 20px;
 }
 
 /* ===== ESTILOS MÍNIMOS PARA BOTONES ===== */

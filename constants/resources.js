@@ -21,17 +21,17 @@ export const PATHS = {
 
 // Imágenes de mundos
 export const WORLD_IMAGES = {
-    "Moderno": `${PATHS.IMAGES.MUNDOS}modern.png`,
-    "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.png`,
-    "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.png`,
-    "Oeste": `${PATHS.IMAGES.MUNDOS}cowboy.png`,
-    "Futuro": `${PATHS.IMAGES.MUNDOS}future.png`,
-    "Antiguo": `${PATHS.IMAGES.MUNDOS}eighties.png`,
-    "Journey": `${PATHS.IMAGES.MUNDOS}lostcity.png`,
-    "Canival": `${PATHS.IMAGES.MUNDOS}circus.png`,
-    "Edad de Hielo": `${PATHS.IMAGES.MUNDOS}iceage.png`,
-    "Atlantis": `${PATHS.IMAGES.MUNDOS}atlantis.png`,
-    "Renai": `${PATHS.IMAGES.MUNDOS}renai.png`
+    "Moderno": `${PATHS.IMAGES.MUNDOS}modern.webp`,
+    "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.webp`,
+    "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.webp`,
+    "Oeste": `${PATHS.IMAGES.MUNDOS}cowboy.webp`,
+    "Futuro": `${PATHS.IMAGES.MUNDOS}future.webp`,
+    "Antiguo": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
+    "Journey": `${PATHS.IMAGES.MUNDOS}lostcity.webp`,
+    "Canival": `${PATHS.IMAGES.MUNDOS}circus.webp`,
+    "Edad de Hielo": `${PATHS.IMAGES.MUNDOS}iceage.webp`,
+    "Atlantis": `${PATHS.IMAGES.MUNDOS}atlantis.webp`,
+    "Renai": `${PATHS.IMAGES.MUNDOS}renai.webp`
 };
 
 // Imágenes de escenarios (stages)

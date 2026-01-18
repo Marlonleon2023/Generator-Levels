@@ -422,11 +422,11 @@ generateZombieCardsHTML(zombies) {
         // Obtener categoría del zombie
         const zombieCategory = info?.category || 'Sin categoría';
         
-        // Rutas de imágenes - DEFINIR ERROR.PNG COMO FALBACK GLOBAL
-        const zombieImagePath = `Assets/Zombies/${zombieName}.png`;
-        const errorImagePath = 'Assets/Zombies/error.png'; // Imagen de error por defecto
+        // Rutas de imágenes - DEFINIR ERROR.webp COMO FALBACK GLOBAL
+        const zombieImagePath = `Assets/Zombies/${zombieName}.webp`;
+        const errorImagePath = 'Assets/Zombies/error.webp'; // Imagen de error por defecto
         
-        // Usar error.png como fallback global
+        // Usar error.webp como fallback global
         let fallbackImage = errorImagePath;
         
         return `
@@ -441,7 +441,7 @@ generateZombieCardsHTML(zombies) {
                          alt="${zombieName}" 
                          class="zombie-image"
                          onerror="
-                            console.log('Imagen no encontrada para ${zombieName}, usando error.png');
+                            console.log('Imagen no encontrada para ${zombieName}, usando error.webp');
                             this.src = '${fallbackImage}';
                             this.style.filter = 'grayscale(20%) opacity(90%)';
                          ">
@@ -585,10 +585,10 @@ filterAllZombies(searchTerm) {
 }
 
 getZombieImageUrl(zombieName) {
-    if (!zombieName) return `${this.imagePaths.ZOMBIES}error.png`;
+    if (!zombieName) return `${this.imagePaths.ZOMBIES}error.webp`;
     
     const normalizedName = zombieName.toLowerCase().replace(/\s+/g, '');
-    const imagePath = `${this.imagePaths.ZOMBIES}${normalizedName}.png`;
+    const imagePath = `${this.imagePaths.ZOMBIES}${normalizedName}.webp`;
     
     // Retornar directamente la ruta específica del zombie
     // El manejo de errores se hará en el atributo onerror de la etiqueta <img>
