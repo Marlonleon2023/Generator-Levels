@@ -427,270 +427,6 @@
                 </div>
 
 
-                <!-- Después de la pestaña de Estadísticas, antes de cerrar div.tab-content -->
-                <div class="tab-pane fade" id="challenges" role="tabpanel">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card shadow-sm">
-                                <div class="card-header bg-light">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Configuración de Desafíos</h5>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                id="challengesEnabled" style="width: 3em; height: 1.5em;" checked>
-                                            <label class="form-check-label fw-bold" for="challengesEnabled">
-                                                Activar desafíos
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card-body">
-                                    <div class="row g-4" id="challengesContainer">
-                                        <!-- Desafío: ZombieDistance -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_zombieDistance" checked
-                                                            data-challenge="ZombieDistance">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_zombieDistance">
-                                                            Distancia de Zombies
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isLine.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">No permitir que zombies se acerquen
-                                                        más de:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="zombieDistance_value" value="5.5" min="1" max="10"
-                                                            step="0.1" data-challenge="ZombieDistance">
-                                                        <span class="input-group-text">casillas</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: SunUsed -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_sunUsed" checked
-                                                            data-challenge="SunUsed">
-                                                        <label class="form-check-label fw-bold" for="challenge_sunUsed">
-                                                            Sol Usado Máximo
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isSunUsed.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Usar máximo:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="sunUsed_value" value="500" min="50" max="5000" step="50"
-                                                            data-challenge="SunUsed">
-                                                        <span class="input-group-text">☀️</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: SunProduced -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_sunProduced" checked
-                                                            data-challenge="SunProduced">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_sunProduced">
-                                                            Sol Producido
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isSunProduced.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Producir al menos:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="sunProduced_value" value="500" min="50" max="5000"
-                                                            step="50" data-challenge="SunProduced">
-                                                        <span class="input-group-text">☀️</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: SunHoldout -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_sunHoldout" checked
-                                                            data-challenge="SunHoldout">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_sunHoldout">
-                                                            Retener Sol
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isSunHoldout.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Mantener mínimo 50 sol por:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="sunHoldout_value" value="60" min="10" max="300" step="5"
-                                                            data-challenge="SunHoldout">
-                                                        <span class="input-group-text">segundos</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: KillZombies -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_killZombies" checked
-                                                            data-challenge="KillZombies">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_killZombies">
-                                                            Matar Zombies Rápido
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isKillZombies.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Matar zombies en tiempo:</p>
-                                                    <div class="row g-2">
-                                                        <div class="col-6">
-                                                            <div class="input-group">
-                                                                <input type="number"
-                                                                    class="form-control challenge-input"
-                                                                    id="killZombies_count" value="15" min="5" max="50"
-                                                                    data-challenge="KillZombies">
-                                                                <span class="input-group-text">zombies</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <div class="input-group">
-                                                                <input type="number"
-                                                                    class="form-control challenge-input"
-                                                                    id="killZombies_time" value="10" min="5" max="60"
-                                                                    data-challenge="KillZombies">
-                                                                <span class="input-group-text">seg</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: PlantsLost -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_plantsLost" checked
-                                                            data-challenge="PlantsLost">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_plantsLost">
-                                                            Plantas Perdidas Máx
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isPlantsLost.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Perder máximo:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="plantsLost_value" value="5" min="0" max="20"
-                                                            data-challenge="PlantsLost">
-                                                        <span class="input-group-text">plantas</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: SimultaneousPlants -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_simultaneousPlants" checked
-                                                            data-challenge="SimultaneousPlants">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_simultaneousPlants">
-                                                            Plantas Simultáneas
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isPlantsSimultaneous.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Máximo plantas al mismo tiempo:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="simultaneousPlants_value" value="15" min="5" max="30"
-                                                            data-challenge="SimultaneousPlants">
-                                                        <span class="input-group-text">plantas</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Desafío: SaveMowers -->
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card challenge-card">
-                                                <div class="card-body">
-                                                    <div class="form-check form-switch mb-3">
-                                                        <input class="form-check-input challenge-checkbox"
-                                                            type="checkbox" id="challenge_saveMowers" checked
-                                                            data-challenge="SaveMowers">
-                                                        <label class="form-check-label fw-bold"
-                                                            for="challenge_saveMowers">
-                                                            Salvar Podadoras
-                                                            <span class="challenge-icon"
-                                                                style="background-image: url('Assets/Desafios/isMowers.webp');"></span>
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Mantener mínimo:</p>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control challenge-input"
-                                                            id="saveMowers_value" value="3" min="1" max="5"
-                                                            data-challenge="SaveMowers">
-                                                        <span class="input-group-text">podadoras</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <h6><i class="bi bi-info-circle me-2"></i>Información sobre Desafíos</h6>
-                                        <div class="alert alert-info">
-                                            <p class="mb-2"><strong>Los desafíos son objetivos secundarios que el
-                                                    jugador puede completar:</strong></p>
-                                            <ul class="mb-0">
-                                                <li>Aparecerán como estrellas en la selección de nivel</li>
-                                                <li>Completarlos otorga recompensas adicionales</li>
-                                                <li>Pueden activarse/desactivarse individualmente</li>
-                                                <li>Si todos están desactivados, no aparecerá la pestaña de estrellas
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Pestaña: Zombies y Oleadas -->
                 <!-- Pestaña: Zombies y Oleadas -->
                 <div class="tab-pane fade" id="waves" role="tabpanel">
@@ -731,7 +467,7 @@
                         </div>
                     </div>
 
-                                        <div class="row g-4">
+                    <div class="row g-4">
                         <!-- Panel completo con tabs -->
                         <div class="col-lg-12">
                             <div class="card shadow-sm border-0">
@@ -1103,7 +839,275 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
+
+
+                                <!-- Después de la pestaña de Estadísticas, antes de cerrar div.tab-content -->
+                <div class="tab-pane fade" id="challenges" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Configuración de Desafíos</h5>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="challengesEnabled" style="width: 3em; height: 1.5em;" checked>
+                                            <label class="form-check-label fw-bold" for="challengesEnabled">
+                                                Activar desafíos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row g-4" id="challengesContainer">
+                                        <!-- Desafío: ZombieDistance -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_zombieDistance" checked
+                                                            data-challenge="ZombieDistance">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_zombieDistance">
+                                                            Distancia de Zombies
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isLine.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">No permitir que zombies se acerquen
+                                                        más de:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="zombieDistance_value" value="5.5" min="1" max="10"
+                                                            step="0.1" data-challenge="ZombieDistance">
+                                                        <span class="input-group-text">casillas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SunUsed -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_sunUsed" checked
+                                                            data-challenge="SunUsed">
+                                                        <label class="form-check-label fw-bold" for="challenge_sunUsed">
+                                                            Sol Usado Máximo
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isSunUsed.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Usar máximo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="sunUsed_value" value="500" min="50" max="5000" step="50"
+                                                            data-challenge="SunUsed">
+                                                        <span class="input-group-text">☀️</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SunProduced -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_sunProduced" checked
+                                                            data-challenge="SunProduced">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_sunProduced">
+                                                            Sol Producido
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isSunProduced.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Producir al menos:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="sunProduced_value" value="500" min="50" max="5000"
+                                                            step="50" data-challenge="SunProduced">
+                                                        <span class="input-group-text">☀️</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SunHoldout -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_sunHoldout" checked
+                                                            data-challenge="SunHoldout">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_sunHoldout">
+                                                            Retener Sol
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isSunHoldout.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Mantener mínimo 50 sol por:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="sunHoldout_value" value="60" min="10" max="300" step="5"
+                                                            data-challenge="SunHoldout">
+                                                        <span class="input-group-text">segundos</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: KillZombies -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_killZombies" checked
+                                                            data-challenge="KillZombies">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_killZombies">
+                                                            Matar Zombies Rápido
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isKillZombies.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Matar zombies en tiempo:</p>
+                                                    <div class="row g-2">
+                                                        <div class="col-6">
+                                                            <div class="input-group">
+                                                                <input type="number"
+                                                                    class="form-control challenge-input"
+                                                                    id="killZombies_count" value="15" min="5" max="50"
+                                                                    data-challenge="KillZombies">
+                                                                <span class="input-group-text">zombies</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="input-group">
+                                                                <input type="number"
+                                                                    class="form-control challenge-input"
+                                                                    id="killZombies_time" value="10" min="5" max="60"
+                                                                    data-challenge="KillZombies">
+                                                                <span class="input-group-text">seg</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: PlantsLost -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_plantsLost" checked
+                                                            data-challenge="PlantsLost">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_plantsLost">
+                                                            Plantas Perdidas Máx
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isPlantsLost.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Perder máximo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="plantsLost_value" value="5" min="0" max="20"
+                                                            data-challenge="PlantsLost">
+                                                        <span class="input-group-text">plantas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SimultaneousPlants -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_simultaneousPlants" checked
+                                                            data-challenge="SimultaneousPlants">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_simultaneousPlants">
+                                                            Plantas Simultáneas
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isPlantsSimultaneous.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Máximo plantas al mismo tiempo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="simultaneousPlants_value" value="15" min="5" max="30"
+                                                            data-challenge="SimultaneousPlants">
+                                                        <span class="input-group-text">plantas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desafío: SaveMowers -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox"
+                                                            type="checkbox" id="challenge_saveMowers" checked
+                                                            data-challenge="SaveMowers">
+                                                        <label class="form-check-label fw-bold"
+                                                            for="challenge_saveMowers">
+                                                            Salvar Podadoras
+                                                            <span class="challenge-icon"
+                                                                style="background-image: url('Assets/Desafios/isMowers.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">Mantener mínimo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input"
+                                                            id="saveMowers_value" value="3" min="1" max="5"
+                                                            data-challenge="SaveMowers">
+                                                        <span class="input-group-text">podadoras</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <h6><i class="bi bi-info-circle me-2"></i>Información sobre Desafíos</h6>
+                                        <div class="alert alert-info">
+                                            <p class="mb-2"><strong>Los desafíos son objetivos secundarios que el
+                                                    jugador puede completar:</strong></p>
+                                            <ul class="mb-0">
+                                                <li>Aparecerán como estrellas en la selección de nivel</li>
+                                                <li>Completarlos otorga recompensas adicionales</li>
+                                                <li>Pueden activarse/desactivarse individualmente</li>
+                                                <li>Si todos están desactivados, no aparecerá la pestaña de estrellas
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
 
                 
 
