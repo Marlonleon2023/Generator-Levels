@@ -2547,79 +2547,82 @@ applyTabData(tabId, data) {
 
 
 
-  loadSavedData() {
-    // Cargar configuración general
-    const savedConfig = localStorage.getItem('pvz_level_generator_config');
-    if (savedConfig) {
-        try {
-            const config = JSON.parse(savedConfig);
-            
-            if (config.levelData) {
-                this.levelData = {
-                    ...this.levelData,
-                    ...config.levelData
-                };
-
-                // LIMPIAR ZOMBIES AUTOMÁTICAMENTE al cargar
-                this.levelData.zombies = [];
-                this.levelData.waves = [];
-
-                console.log('Zombies limpiados automáticamente al cargar');
-            }
-            
-            // MODIFICADO: Solo cargar valores de desafíos, NO su estado
-            if (config.challengesData) {
-                // 1. Mantener enabled en false (nunca cargar el estado guardado)
-                this.challengesData.enabled = false;
-                
-                // 2. Solo copiar los valores de los desafíos, no su estado
-                this.challengesData.challenges.forEach((challenge, index) => {
-                    const savedChallenge = config.challengesData.challenges?.find(
-                        c => c.id === challenge.id
-                    );
-                    
-                    if (savedChallenge) {
-                        // Copiar solo los valores, mantener enabled en false
-                        if (challenge.id === 'KillZombies' && savedChallenge.values) {
-                            challenge.values = { 
-                                ...challenge.values,  // Valores por defecto
-                                ...savedChallenge.values  // Sobreescribir con valores guardados
-                            };
-                        } else if (savedChallenge.value !== undefined) {
-                            challenge.value = savedChallenge.value;
-                        }
-                        // IMPORTANTE: NO copiar challenge.enabled
-                        // Se mantiene false por defecto
-                    }
-                });
-                
-                console.log('Valores de desafíos cargados (siempre deshabilitados al inicio)');
-            }
-            
-            this.updateAllControls();
-            this.updateChallengesUI();
-            this.updateSelectedZombiesDisplay();
-            console.log('Configuración cargada desde almacenamiento local');
-        } catch (e) {
-            console.error('Error cargando configuración:', e);
-        }
-    }
-
-    // Cargar datos específicos de cada pestaña EXCEPTO zombies
-    const tabIds = ['basic', 'challenges', 'preview', 'stats'];
-    tabIds.forEach(tabId => {
-        this.loadTabData(tabId);
-    });
-
-    this.loadWaveTabWithoutZombies();
+loadSavedData() {
+    // *** CAMBIADO: NO cargar NADA de localStorage - siempre usar valores por defecto ***
     
-    // FORZAR: Asegurar que la UI muestre desafíos deshabilitados
+    console.log('🔧 Inicializando con valores por defecto (sin cargar guardados)');
+    
+    // 1. Asegurar que zombies y waves estén vacíos
+    this.levelData.zombies = [];
+    this.levelData.waves = [];
+    
+    // 2. Resetear valores específicos que podrían haber sido guardados incorrectamente
+    this.levelData.level_name = "Mi Nivel Personalizado";
+    this.levelData.level_number = 1;
+    this.levelData.world = "Moderno";
+    this.levelData.stage = "None";
+    this.levelData.visual_effect = "";
+    this.levelData.enable_sun_dropper = true;
+    this.levelData.enable_seed_slots = false;
+    this.levelData.seed_slots_count = 8;
+    this.levelData.mower_type = "ModernMowers";
+    this.levelData.seed_selection_method = "chooser";
+    this.levelData.starting_sun = 50;
+    this.levelData.zombie_level = 1;
+    this.levelData.grid_level = 1;
+    this.levelData.wave_count = 10;
+    this.levelData.flag_wave_interval = 4;
+    this.levelData.plant_food_waves = [3, 6, 9];
+    this.levelData.use_underground_zombies = false;
+    this.levelData.underground_wave_start = 5;
+    this.levelData.underground_wave_interval = 3;
+    this.levelData.underground_columns_start = 2;
+    this.levelData.underground_columns_end = 4;
+    this.levelData.spawn_col_start = 6;
+    this.levelData.spawn_col_end = 9;
+    this.levelData.wave_spending_points = 150;
+    this.levelData.wave_spending_point_increment = 75;
+    this.levelData.underground_max_zombies = 3;
+    this.levelData.underground_min_zombies = 1;
+    
+    // 3. Resetear desafíos
+    this.challengesData.enabled = false;
+    this.challengesData.challenges.forEach(challenge => {
+        challenge.enabled = false;
+        // Restablecer valores por defecto
+        if (challenge.id === 'ZombieDistance') challenge.value = 5.5;
+        if (challenge.id === 'SunUsed') challenge.value = 500;
+        if (challenge.id === 'SunProduced') challenge.value = 500;
+        if (challenge.id === 'SunHoldout') challenge.value = 60;
+        if (challenge.id === 'KillZombies') challenge.values = { zombies: 15, time: 10 };
+        if (challenge.id === 'PlantsLost') challenge.value = 5;
+        if (challenge.id === 'SimultaneousPlants') challenge.value = 15;
+        if (challenge.id === 'SaveMowers') challenge.value = 3;
+    });
+    
+ 
+    
+    // 5. Actualizar controles con valores por defecto
+    this.updateAllControls();
+    this.updateSelectedZombiesDisplay();
+    this.updateChallengesUI();
+    
+    // 6. Forzar valores en la UI
     setTimeout(() => {
         if (document.getElementById('challengesEnabled')) {
             document.getElementById('challengesEnabled').checked = false;
             this.toggleChallengesContainer(false);
         }
+        
+        // Asegurar que la dificultad sea "media"
+        const difficultyRadio = document.querySelector('input[name="difficulty"][value="media"]');
+        if (difficultyRadio) difficultyRadio.checked = true;
+        
+        // Asegurar que plant food waves sea el valor por defecto
+        document.getElementById('plantFoodWaves').value = '3,6,9';
     }, 100);
+    
+    console.log('✅ Configuración inicializada con valores por defecto');
 }
 
     setupConverterListeners() {
