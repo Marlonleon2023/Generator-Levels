@@ -3291,6 +3291,7 @@ applyTabData(tabId, data) {
         document.getElementById('enableSeedSlots').checked = this.levelData.enable_seed_slots;
         document.getElementById('seedSlotsCount').value = this.levelData.seed_slots_count;
         this.updateSeedSlotsControl();
+        
 
         const seedMethodSelect = document.getElementById('seedSelectionMethod');
         if (seedMethodSelect) {
@@ -3302,21 +3303,29 @@ applyTabData(tabId, data) {
         this.updateSelectedWorldDisplay();
     }
 
-    updateSeedSlotsControl() {
-        const enableSeedSlots = document.getElementById('enableSeedSlots').checked;
-        const seedSlotsCount = document.getElementById('seedSlotsCount');
-
-        if (!enableSeedSlots || !seedSlotsCount) return;
-
-        // Deshabilitar el input si el checkbox está desmarcado
-        seedSlotsCount.disabled = !enableSeedSlots.checked;
-
-
-        if (!enableSeedSlots.checked) {
-            seedSlotsCount.value = 8;
-            this.levelData.seed_slots_count = 8;
-        }
+updateSeedSlotsControl() {
+    const enableSeedSlotsCheckbox = document.getElementById('enableSeedSlots');
+    const seedSlotsCount = document.getElementById('seedSlotsCount');
+    
+    if (!enableSeedSlotsCheckbox || !seedSlotsCount) return;
+    
+    const isEnabled = enableSeedSlotsCheckbox.checked;
+    
+    // IMPORTANTE: Habilitar/deshabilitar el campo según el checkbox
+    seedSlotsCount.disabled = !isEnabled;
+    
+    // Si está deshabilitado, establecer valor por defecto
+    if (!isEnabled) {
+        seedSlotsCount.value = 8;
+        this.levelData.seed_slots_count = 8;
     }
+    
+    console.log('Seed slots control actualizado:', {
+        checkboxChecked: isEnabled,
+        inputDisabled: seedSlotsCount.disabled,
+        value: seedSlotsCount.value
+    });
+}
 
     updateChallengesUI() {
         document.getElementById('challengesEnabled').checked = this.challengesData.enabled;
