@@ -8,7 +8,7 @@ import {
     WORLDS,
     PATHS,
     COLORS,
-    ZOMBIE_CATEGORIES ,
+    //ZOMBIE_CATEGORIES ,
     MOD_CONFIG,
     detectModFromZombie,
     isModZombie,
@@ -68,7 +68,7 @@ class EnhancedLevelGenerator {
         this.worlds = WORLDS;
         this.paths = PATHS;
         this.colors = COLORS;
-        this.zombieCategories = ZOMBIE_CATEGORIES;
+        this.zombieCategories = {}
         this.modConfig = MOD_CONFIG;
 
         console.log('✓ Recursos y constantes cargados');
@@ -310,101 +310,348 @@ generateCategoryButtons() {
         return;
     }
     
-    // Agrupar categorías por tipo dinámicamente
-    const categoryGroups = this.groupCategoriesDynamically();
+    console.log('=== GENERANDO BOTONES DE CATEGORÍAS ===');
+    console.log('Categorías disponibles:', Object.keys(this.zombieCategories));
     
-    // Generar HTML por grupos
-    Object.entries(categoryGroups).forEach(([groupName, categories]) => {
-        if (categories.length === 0) return;
+    // ORDEN MANUAL - ESTO ES IMPERATIVO
+    const manualWorldOrder = [
+        'Modern',
+        'Egypt', 
+        'Pirate',
+        "Wildwest",
+        'Dino',
+        'Lostcity',
+        'Dark',
+        'Iceage',
+        'Eighties',
+        'Future',
+        'Beach',
         
-        const section = document.createElement('div');
-        section.className = 'category-group';
+    ];
+    
+    // 1. FILTRAR y ORDENAR mundos según el orden manual
+    const worldCategories = [];
+    manualWorldOrder.forEach(world => {
+        if (this.zombieCategories.hasOwnProperty(world)) {
+            worldCategories.push(world);
+        } else {
+            // Buscar coincidencia insensible a mayúsculas
+            const matchingCategory = Object.keys(this.zombieCategories).find(cat => 
+                cat.toLowerCase() === world.toLowerCase()
+            );
+            if (matchingCategory) {
+                worldCategories.push(matchingCategory);
+            }
+        }
+    });
+    
+    console.log('Mundos en orden manual:', worldCategories);
+    
+    // 2. Crear sección de Mundos
+    if (worldCategories.length > 0) {
+        const worldSection = document.createElement('div');
+        worldSection.className = 'category-group';
         
-        const title = document.createElement('h6');
-        title.className = 'text-muted mb-2';
-        title.textContent = groupName;
-        section.appendChild(title);
+        const worldTitle = document.createElement('h6');
+        worldTitle.className = 'text-muted mb-2';
+        worldTitle.textContent = 'Mundos';
+        worldSection.appendChild(worldTitle);
         
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.className = 'category-buttons';
+        const worldButtonsContainer = document.createElement('div');
+        worldButtonsContainer.className = 'category-buttons';
         
-        // Ordenar categorías alfabéticamente dentro del grupo
-        const sortedCategories = [...categories].sort((a, b) => 
-            this.getCategoryDisplayName(a).localeCompare(this.getCategoryDisplayName(b))
-        );
-        
-        sortedCategories.forEach(category => {
+        // Agregar mundos en el ORDEN MANUAL
+        worldCategories.forEach(category => {
+            const zombieCount = this.zombieCategories[category].length;
+            const displayName = this.formatCategoryName(category); // ¡CAMBIADO!
+            
             const button = document.createElement('button');
             button.className = 'category-btn';
             button.dataset.category = category;
             
-            const displayName = this.getCategoryDisplayName(category);
-            const zombieCount = this.zombieCategories[category].length;
+            button.innerHTML = `
+                <span>${displayName}</span>
+                <span class="badge">${zombieCount}</span>
+            `;
             
-            // Determinar si es un mod para añadir estilo especial
-            const isModCategory = this.isModCategory(category);
-            if (isModCategory) {
-                button.classList.add('mod-category');
-            }
+            worldButtonsContainer.appendChild(button);
+        });
+        
+        worldSection.appendChild(worldButtonsContainer);
+        categoriesPanel.appendChild(worldSection);
+    }
+    
+    // 3. Obtener las demás categorías (excluyendo mundos ya mostrados)
+    const allCategories = Object.keys(this.zombieCategories);
+    const shownWorlds = new Set(worldCategories);
+    const remainingCategories = allCategories.filter(cat => !shownWorlds.has(cat));
+    
+    console.log('Categorías restantes:', remainingCategories);
+    
+    // 4. Clasificar las demás categorías
+   
+    const modCats = [];
+    const otherCats = [];
+    const specialCats = [];
+    
+    remainingCategories.forEach(category => {
+        if (this.isSpecialCategory(category)) {
+            specialCats.push(category);
+        } else if (this.isModCategory(category)) {
+            modCats.push(category);
+        } else {
+            otherCats.push(category);
+        }
+    });
+        
+
+    
+    // 7. Crear sección de Otros (orden alfabético)
+    if (otherCats.length > 0) {
+        const otherSection = document.createElement('div');
+        otherSection.className = 'category-group';
+        
+        const otherTitle = document.createElement('h6');
+        otherTitle.className = 'text-muted mb-2';
+        otherTitle.textContent = 'Otros';
+        otherSection.appendChild(otherTitle);
+        
+        const otherButtonsContainer = document.createElement('div');
+        otherButtonsContainer.className = 'category-buttons';
+        
+        otherCats.sort().forEach(category => {
+            const zombieCount = this.zombieCategories[category].length;
+            const displayName = this.formatCategoryName(category); // ¡CAMBIADO!
+            
+            const button = document.createElement('button');
+            button.className = 'category-btn';
+            button.dataset.category = category;
             
             button.innerHTML = `
                 <span>${displayName}</span>
                 <span class="badge">${zombieCount}</span>
-                ${isModCategory ? '<span class="mod-badge-small">MOD</span>' : ''}
             `;
             
-            buttonsContainer.appendChild(button);
+            otherButtonsContainer.appendChild(button);
         });
         
-        section.appendChild(buttonsContainer);
-        categoriesPanel.appendChild(section);
-    });
+        otherSection.appendChild(otherButtonsContainer);
+        categoriesPanel.appendChild(otherSection);
+    }
+        // 5. Crear sección de Especiales (orden alfabético)
+    if (specialCats.length > 0) {
+        const specialSection = document.createElement('div');
+        specialSection.className = 'category-group';
+        
+        const specialTitle = document.createElement('h6');
+        specialTitle.className = 'text-muted mb-2';
+        specialTitle.textContent = 'Especiales';
+        specialSection.appendChild(specialTitle);
+        
+        const specialButtonsContainer = document.createElement('div');
+        specialButtonsContainer.className = 'category-buttons';
+        
+        specialCats.sort().forEach(category => {
+            const zombieCount = this.zombieCategories[category].length;
+            const displayName = this.formatCategoryName(category); // ¡CAMBIADO!
+            
+            const button = document.createElement('button');
+            button.className = 'category-btn';
+            button.dataset.category = category;
+            
+            button.innerHTML = `
+                <span>${displayName}</span>
+                <span class="badge">${zombieCount}</span>
+            `;
+            
+            specialButtonsContainer.appendChild(button);
+        });
+        
+        specialSection.appendChild(specialButtonsContainer);
+        categoriesPanel.appendChild(specialSection);
+    }
+
+        // 6. Crear sección de Mods (orden alfabético)
+    if (modCats.length > 0) {
+        const modSection = document.createElement('div');
+        modSection.className = 'category-group';
+        
+        const modTitle = document.createElement('h6');
+        modTitle.className = 'text-muted mb-2';
+        modTitle.textContent = 'Mods';
+        modSection.appendChild(modTitle);
+        
+        const modButtonsContainer = document.createElement('div');
+        modButtonsContainer.className = 'category-buttons';
+        
+        modCats.sort().forEach(category => {
+            const zombieCount = this.zombieCategories[category].length;
+            const displayName = this.formatCategoryName(category); // ¡CAMBIADO!
+            
+            const button = document.createElement('button');
+            button.className = 'category-btn mod-category';
+            button.dataset.category = category;
+            
+            button.innerHTML = `
+                <span>${displayName}</span>
+                 <span class="mod-badge-small">MOD</span>
+                <span class="badge">${zombieCount}</span>
+               
+            `;
+            
+            modButtonsContainer.appendChild(button);
+        });
+        
+        modSection.appendChild(modButtonsContainer);
+        categoriesPanel.appendChild(modSection);
+    }
+    
+    console.log('=== FIN GENERACIÓN BOTONES ===');
 }
 
 
-// En el método groupCategoriesDynamically
+// En el método groupCategoriesDynamically()
 groupCategoriesDynamically() {
+    console.log('=== INICIANDO groupCategoriesDynamically ===');
+    
+    // ORDEN EXACTO como quieres que aparezcan (basado en lo que muestras)
+    const worldOrder = [
+         'Modern',
+        'Egypt', 
+        'Pirate',
+        "Wildwest",
+        'Dino',
+        'Lostcity',
+        'Dark',
+        'Iceage',
+        'Eighties',
+        'Future',
+        'Beach',
+       
+    ];
+    
+    console.log('Mundos en orden deseado:', worldOrder);
+    console.log('Todas las categorías disponibles:', Object.keys(this.zombieCategories));
+    
     // Grupo inicial
     const categoryGroups = {
         "Mundos": [],
         "Especiales": [],
-        "Mods": [], // Solo mods predefinidos
+        "Mods": [],
         "Otros": []
     };
     
-    // Clasificar categorías dinámicamente
+    // 1. Primero, separar los mundos (comparación EXACTA)
+    const worldCategories = [];
+    const otherCategories = [];
+    
     Object.keys(this.zombieCategories).forEach(category => {
-        const categoryLower = category.toLowerCase();
+        // Buscar coincidencia EXACTA (case-sensitive)
+        const isExactMatch = worldOrder.some(world => category === world);
         
-        // 1. Detectar mundos
-        if (this.isWorldCategory(category)) {
-            categoryGroups["Mundos"].push(category);
-        } 
-        // 2. Detectar categorías especiales
-        else if (this.isSpecialCategory(category)) {
-            categoryGroups["Especiales"].push(category);
-        }
-        // 3. Detectar mods predefinidos SOLAMENTE
-        else if (this.isModCategory(category)) {
-            // Verificar que sea un mod de la lista predefinida
-            const isKnownMod = Object.keys(this.modConfig.knownMods).some(modId => 
-                categoryLower.includes(modId)
-            );
-            if (isKnownMod) {
-                categoryGroups["Mods"].push(category);
-            } else {
-                categoryGroups["Otros"].push(category);
-            }
-        }
-        // 4. Todo lo demás va en "Otros"
-        else {
-            categoryGroups["Otros"].push(category);
+        // Si no es exacto, buscar insensible a mayúsculas
+        const isMatch = isExactMatch || worldOrder.some(world => 
+            category.toLowerCase() === world.toLowerCase()
+        );
+        
+        if (isMatch) {
+            worldCategories.push(category);
+        } else {
+            otherCategories.push(category);
         }
     });
+    
+    console.log('Mundos encontrados:', worldCategories);
+    console.log('Otras categorías:', otherCategories.length);
+    
+    // 2. Ordenar mundos según worldOrder
+    const sortedWorldCategories = [];
+    
+    // Agregar en el orden especificado
+    worldOrder.forEach(desiredWorld => {
+        // Buscar la categoría que coincida
+        const foundCategory = worldCategories.find(category => 
+            category === desiredWorld || 
+            category.toLowerCase() === desiredWorld.toLowerCase()
+        );
+        
+        if (foundCategory) {
+            sortedWorldCategories.push(foundCategory);
+        }
+    });
+    
+    console.log('Mundos ordenados:', sortedWorldCategories);
+    
+    // 3. Clasificar otras categorías
+    const specialCategories = [];
+    const modCategories = [];
+    const otherRemaining = [];
+    
+    otherCategories.forEach(category => {
+        const lowerCat = category.toLowerCase();
+        
+        if (this.isSpecialCategory(category)) {
+            specialCategories.push(category);
+        } else if (this.isModCategory(category)) {
+            modCategories.push(category);
+        } else {
+            otherRemaining.push(category);
+        }
+    });
+    
+    // 4. Ordenar alfabéticamente las demás categorías
+    const sortedSpecialCategories = specialCategories.sort((a, b) => a.localeCompare(b));
+    const sortedModCategories = modCategories.sort((a, b) => a.localeCompare(b));
+    const sortedOtherCategories = otherRemaining.sort((a, b) => a.localeCompare(b));
+    
+    // 5. Asignar a grupos
+    categoryGroups["Mundos"] = sortedWorldCategories;
+    categoryGroups["Especiales"] = sortedSpecialCategories;
+    categoryGroups["Mods"] = sortedModCategories;
+    categoryGroups["Otros"] = sortedOtherCategories;
+    
+    console.log('=== RESULTADO FINAL ===');
+    console.log('Mundos:', categoryGroups["Mundos"]);
+    console.log('Especiales:', categoryGroups["Especiales"].length);
+    console.log('Mods:', categoryGroups["Mods"].length);
+    console.log('Otros:', categoryGroups["Otros"].length);
     
     return categoryGroups;
 }
 
+
+getCategoryDisplayName(category) {
+    // Si ya es un string válido, formatearlo
+    if (typeof category === 'string') {
+        return category
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase());
+    }
+    return String(category);
+}
+
+// Elimina el método isWorldCategory que está causando conflicto
+// o déjalo simple:
+isWorldCategory(category) {
+    const worldNames = [
+        'Modern',
+        'Egypt', 
+        'Pirate',
+        "Wildwest",
+        'Dino',
+        'Lostcity',
+        'Dark',
+        'Iceage',
+        'Eighties',
+        'Future',
+        'Beach',
+    ];
+    
+    return worldNames.some(world => 
+        category === world || 
+        category.toLowerCase() === world.toLowerCase()
+    );
+}
 
 isModCategory(category) {
     const zombies = this.zombieCategories[category] || [];
@@ -418,19 +665,76 @@ generateZombieCategoriesContent() {
     
     contentPanel.innerHTML = '';
     
-    // Mostrar todas las categorías
-    Object.entries(this.zombieCategories).forEach(([category, zombies]) => {
-        if (!zombies || zombies.length === 0) return;
+    console.log('=== GENERANDO CONTENIDO DE CATEGORÍAS ===');
+    
+    // ORDEN MANUAL para mostrar las secciones
+    const displayOrder = [
+         'Modern',
+        'Egypt', 
+        'Pirate',
+        "Wildwest",
+        'Dino',
+        'Lostcity',
+        'Dark',
+        'Iceage',
+        'Eighties',
+        'Future',
+        'Beach',
+    ];
+    
+    // 1. Primero mostrar los mundos en orden
+    displayOrder.forEach(desiredCategory => {
+        // Buscar la categoría que coincida
+        const category = Object.keys(this.zombieCategories).find(cat => 
+            cat === desiredCategory || 
+            cat.toLowerCase() === desiredCategory.toLowerCase()
+        );
+        
+        if (category && this.zombieCategories[category] && this.zombieCategories[category].length > 0) {
+            console.log(`Mostrando categoría: ${category}`);
+            
+            const categorySection = document.createElement('div');
+            categorySection.className = 'category-section';
+            categorySection.id = `category-${category.replace(/\s+/g, '-').toLowerCase()}`;
+            
+            const zombies = this.zombieCategories[category];
+            
+            categorySection.innerHTML = `
+                <div class="category-header">
+                    <h4>${category}</h4>
+                    <div class="category-description">
+                        ${zombies.length} zombies disponibles
+                    </div>
+                </div>
+                <div class="zombie-grid" data-category="${category}">
+                    ${this.generateZombieCardsHTML(zombies)}
+                </div>
+            `;
+            
+            contentPanel.appendChild(categorySection);
+        }
+    });
+    
+    // 2. Luego mostrar las demás categorías (excluyendo las ya mostradas)
+    const shownCategories = new Set(displayOrder);
+    const remainingCategories = Object.entries(this.zombieCategories).filter(([category, zombies]) => 
+        !shownCategories.has(category) && 
+        zombies && zombies.length > 0
+    );
+    
+    // Ordenar alfabéticamente las demás categorías
+    remainingCategories.sort(([catA], [catB]) => catA.localeCompare(catB));
+    
+    remainingCategories.forEach(([category, zombies]) => {
+        console.log(`Mostrando categoría restante: ${category}`);
         
         const categorySection = document.createElement('div');
         categorySection.className = 'category-section';
         categorySection.id = `category-${category.replace(/\s+/g, '-').toLowerCase()}`;
         
-        const displayName = this.getCategoryDisplayName(category);
-        
         categorySection.innerHTML = `
             <div class="category-header">
-                <h4>${displayName}</h4>
+                <h4>${category}</h4>
                 <div class="category-description">
                     ${zombies.length} zombies disponibles
                 </div>
@@ -445,6 +749,38 @@ generateZombieCategoriesContent() {
     
     // Verificar si hay contenido
     this.checkNoResults();
+    
+    console.log('=== FIN GENERACIÓN CONTENIDO ===');
+}
+
+// Añade este método en tu clase EnhancedLevelGenerator
+formatCategoryName(category) {
+    if (!category || typeof category !== 'string') return category;
+    
+    // Lista de palabras especiales que deben mantener su formato
+    const specialFormats = {
+       'modern': 'Modern',
+        'egypt': 'Egypt',
+        'pirate': 'Pirate',
+        'wildwest': 'Wildwest',
+        'dino': 'Dino',
+        'lostcity': 'Lostcity',
+        'dark': 'Dark',
+        'iceage': 'Iceage',
+        'eighties':'Eighties',
+        'future': 'Future',
+        'beach': 'Beach'
+    };
+    
+    const lowerCategory = category.toLowerCase();
+    
+    // Si es un mundo conocido, usar el formato especial
+    if (specialFormats[lowerCategory]) {
+        return specialFormats[lowerCategory];
+    }
+    
+    // Si no, formatear normalmente: primera letra mayúscula, resto minúsculas
+    return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
 }
 
 generateZombieCardsHTML(zombies) {
@@ -745,37 +1081,19 @@ updateSelectionCount() {
     }
 }
 
-// Métodos auxiliares para categorías
- isWorldCategory(category) {
-        const worldIndicators = [
-            'modern',
-            'egypt',
-            'pirate',
-            'cowboy',
-            'dino',
-            'lostcity',
-            'dark',
-            'future',
-            'beach',
-            'iceage',
-            'eighties',
-        ];
-        
-        return worldIndicators.some(indicator => 
-            category.toLowerCase().includes(indicator)
-        );
-    }
 
 isSpecialCategory(category) {
-        const specialIndicators = [
-            'flag', 'gargantuar', 'armored', 'flying', 'aquatic',
-            'underground', 'special', 'balloon', 'digger'
-        ];
-        
-        return specialIndicators.some(indicator => 
-            category.toLowerCase().includes(indicator)
-        );
-    }
+    const categoryLower = category.toLowerCase();
+    
+    // Lista de indicadores de categorías especiales
+    const specialWords = [
+        'flag', 'gargantuar', 'armor', 'flying', 'aquatic',
+        'underground', 'special', 'balloon', 'digger', 'boss',
+        'cannon', 'balloon', 'digger', 'imp'
+    ];
+    
+    return specialWords.some(word => categoryLower.includes(word));
+}
 
  getCategoryDisplayName(category) {
         const displayNames = {
@@ -2523,7 +2841,7 @@ safeAssignValue(elementId, value, property = 'value') {
         
         if (!zombieMap || zombieMap.size === 0) {
             console.warn('⚠️ No se pudieron cargar datos reales, usando categorías estáticas');
-            this.zombieCategories = ZOMBIE_CATEGORIES;
+             this.zombieCategories = {};
             this.zombieData = this.createZombieDataFromCategories();
             return;
         }
@@ -2568,25 +2886,15 @@ safeAssignValue(elementId, value, property = 'value') {
 }
 
 
-     mergeCategoriesWithDefaults() {
-        // Si tenemos categorías del JSON, usarlas como primarias
-        if (Object.keys(this.zombieCategories).length > 0) {
-            console.log('Usando categorías dinámicas del JSON');
-            
-            // También puedes mantener algunas categorías especiales estáticas
-            const specialCategories = ['Flag', 'Gargantuars', 'Armored', 'Flying', 'Aquatic'];
-            
-            specialCategories.forEach(category => {
-                if (!this.zombieCategories[category] && ZOMBIE_CATEGORIES[category]) {
-                    console.log(`Agregando categoría especial: ${category}`);
-                    this.zombieCategories[category] = ZOMBIE_CATEGORIES[category];
-                }
-            });
-        } else {
-            // Si no hay categorías dinámicas, usar las estáticas
-            this.zombieCategories = ZOMBIE_CATEGORIES;
-        }
+mergeCategoriesWithDefaults() {
+    // Si no hay categorías dinámicas, inicializar vacío
+    if (!this.zombieCategories) {
+        this.zombieCategories = {};
     }
+    
+    // NO combinar con ZOMBIE_CATEGORIES estáticas
+    console.log('Usando solo categorías dinámicas del JSON');
+}
 
 
 // Método para crear datos de zombies basados en las categorías
@@ -3104,13 +3412,13 @@ createBasicZombieInfo(zombieName) {
                 const worldMap = {
                     "Tutorial": "Tutorial",
                     "modern": "Moderno",
-                    "renai": "Renai",
                     "egypt": "Egipto",
                     "pirate": "Pirata",
                     "west": "Oeste",
                     "future": "Futuro",
-                    "roman": "Antiguo",
+                    "eighties":"Eighties",
                     "iceage": "Edad de Hielo",
+                    "renai": "Renai",
                     "atlantis": "Atlantis"
                 };
 

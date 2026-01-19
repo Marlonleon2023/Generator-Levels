@@ -188,20 +188,128 @@ body.modal-open {
 
 /* ===== SISTEMA DE ZOMBIES ===== */
 /* Estilos para la nueva interfaz de selección de zombies */
-
-/* MOD CATEGORY ACTIVO → AZUL + TEXTO BLANCO */
-.category-btn.mod-category.active {
-    background-color: #0dfd4d !important;
-    color: #ffffff !important;
-    
+/* ===== VARIABLES Y ESTILOS GLOBALES ===== */
+:root {
+    --primary-color: #4a6bff;
+    --primary-hover: #3a5bef;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --mod-color: #8b5cf6;
+    --mod-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    --light-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+/* ===== DISEÑO MEJORADO DE LA INTERFAZ ===== */
+/* Cabecera principal */
+.card-header.bg-light {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border-bottom: 1px solid var(--border-color);
+}
 
+/* Tabs mejoradas */
+.nav-tabs {
+    border-bottom: 2px solid var(--border-color);
+    gap: 2px;
+}
 
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 24px;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-tabs .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-color);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.nav-tabs .nav-link.active::before {
+    transform: translateY(0);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    background: rgba(74, 107, 255, 0.05);
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    color: #475569;
+    background: rgba(74, 107, 255, 0.03);
+}
+
+/* Badge en tabs */
+.nav-tabs .nav-link .badge {
+    font-size: 0.75em;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+/* ===== DISEÑO MEJORADO DE CATEGORÍAS ===== */
+.category-section {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-section:hover {
+    box-shadow: var(--card-hover-shadow);
+}
+
+.category-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+    position: relative;
+}
+
+.category-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--primary-color);
+}
+
+.category-header h4 {
+    font-size: 1.2rem;
+    color: #1e293b;
+    margin: 0;
+    font-weight: 600;
+}
+
+.category-description {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* Botones de categoría mejorados */
 .categories-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .category-btn {
@@ -209,310 +317,381 @@ body.modal-open {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
+    padding: 14px 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
     background: white;
     text-align: left;
-    transition: all 0.2s;
-    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
 }
 
 .category-btn:hover {
-    background-color: #f8f9fa;
-    border-color: #adb5bd;
-    transform: translateX(5px);
+    background-color: var(--light-bg);
+    border-color: var(--primary-color);
+    transform: translateX(8px);
+    box-shadow: var(--card-shadow);
+}
+
+.category-btn:hover::before {
+    transform: translateX(0);
 }
 
 .category-btn.active {
-    background-color: #0d6efd;
+    background-color: var(--primary-color);
     color: white;
-    border-color: #0d6efd;
+    border-color: var(--primary-color);
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(74, 107, 255, 0.2);
+}
+
+.category-btn.active::before {
+    background: white;
+    transform: translateX(0);
+}
+
+.category-btn.active:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
 }
 
 .category-btn .badge {
-    background-color: #6c757d;
+    background-color: #64748b;
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 10px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    min-width: 32px;
+    text-align: center;
 }
 
 .category-btn.active .badge {
     background-color: white;
-    color: #0d6efd;
+    color: var(--primary-color);
 }
 
-.category-section {
-    margin-bottom: 20px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
+/* Categorías de MOD con diseño especial */
+.category-btn.mod-category {
+    border-left: 4px solid var(--mod-color);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, rgba(99, 102, 241, 0.03) 100%);
 }
 
-.category-header {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #dee2e6;
+.category-btn.mod-category.active {
+    background: var(--mod-gradient);
+    border-color: var(--mod-color);
+    color: white;
 }
 
-.category-header h4 {
-    font-size: 1.1rem;
-    color: #495057;
-    margin: 0;
+.category-btn.mod-category.active .badge {
+    background-color: white;
+    color: var(--mod-color);
 }
 
-.category-description {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
+/* ===== DISEÑO MEJORADO DE TARJETAS DE ZOMBIES ===== */
 .zombie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
     padding: 10px 0;
 }
 
 .zombie-card {
     position: relative;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
     overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.zombie-card::before {
+    content: attr(data-category);
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(30, 41, 59, 0.9);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 8px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 2;
+    font-weight: 500;
 }
 
 .zombie-card:hover {
-    border-color: #adb5bd;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
 }
 
 .zombie-card.selected {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.05);
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(74, 107, 255, 0.08) 0%, rgba(74, 107, 255, 0.04) 100%);
+    box-shadow: 0 8px 16px rgba(74, 107, 255, 0.15);
 }
 
 .zombie-card.selected .selection-indicator {
     opacity: 1;
+    transform: scale(1);
 }
 
 .selection-indicator {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 24px;
-    height: 24px;
-    background-color: #0d6efd;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background: var(--primary-color);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 14px;
     opacity: 0;
-    transition: opacity 0.2s;
+    transform: scale(0);
+    transition: all 0.3s ease;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(74, 107, 255, 0.3);
 }
 
 .zombie-image-container {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 10px;
-    border-radius: 6px;
+    width: 170px;
+    height: 120px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
     overflow: hidden;
-    background-color: #f8f9fa;
+    
+    background: linear-gradient(135deg, #f9fbfc 0%, #f9fbfc 100%);
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    padding: 8px;
 }
 
 .zombie-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: grayscale(0%);
-    transition: filter 0.3s;
+    transition: all 0.3s ease;
+    filter: brightness(1);
 }
 
+.zombie-card:hover .zombie-image {
+    transform: scale(1.05);
+}
 
 .zombie-card.selected .zombie-image {
-      filter: 
-        grayscale(0%)
-        saturate(150%)
-        brightness(100%)
-        contrast(130%)
-        hue-rotate(15deg);
+    filter: 
+        drop-shadow(0 4px 8px rgba(74, 107, 255, 0.3))
+        brightness(1.05);
 }
 
 .zombie-name {
-    font-size: 0.65rem;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: #495057;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1e293b;
+    line-height: 1.3;
+    flex-grow: 1;
     word-break: break-word;
 }
 
 .zombie-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 6px;
     justify-content: center;
     align-items: center;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    margin-top: auto;
 }
 
 .stat-item {
-    padding: 2px 5px;
-    background-color: #f8f9fa;
-    border-radius: 3px;
+    padding: 3px 8px;
+    background: #f1f5f9;
+    border-radius: 6px;
+    color: #475569;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
 }
 
-
-
-/* Estilos para zombies seleccionados */
-.selected-zombies-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    min-height: 50px;
-    padding: 15px;
-    border: 1px dashed #dee2e6;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-}
-
-.selected-zombie-tag {
-    display: inline-flex;
-    align-items: center;
-    background-color: #0d6efd;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    gap: 8px;
-}
-
-.selected-zombie-tag .remove-btn {
-    background: none;
-    border: none;
-    color: rgb(219, 16, 16);
-    cursor: pointer;
-    font-size: 1.2rem;
-    line-height: 1;
-    padding: 0 4px;
+/* ===== BADGES MEJORADOS ===== */
+.top-badge {
+    position: absolute;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border: 2px solid white;
+    cursor: help;
+    transition: all 0.3s ease;
 }
 
-.selected-zombie-tag .remove-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.top-badge:hover {
+    transform: scale(1.15);
+    z-index: 11;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-.zombie-image[src*="error.png"] {
-  filter: 
-        grayscale(100%)
-        brightness(55%)
-        contrast(60%)
-        opacity(70%);
-    padding: 20px;
+.mod-badge {
+    background: var(--mod-gradient);
+    top: 8px;
+    right: 8px;
 }
 
+.international-badge {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    top: 8px;
+    right: 36px;
+}
 
+.armor-badge {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    bottom: 8px;
+    right: 8px;
+}
 
+.mod-badge-label {
+    background: var(--mod-gradient);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
 
+.mod-source-badge {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
 
-
-
-
-
-
-
-
-
-/* Estilos para la cuadrícula de zombies seleccionados */
+/* ===== ZOMBIES SELECCIONADOS MEJORADOS ===== */
 .selected-zombies-grid {
-    min-height: 200px;
+    min-height: 220px;
 }
 
 .selected-zombie-card {
     position: relative;
-    border: 2px solid #dee2e6;
-    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
     overflow: hidden;
     transition: all 0.3s ease;
     background: white;
-    height: 180px;
+    height: 200px;
     display: flex;
     flex-direction: column;
+    box-shadow: var(--card-shadow);
 }
 
 .selected-zombie-card:hover {
-    border-color: #0d6efd;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: var(--card-hover-shadow);
 }
 
 .selected-zombie-img-container {
-    height: 100px;
+    height: 120px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    padding: 12px;
 }
 
 .selected-zombie-img {
     max-height: 100%;
     max-width: 100%;
     object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.selected-zombie-card:hover .selected-zombie-img {
+    transform: scale(1.08);
 }
 
 .selected-zombie-info {
-    padding: 10px;
+    padding: 12px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background: white;
 }
 
 .selected-zombie-name {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #1e293b;
+    line-height: 1.2;
 }
 
 .selected-zombie-stats {
     display: flex;
-    justify-content: space-between;
-    font-size: 0.7rem;
-    color: #6c757d;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: #64748b;
 }
 
 .selected-zombie-remove {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 24px;
-    height: 24px;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: rgba(220, 53, 69, 0.9);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    border: none;
+    border: 2px solid white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .selected-zombie-card:hover .selected-zombie-remove {
@@ -520,346 +699,205 @@ body.modal-open {
 }
 
 .selected-zombie-remove:hover {
-    background: #dc3545;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Contador de zombies seleccionados */
-#selectedZombiesCount {
-    font-weight: 600;
+/* ===== BOTONES MEJORADOS ===== */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
 }
 
-/* Mensaje cuando no hay zombies */
-#noSelectedZombiesMessage {
-    display: block;
+.btn-primary {
+    background: var(--primary-color);
 }
 
-
-
-/* Estilos para mods */
-.mod-category {
-    border-left: 3px solid #764ba2 !important;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
-}
-
-.mod-category:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
-    border-left-color: #667eea !important;
-}
-
-.mod-badge-small {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-size: 0.6em;
-    padding: 1px 4px;
-    border-radius: 3px;
-    margin-left: 5px;
-    font-weight: bold;
-}
-
-.mod-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    z-index: 2;
-}
-
-.mod-badge-label {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-size: 0.7em;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-
-
-.mod-source-badge {
-    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-    color: white;
-    font-size: 0.6em;
-    padding: 1px 4px;
-    border-radius: 3px;
-    margin-left: 3px;
-}
-
-.zombie-card[data-mod] {
-    border: 1px solid rgba(118, 75, 162, 0.3);
-    box-shadow: 0 2px 4px rgba(118, 75, 162, 0.1);
-}
-
-.zombie-card[data-mod]:hover {
-    border-color: #764ba2;
-    box-shadow: 0 4px 8px rgba(118, 75, 162, 0.2);
+.btn-primary:hover {
+    background: var(--primary-hover);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 107, 255, 0.3);
 }
 
-
-
-/* Estilos para la categoría del zombie */
-.zombie-category {
-    margin-top: 5px;
-    font-size: 11px;
-    opacity: 0.7;
+.btn-success {
+    background: var(--success-color);
 }
 
-/* Badge para datos JSON */
-.real-data-badge {
-    background-color: #28a745;
-    color: white;
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 10px;
+.btn-success:hover {
+    background: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-/* Badge para zombies Hex */
-.hex-badge {
-    background: linear-gradient(45deg, #6a11cb, #2575fc);
-    color: white;
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 10px;
+.btn-danger {
+    background: var(--danger-color);
 }
 
-/* Mejorar visualización de tarjetas */
-.zombie-card[data-has-data="true"] {
-    border: 1px solid #28a74520;
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.zombie-card[data-has-data="false"] {
-    border: 1px solid #ffc10720;
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+.btn-warning {
+    background: var(--warning-color);
 }
 
-/* Indicador de categoría en tarjetas */
-.zombie-card::before {
-    content: attr(data-category);
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    opacity: 0.8;
-    pointer-events: none;
+.btn-warning:hover {
+    background: #e78b08;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
-/* Grupos de categorías en el panel lateral */
-.category-group {
-    margin-bottom: 20px;
+/* ===== BÚSQUEDA MEJORADA ===== */
+.input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
 }
 
-.category-group h6 {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    border-bottom: 1px solid #dee2e6;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+.input-group-text {
+    background: white;
+    border-color: var(--border-color);
+    color: #64748b;
 }
 
-/* ===== ESTILOS MÍNIMOS PARA BOTONES ===== */
+.form-control {
+    border-color: var(--border-color);
+    border-radius: 8px;
+}
 
-/* Botón simple - Añadir Seleccionados */
-.btn-zombies-select {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.8rem;
-    font-size: 0.8rem;
-    color: white;
-    background-color: #4a6bff;
-    border: none;
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.15);
+}
+
+/* ===== DIFICULTAD MEJORADA ===== */
+.btn-group-vertical .btn-outline-success,
+.btn-group-vertical .btn-outline-warning,
+.btn-group-vertical .btn-outline-danger,
+.btn-group-vertical .btn-outline-dark {
+    border-radius: 8px !important;
+    margin-bottom: 8px;
+    text-align: left;
+    border: 2px solid;
+    transition: all 0.3s ease;
+}
+
+.btn-check:checked + .btn {
+    transform: translateX(4px);
+    box-shadow: var(--card-shadow);
+}
+
+/* ===== SCROLLBAR PERSONALIZADO ===== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
     border-radius: 4px;
-    cursor: pointer;
-    gap: 0.25rem;
 }
 
-.btn-zombies-select:hover {
-    background-color: #3a5bef;
-}
-
-.btn-zombies-select:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Botón simple - Limpiar Todos */
-.btn-danger-select {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.8rem;
-    font-size: 0.8rem;
-    color: white;
-    background-color: #ff4757;
-    border: none;
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
     border-radius: 4px;
-    cursor: pointer;
-    gap: 0.25rem;
 }
 
-.btn-danger-select:hover {
-    background-color: #e44555;
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
-/* Iconos */
-.btn-zombies-select .bi,
-.btn-danger-select .bi {
-    font-size: 0.85rem;
-}
-
-/* Grupo */
-.btn-group-zombies {
-    display: flex;
-    gap: 6px;
-}
-
-/* Scrollbar personalizado */
-#zombieCategoriesContent::-webkit-scrollbar,
-#zombieCategoriesPanel::-webkit-scrollbar {
-    width: 6px;
-}
-
-#zombieCategoriesContent::-webkit-scrollbar-track,
-#zombieCategoriesPanel::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-#zombieCategoriesContent::-webkit-scrollbar-thumb,
-#zombieCategoriesPanel::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
-
-#zombieCategoriesContent::-webkit-scrollbar-thumb:hover,
-#zombieCategoriesPanel::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Responsive */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .zombie-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
     }
     
     .category-btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .selected-zombie-card {
+        height: 180px;
+    }
+    
+    .selected-zombie-img-container {
+        height: 100px;
     }
 }
 
-
-/* ===== BADGES EN ESQUINA SUPERIOR ===== */
-
-
-
-/* Estilo base para todos los badges de esquina */
-.top-badge {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    border: 2px solid white;
-    cursor: help;
-    transition: transform 0.2s ease;
+@media (max-width: 576px) {
+    .zombie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+    
+    .zombie-image-container {
+        width: 100px;
+        height: 100px;
+    }
 }
 
-.top-badge:hover {
-    transform: scale(1.1);
-    z-index: 11;
+/* ===== ANIMACIONES ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* Posicionamiento de múltiples badges */
-.top-badge.mod-badge {
-    top: 5px;
-    right: 5px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-weight: bold;
+.zombie-card,
+.selected-zombie-card,
+.category-section {
+    animation: fadeIn 0.3s ease-out;
 }
 
-.top-badge.international-badge {
-    top: 5px;
-    right: 30px; /* Un poco a la izquierda del badge de mod */
-    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-    color: white;
-    font-size: 13px;
+/* ===== EFECTOS ESPECIALES ===== */
+.pulse {
+    animation: pulse 2s infinite;
 }
 
-.top-badge.armor-badge {
-    bottom: 5px;
-    right: 5px;
-    background: #599aa4;
-    color: rgb(255, 255, 255);
-    font-size: 10px;
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(74, 107, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(74, 107, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(74, 107, 255, 0);
+    }
 }
 
-/* Si hay múltiples badges, ajustar posiciones */
-.top-badge.mod-badge + .top-badge.international-badge {
-    right: 30px;
+/* ===== ESTADOS DE CARGA ===== */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
 }
 
-.top-badge.mod-badge + .top-badge.armor-badge {
-    bottom: 5px;
-    right: 5px;
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
-
-.top-badge.international-badge + .top-badge.armor-badge {
-    bottom: 5px;
-    right: 5px;
-}
-
-/* Cuando hay 3 badges */
-.top-badge.mod-badge + .top-badge.international-badge + .top-badge.armor-badge {
-    bottom: 5px;
-    right: 5px;
-}
-
-/* ===== BADGES EN STATS ===== */
-
-/* Estilo para badges en la sección de stats */
-.zombie-stats .badge {
-    margin-top: 2px;
-    font-size: 0.65rem;
-    padding: 1px 5px;
-    border-radius: 3px;
-    display: inline-block;
-}
-
-/* Badge de tipo de mod */
-.mod-type-badge {
-    background: linear-gradient(135deg, #d2ba33 0%, #e9d964 100%);
-    color: white;
-}
-
-/* Badge de fuente de mod */
-.mod-source-badge {
-    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-    color: white;
-}
-
-
 
 
 

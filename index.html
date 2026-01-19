@@ -688,62 +688,7 @@
                         </div>
                     </div>
 
-                    <!-- Configuración Subterránea -->
-                    <div class="card shadow-sm mt-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-arrow-down-up me-2"></i>Zombies Subterráneos</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-check form-switch mb-4">
-                                <input class="form-check-input" type="checkbox" role="switch" id="useUnderground"
-                                    style="width: 3em; height: 1.5em;">
-                                <label class="form-check-label fw-bold fs-5" for="useUnderground">
-                                    Activar zombies subterráneos
-                                </label>
-                            </div>
-
-                            <div class="row g-3" id="undergroundConfig">
-                                <div class="col-md-6">
-                                    <label class="form-label">Comenzar en oleada:</label>
-                                    <input type="number" class="form-control" id="undergroundStart" value="5" min="1"
-                                        max="20">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Frecuencia (cada X oleadas):</label>
-                                    <input type="number" class="form-control" id="undergroundInterval" value="3" min="1"
-                                        max="10">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Columna inicial spawn:</label>
-                                    <input type="number" class="form-control" id="undergroundColStart" value="2" min="0"
-                                        max="8">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Columna final spawn:</label>
-                                    <input type="number" class="form-control" id="undergroundColEnd" value="4" min="0"
-                                        max="8">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Mín zombies/oleada:</label>
-                                    <input type="number" class="form-control" id="undergroundMin" value="3" min="1"
-                                        max="10">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Máx zombies/oleada:</label>
-                                    <input type="number" class="form-control" id="undergroundMax" value="8" min="1"
-                                        max="20">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="row g-4">
+                                        <div class="row g-4">
                         <!-- Panel completo con tabs -->
                         <div class="col-lg-12">
                             <div class="card shadow-sm border-0">
@@ -798,7 +743,7 @@
 
                                     <!-- TAB 1: Selección de Zombies -->
                                     <div class="tab-pane fade show active" id="select-panel" role="tabpanel">
-                                        <div class="p-3">
+                                        <div class="p-9">
                                             <div class="card shadow-sm border">
                                                 <div class="card-header bg-light-subtle py-3">
                                                     <div class="row align-items-center">
@@ -835,11 +780,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="card-body p-0">
-                                                    <div class="row g-0" style="min-height: 500px;">
+                                                <div class="card-body p-0" >
+                                                    <div class="row g-0" style="min-height: 650px;">
                                                         <!-- Lado izquierdo: Categorías -->
                                                         <div class="col-md-3 border-end bg-light-subtle"
-                                                            style="overflow-y: auto; max-height: 500px;">
+                                                            style="overflow-y: auto; max-height: 650px;">
                                                             <div class="p-3">
                                                                 <div
                                                                     class="d-flex justify-content-between align-items-center mb-3">
@@ -857,7 +802,7 @@
 
                                                         <!-- Lado derecho: Contenido de zombies -->
                                                         <div class="col-md-9"
-                                                            style="overflow-y: auto; max-height: 500px;">
+                                                            style="overflow-y: auto; max-height: 650px;">
                                                             <div class="p-3">
                                                                 <div id="zombieCategoriesContent">
                                                                     <!-- El contenido de las categorías se generará aquí -->
@@ -1063,6 +1008,61 @@
                         </div>
                     </div>
                 </div>
+
+                    <!-- Configuración Subterránea -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-arrow-down-up me-2"></i>Zombies Subterráneos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-4">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useUnderground"
+                                    style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label fw-bold fs-5" for="useUnderground">
+                                    Activar zombies subterráneos
+                                </label>
+                            </div>
+
+                            <div class="row g-3" id="undergroundConfig">
+                                <div class="col-md-6">
+                                    <label class="form-label">Comenzar en oleada:</label>
+                                    <input type="number" class="form-control" id="undergroundStart" value="5" min="1"
+                                        max="20">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Frecuencia (cada X oleadas):</label>
+                                    <input type="number" class="form-control" id="undergroundInterval" value="3" min="1"
+                                        max="10">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Columna inicial spawn:</label>
+                                    <input type="number" class="form-control" id="undergroundColStart" value="2" min="0"
+                                        max="8">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Columna final spawn:</label>
+                                    <input type="number" class="form-control" id="undergroundColEnd" value="4" min="0"
+                                        max="8">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Mín zombies/oleada:</label>
+                                    <input type="number" class="form-control" id="undergroundMin" value="3" min="1"
+                                        max="10">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Máx zombies/oleada:</label>
+                                    <input type="number" class="form-control" id="undergroundMax" value="8" min="1"
+                                        max="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
 
                 <!-- Pestaña: Convertidor -->
