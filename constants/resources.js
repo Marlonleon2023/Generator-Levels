@@ -138,6 +138,121 @@ export const WORLDS = {
     "Otros": ["FairyStage", "LunarStage", "VolcanoStage", "RiftStageLawnOfDoom"]
 };
 
+
+
+
+// resources.js - Agregar al final del archivo
+
+// CONFIGURACIÓN DE MODS DETECTABLES
+// CONFIGURACIÓN DE MODS DETECTABLES
+export const MOD_CONFIG = {
+    enabled: true,
+    autoDetect: true,
+    knownMods: {
+        'hex': { 
+            name: 'hex', 
+            displayName: 'Hex Mod', 
+            color: '#764ba2', 
+            icon: '', // Emoji hex
+            description: 'Mod oficial Hexius'
+        },
+        'international': { 
+            name: 'international', 
+            displayName: 'Mod Internacional', 
+            color: '#4CAF50', 
+            icon: '🌍', // Emoji globo
+            description: 'Zombies de diferentes culturas'
+        },
+        'custom': { 
+            name: 'custom', 
+            displayName: 'Personalizado', 
+            color: '#FF9800', 
+            icon: '🔧', // Emoji herramientas
+            description: 'Mod creado por el usuario'
+        },
+        'beta': { 
+            name: 'beta', 
+            displayName: 'Contenido Beta', 
+            color: '#9C27B0', 
+            icon: '🧪', // Emoji probeta
+            description: 'Zombies de versiones beta'
+        },
+        'retexture': { 
+            name: 'retexture', 
+            displayName: 'Retexturizado', 
+            color: '#2196F3', 
+            icon: '🎨', // Emoji paleta
+            description: 'Texturas alternativas'
+        },
+        'unofficial': { 
+            name: 'unofficial', 
+            displayName: 'No Oficial', 
+            color: '#607D8B', 
+            icon: '⚠️', // Emoji advertencia
+            description: 'Contenido no oficial'
+        },
+        'reflourished': { 
+            name: 'reflourished', 
+            displayName: 'Reflourished', 
+            color: '#FF6B6B', 
+            icon: '🌸', // Emoji flor
+            description: 'Mod Reflourished'
+        }
+    },
+    modIndicators: [
+        'hex', "reflourished"
+    ],
+    colorPalette: [
+        '#667eea', '#764ba2', '#4CAF50', '#FF9800', 
+        '#F44336', '#9C27B0', '#2196F3', '#00BCD4',
+        '#009688', '#8BC34A', '#FFC107', '#FF5722',
+        '#795548', '#607D8B', '#E91E63', '#3F51B5'
+    ]
+};
+
+// Función para generar color aleatorio
+export function generateRandomColor() {
+    const colors = MOD_CONFIG.colorPalette;
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Función para detectar mod desde nombre de zombie
+export function detectModFromZombie(zombieName) {
+    const zombieLower = zombieName.toLowerCase();
+    
+    // SOLO buscar en mods conocidos (NO crear nuevos automáticamente)
+    for (const [modId, modInfo] of Object.entries(MOD_CONFIG.knownMods)) {
+        if (zombieLower.includes(modId) || 
+            zombieLower.startsWith(modId + '_') ||
+            zombieLower.endsWith('_' + modId)) {
+            return modInfo;
+        }
+    }
+    
+    return null;
+}
+
+// Función para verificar si un zombie es de mod
+export function isModZombie(zombieName) {
+    return detectModFromZombie(zombieName) !== null;
+}
+
+// Función para verificar si una categoría es de mod
+export function isModCategory(categoryName, zombieList = []) {
+    const categoryLower = categoryName.toLowerCase();
+    
+    // Verificar si el nombre de la categoría contiene indicadores de mods predefinidos
+    const hasKnownMod = Object.keys(MOD_CONFIG.knownMods).some(modId => 
+        categoryLower.includes(modId)
+    );
+    
+    if (hasKnownMod) return true;
+    
+    return false;
+}
+
+
+
 // Colores para categorías y temas
 export const COLORS = {
     PRIMARY: "#4a6baf",

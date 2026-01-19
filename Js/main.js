@@ -9,6 +9,10 @@ import {
     PATHS,
     COLORS,
     ZOMBIE_CATEGORIES ,
+    MOD_CONFIG,
+    detectModFromZombie,
+    isModZombie,
+    isModCategory,
     PLANTS, // Nueva importación
     GRAVESTONES, // Nueva importación
     GRAVESTONE_DISPLAY_NAMES, // Nueva importación
@@ -65,6 +69,7 @@ class EnhancedLevelGenerator {
         this.paths = PATHS;
         this.colors = COLORS;
         this.zombieCategories = ZOMBIE_CATEGORIES;
+        this.modConfig = MOD_CONFIG;
 
         console.log('✓ Recursos y constantes cargados');
         console.log(`- Mundos: ${Object.keys(this.worldImages).length}`);
@@ -72,9 +77,9 @@ class EnhancedLevelGenerator {
 
         // 3. SISTEMA DE ZOMBIES
       this.zombieDataLoader = new ZombieDataLoader();
-        this.zombieData = []; // Datos de zombies
-        this.zombieCategories = {}; // Se llenará dinámicamente desde el JSON
-        this.autoDetectOnZombieSelection = false;
+    this.zombieData = []; // Datos de zombies
+    this.zombieCategories = {}; // Se llenará dinámicamente desde el JSON
+    this.autoDetectOnZombieSelection = false; // DESACTIVADO
 
         // 4. SISTEMA DE DESAFÍOS
         this.challengesData = {
@@ -294,82 +299,117 @@ setupNewZombieSelectionUI() {
     this.generateZombieCategoriesContent();
 }
 
-// Generar botones de categorías
 generateCategoryButtons() {
-        const categoriesPanel = document.getElementById('zombieCategoriesPanel');
-        if (!categoriesPanel) return;
+    const categoriesPanel = document.getElementById('zombieCategoriesPanel');
+    if (!categoriesPanel) return;
+    
+    categoriesPanel.innerHTML = '';
+    
+    if (Object.keys(this.zombieCategories).length === 0) {
+        categoriesPanel.innerHTML = '<div class="text-muted text-center p-4">Cargando categorías...</div>';
+        return;
+    }
+    
+    // Agrupar categorías por tipo dinámicamente
+    const categoryGroups = this.groupCategoriesDynamically();
+    
+    // Generar HTML por grupos
+    Object.entries(categoryGroups).forEach(([groupName, categories]) => {
+        if (categories.length === 0) return;
         
-        categoriesPanel.innerHTML = '';
+        const section = document.createElement('div');
+        section.className = 'category-group';
         
-        if (Object.keys(this.zombieCategories).length === 0) {
-            categoriesPanel.innerHTML = '<div class="text-muted text-center p-4">Cargando categorías...</div>';
-            return;
-        }
+        const title = document.createElement('h6');
+        title.className = 'text-muted mb-2';
+        title.textContent = groupName;
+        section.appendChild(title);
         
-        // Agrupar categorías por tipo BASÁNDOSE EN EL NOMBRE
-        const categoryGroups = {
-            "Mundos": [],
-            "Especiales": [],
-            "Mods": [],
-            "Otros": []
-        };
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'category-buttons';
         
-        // Clasificar categorías dinámicamente
-        Object.keys(this.zombieCategories).forEach(category => {
-            const categoryLower = category.toLowerCase();
+        // Ordenar categorías alfabéticamente dentro del grupo
+        const sortedCategories = [...categories].sort((a, b) => 
+            this.getCategoryDisplayName(a).localeCompare(this.getCategoryDisplayName(b))
+        );
+        
+        sortedCategories.forEach(category => {
+            const button = document.createElement('button');
+            button.className = 'category-btn';
+            button.dataset.category = category;
             
-            if (this.isWorldCategory(category)) {
-                categoryGroups["Mundos"].push(category);
-            } 
-            else if (this.isSpecialCategory(category)) {
-                categoryGroups["Especiales"].push(category);
+            const displayName = this.getCategoryDisplayName(category);
+            const zombieCount = this.zombieCategories[category].length;
+            
+            // Determinar si es un mod para añadir estilo especial
+            const isModCategory = this.isModCategory(category);
+            if (isModCategory) {
+                button.classList.add('mod-category');
             }
-            else if (categoryLower.includes('hex') || categoryLower.includes('mod')) {
+            
+            button.innerHTML = `
+                <span>${displayName}</span>
+                <span class="badge">${zombieCount}</span>
+                ${isModCategory ? '<span class="mod-badge-small">MOD</span>' : ''}
+            `;
+            
+            buttonsContainer.appendChild(button);
+        });
+        
+        section.appendChild(buttonsContainer);
+        categoriesPanel.appendChild(section);
+    });
+}
+
+
+// En el método groupCategoriesDynamically
+groupCategoriesDynamically() {
+    // Grupo inicial
+    const categoryGroups = {
+        "Mundos": [],
+        "Especiales": [],
+        "Mods": [], // Solo mods predefinidos
+        "Otros": []
+    };
+    
+    // Clasificar categorías dinámicamente
+    Object.keys(this.zombieCategories).forEach(category => {
+        const categoryLower = category.toLowerCase();
+        
+        // 1. Detectar mundos
+        if (this.isWorldCategory(category)) {
+            categoryGroups["Mundos"].push(category);
+        } 
+        // 2. Detectar categorías especiales
+        else if (this.isSpecialCategory(category)) {
+            categoryGroups["Especiales"].push(category);
+        }
+        // 3. Detectar mods predefinidos SOLAMENTE
+        else if (this.isModCategory(category)) {
+            // Verificar que sea un mod de la lista predefinida
+            const isKnownMod = Object.keys(this.modConfig.knownMods).some(modId => 
+                categoryLower.includes(modId)
+            );
+            if (isKnownMod) {
                 categoryGroups["Mods"].push(category);
-            }
-            else if (categoryLower.includes('Internacional') || categoryLower.includes('mod')) {
-                categoryGroups["Mods"].push(category);
-            }
-            else {
+            } else {
                 categoryGroups["Otros"].push(category);
             }
-        });
-        
-        // Generar HTML por grupos
-        Object.entries(categoryGroups).forEach(([groupName, categories]) => {
-            if (categories.length === 0) return;
-            
-            const section = document.createElement('div');
-            section.className = 'category-group';
-            
-            const title = document.createElement('h6');
-            title.className = 'text-muted mb-2';
-            title.textContent = groupName;
-            section.appendChild(title);
-            
-            const buttonsContainer = document.createElement('div');
-            buttonsContainer.className = 'category-buttons';
-            
-            categories.forEach(category => {
-                const button = document.createElement('button');
-                button.className = 'category-btn';
-                button.dataset.category = category;
-                
-                const displayName = this.getCategoryDisplayName(category);
-                const zombieCount = this.zombieCategories[category].length;
-                
-                button.innerHTML = `
-                    <span>${displayName}</span>
-                    <span class="badge">${zombieCount}</span>
-                `;
-                
-                buttonsContainer.appendChild(button);
-            });
-            
-            section.appendChild(buttonsContainer);
-            categoriesPanel.appendChild(section);
-        });
-    }
+        }
+        // 4. Todo lo demás va en "Otros"
+        else {
+            categoryGroups["Otros"].push(category);
+        }
+    });
+    
+    return categoryGroups;
+}
+
+
+isModCategory(category) {
+    const zombies = this.zombieCategories[category] || [];
+    return isModCategory(category, zombies);
+}
 
 // Generar contenido de categorías
 generateZombieCategoriesContent() {
@@ -408,7 +448,7 @@ generateZombieCategoriesContent() {
 }
 
 generateZombieCardsHTML(zombies) {
-    console.log('Generando tarjetas para', zombies.length, 'zombies con datos del JSON');
+    console.log('Generando tarjetas para', zombies.length, 'zombies');
     
     return zombies.map(zombieName => {
         const info = this.getZombieInfo(zombieName);
@@ -422,17 +462,19 @@ generateZombieCardsHTML(zombies) {
         // Obtener categoría del zombie
         const zombieCategory = info?.category || 'Sin categoría';
         
-        // Rutas de imágenes - DEFINIR ERROR.webp COMO FALBACK GLOBAL
-        const zombieImagePath = `Assets/Zombies/${zombieName}.webp`;
-        const errorImagePath = 'Assets/Zombies/error.webp'; // Imagen de error por defecto
+        // Determinar si es un zombie de mod
+        const isModZombie = this.isModZombie(zombieName);
+        const modInfo = isModZombie ? this.detectModFromZombie(zombieName) : null;
         
-        // Usar error.webp como fallback global
-        let fallbackImage = errorImagePath;
+        // Rutas de imágenes
+        const zombieImagePath = `Assets/Zombies/${zombieName}.webp`;
+        const errorImagePath = 'Assets/Zombies/error.webp';
         
         return `
             <div class="zombie-card" data-zombie="${zombieName}" 
                  data-category="${zombieCategory}"
-                 data-has-data="${hasJsonData ? 'true' : 'false'}">
+                 data-has-data="${hasJsonData ? 'true' : 'false'}"
+                 ${isModZombie ? `data-mod="${modInfo?.name || 'custom'}"` : ''}>
                 <div class="selection-indicator">
                     <i class="bi bi-check"></i>
                 </div>
@@ -442,9 +484,10 @@ generateZombieCardsHTML(zombies) {
                          class="zombie-image"
                          onerror="
                             console.log('Imagen no encontrada para ${zombieName}, usando error.webp');
-                            this.src = '${fallbackImage}';
+                            this.src = '${errorImagePath}';
                             this.style.filter = 'grayscale(20%) opacity(90%)';
                          ">
+                    ${isModZombie ? `<div class="mod-badge" title="${modInfo?.displayName || 'Mod'}">M</div>` : ''}
                 </div>
                 <div class="zombie-name">${zombieName}</div>
                 <div class="zombie-stats">
@@ -452,11 +495,63 @@ generateZombieCardsHTML(zombies) {
                     <span class="stat-item">Vel: ${info?.speed || 'N/A'}</span>
                     <span class="stat-item">Amenaza: ${threat.toFixed(1)}</span>
                     ${info?.tiene_armadura ? '<span class="badge armor-badge">🛡️ Armadura</span>' : ''}
-                    ${info?.tipo_mod === 'Hex' ? '<span class="badge hex-badge">Hex</span>' : ''}
+                    ${info?.tipo_mod ? `<span class="badge mod-badge-label">${info.tipo_mod}</span>` : ''}
+                    ${isModZombie && modInfo ? `<span class="badge mod-source-badge">${modInfo.displayName}</span>` : ''}
                 </div>
             </div>
         `;
     }).join('');
+}
+
+
+isModZombie(zombieName) {
+    return isModZombie(zombieName);
+}
+
+detectModFromZombie(zombieName) {
+    return detectModFromZombie(zombieName);
+}
+detectAndGroupMods() {
+    const modGroups = {};
+    const allZombies = [];
+    
+    // Recopilar todos los zombies de todas las categorías
+    Object.values(this.zombieCategories).forEach(zombies => {
+        allZombies.push(...zombies);
+    });
+    
+    // Agrupar zombies SOLO por mods predefinidos
+    allZombies.forEach(zombieName => {
+        const modInfo = this.detectModFromZombie(zombieName);
+        
+        // SOLO procesar si es un mod predefinido (no null)
+        if (modInfo && modInfo.name) {
+            const modName = modInfo.name;
+            
+            if (!modGroups[modName]) {
+                modGroups[modName] = {
+                    name: modName,
+                    displayName: modInfo.displayName,
+                    zombies: []
+                };
+            }
+            
+            if (!modGroups[modName].zombies.includes(zombieName)) {
+                modGroups[modName].zombies.push(zombieName);
+            }
+        }
+    });
+    
+    // Crear categorías SOLO para mods predefinidos detectados
+    Object.values(modGroups).forEach(modGroup => {
+        if (modGroup.zombies.length > 0) {
+            const categoryName = `Mod - ${modGroup.displayName}`;
+            if (!this.zombieCategories[categoryName]) {
+                this.zombieCategories[categoryName] = modGroup.zombies;
+                console.log(`✓ Categoría de mod predefinido detectada: ${categoryName} (${modGroup.zombies.length} zombies)`);
+            }
+        }
+    });
 }
 
 // Configurar listeners para la nueva interfaz
@@ -584,16 +679,7 @@ filterAllZombies(searchTerm) {
     this.checkNoResults();
 }
 
-getZombieImageUrl(zombieName) {
-    if (!zombieName) return `${this.imagePaths.ZOMBIES}error.webp`;
-    
-    const normalizedName = zombieName.toLowerCase().replace(/\s+/g, '');
-    const imagePath = `${this.imagePaths.ZOMBIES}${normalizedName}.webp`;
-    
-    // Retornar directamente la ruta específica del zombie
-    // El manejo de errores se hará en el atributo onerror de la etiqueta <img>
-    return imagePath;
-}
+
 
 // Verificar si hay resultados
 checkNoResults() {
@@ -708,29 +794,7 @@ isSpecialCategory(category) {
           
     }
 
-    getZombiesByCategoryName(categoryName) {
-        // Primero buscar en categorías dinámicas
-        if (this.zombieCategories[categoryName]) {
-            return this.zombieCategories[categoryName];
-        }
-        
-        // Si no existe, buscar coincidencias parciales
-        const matchingCategories = Object.keys(this.zombieCategories).filter(cat => 
-            cat.toLowerCase().includes(categoryName.toLowerCase()) ||
-            categoryName.toLowerCase().includes(cat.toLowerCase())
-        );
-        
-        if (matchingCategories.length > 0) {
-            // Combinar zombies de todas las categorías coincidentes
-            const allZombies = [];
-            matchingCategories.forEach(cat => {
-                allZombies.push(...this.zombieCategories[cat]);
-            });
-            return [...new Set(allZombies)]; // Eliminar duplicados
-        }
-        
-        return [];
-    }
+
 
 
 
@@ -1693,14 +1757,6 @@ setupEventListenersSafe() {
         { id: 'generateThematicBtn', event: 'click', handler: () => this.generateThematicLevel() },
         { id: 'saveLevelBtn', event: 'click', handler: () => this.saveLevel() },
         { id: 'loadConfigBtn', event: 'click', handler: () => this.loadConfig() },
-        { id: 'addZombiesBtn', event: 'click', handler: () => {
-            this.addSelectedZombies();
-            this.markTabAsChanged('waves');
-        }},
-        { id: 'clearZombiesBtn', event: 'click', handler: () => {
-            this.clearAllZombies();
-            this.markTabAsChanged('waves');
-        }},
         { id: 'autoDetectBtn', event: 'click', handler: () => this.autoDetectSettings() },
         { id: 'generateWavesBtn', event: 'click', handler: () => this.generateSmartWaves() },
         { id: 'updateStatsBtn', event: 'click', handler: () => this.updateStats() },
@@ -1708,14 +1764,8 @@ setupEventListenersSafe() {
         { id: 'resetBtn', event: 'click', handler: () => this.resetAllSettings() },
         { id: 'exportSettingsBtn', event: 'click', handler: () => this.exportSettings() },
         { id: 'importSettingsBtn', event: 'click', handler: () => this.importSettings() },
-        { id: 'categorySelect', event: 'change', handler: () => {
-            this.updateZombieList();
-            this.markTabAsChanged('waves');
-        }},
-        { id: 'zombieSearch', event: 'input', handler: (e) => {
-            this.filterZombies(e.target.value);
-            this.markTabAsChanged('waves');
-        }},
+
+      
         { id: 'levelName', event: 'input', handler: (e) => {
             this.levelData.level_name = e.target.value;
             this.markTabAsChanged('basic');
@@ -2443,119 +2493,17 @@ checkRequiredElements() {
     return data;
 }
 
-    applyTabData(tabId, data) {
-        if (!data) return;
-
-        switch (tabId) {
-            case 'basic':
-                if (data.level_name !== undefined) document.getElementById('levelName').value = data.level_name;
-                if (data.level_number !== undefined) document.getElementById('levelNumber').value = data.level_number;
-                if (data.world !== undefined) {
-                    this.levelData.world = data.world;
-                    this.updateSelectedWorldDisplay();
-                    this.updateStages();
-                }
-                if (data.seed_selection_method !== undefined) {
-                    document.getElementById('seedSelectionMethod').value = data.seed_selection_method;
-                }
-                if (data.stage !== undefined) document.getElementById('stageSelect').value = data.stage;
-                if (data.visual_effect !== undefined) document.getElementById('effectSelect').value = data.visual_effect;
-                if (data.starting_sun !== undefined) document.getElementById('startingSun').value = data.starting_sun;
-                if (data.zombie_level !== undefined) document.getElementById('zombieLevel').value = data.zombie_level;
-                if (data.grid_level !== undefined) document.getElementById('gridLevel').value = data.grid_level;
-                if (data.mower_type !== undefined) {
-                this.levelData.mower_type = data.mower_type;
-                this.updateSelectedMowerDisplay();
-            }
-                if (data.enable_sun_dropper !== undefined) {
-                    document.getElementById('enableSunDropper').checked = data.enable_sun_dropper;
-                }
-                if (data.enable_seed_slots !== undefined) {
-                    document.getElementById('enableSeedSlots').checked = data.enable_seed_slots;
-                    this.updateSeedSlotsControl();
-                }
-                if (data.seed_slots_count !== undefined) {
-                    document.getElementById('seedSlotsCount').value = data.seed_slots_count;
-                }
-                if (data.wave_count !== undefined) document.getElementById('waveCount').value = data.wave_count;
-                if (data.flag_interval !== undefined) document.getElementById('flagInterval').value = data.flag_interval;
-                if (data.wave_points !== undefined) document.getElementById('wavePoints').value = data.wave_points;
-                if (data.wave_increment !== undefined) document.getElementById('waveIncrement').value = data.wave_increment;
-                if (data.use_underground !== undefined) {
-                    document.getElementById('useUnderground').checked = data.use_underground;
-                    this.updateUndergroundControls();
-                }
-                if (data.underground_start !== undefined) document.getElementById('undergroundStart').value = data.underground_start;
-                if (data.underground_interval !== undefined) document.getElementById('undergroundInterval').value = data.underground_interval;
-                if (data.underground_col_start !== undefined) document.getElementById('undergroundColStart').value = data.underground_col_start;
-                if (data.underground_col_end !== undefined) document.getElementById('undergroundColEnd').value = data.underground_col_end;
-                if (data.underground_min !== undefined) document.getElementById('undergroundMin').value = data.underground_min;
-                if (data.underground_max !== undefined) document.getElementById('undergroundMax').value = data.underground_max;
-                if (data.spawn_col_start !== undefined) document.getElementById('spawnColStart').value = data.spawn_col_start;
-                if (data.spawn_col_end !== undefined) document.getElementById('spawnColEnd').value = data.spawn_col_end;
-                break;
-
-            case 'waves':
-                if (data.selected_zombies !== undefined) {
-                    this.levelData.zombies = [...data.selected_zombies];
-                    this.updateSelectedZombiesDisplay();
-                }
-                if (data.difficulty !== undefined) {
-                    const difficultyRadio = document.querySelector(`input[name="difficulty"][value="${data.difficulty}"]`);
-                    if (difficultyRadio) difficultyRadio.checked = true;
-                }
-                if (data.plant_food_waves !== undefined) {
-                    document.getElementById('plantFoodWaves').value = data.plant_food_waves;
-                }
-                if (data.zombie_search !== undefined) {
-                    document.getElementById('zombieSearch').value = data.zombie_search;
-                    this.filterZombies(data.zombie_search);
-                }
-                if (data.category !== undefined) {
-                    document.getElementById('categorySelect').value = data.category;
-                    this.updateZombieList();
-                }
-                break;
-
-            case 'challenges':
-                if (data.challenges_enabled !== undefined) {
-                    document.getElementById('challengesEnabled').checked = data.challenges_enabled;
-                    this.challengesData.enabled = data.challenges_enabled;
-                    this.toggleChallengesContainer(data.challenges_enabled);
-                }
-
-                // Cargar cada desafío
-                this.challengesData.challenges.forEach(challenge => {
-                    const challengeData = data[`challenge_${challenge.id}`];
-                    if (challengeData) {
-                        challenge.enabled = challengeData.enabled;
-                        if (challengeData.value !== undefined) challenge.value = challengeData.value;
-                        if (challengeData.values !== undefined) challenge.values = challengeData.values;
-                    }
-                });
-                this.updateChallengesUI();
-                break;
-
-            case 'preview':
-                if (data.json_content !== undefined) {
-                    const previewElement = document.getElementById('jsonPreview');
-                    if (previewElement) {
-                        previewElement.textContent = data.json_content;
-                        this.highlightJson(previewElement);
-                    }
-                }
-                break;
-
-            case 'stats':
-                if (data.stats_content !== undefined) {
-                    const statsElement = document.getElementById('statsContent');
-                    if (statsElement) {
-                        statsElement.innerHTML = data.stats_content;
-                    }
-                }
-                break;
-        }
+// Método auxiliar para asignar valores de forma segura
+safeAssignValue(elementId, value, property = 'value') {
+    const element = document.getElementById(elementId);
+    if (element && element[property] !== undefined) {
+        element[property] = value;
+        return true;
     }
+    // Opcional: descomenta para debug
+    // console.log(`Elemento ${elementId} no encontrado para asignar ${property}`);
+    return false;
+}
 
     updateLevelDataFromTab(tabId, tabData) {
         if (tabId === 'basic') {
@@ -2565,63 +2513,59 @@ checkRequiredElements() {
         }
     }
 
-    initializeUI() {
-        // Inicializar select de categorías
-        this.updateCategorySelect();
 
-        // Inicializar select de mundos
-        this.updateStages();
-
-        // Inicializar controles de valores
-        this.updateAllControls();
-
-        // Inicializar controles de desafíos
-        this.updateChallengesUI();
-
-        // Inicializar visualización del mundo seleccionado
-        this.updateSelectedWorldDisplay();
-    }
-
-  async loadZombieData() {
-        try {
-            console.log('📋 Cargando datos de zombies desde JSON...');
-            
-            // Cargar datos reales del archivo
-            const zombieMap = await this.zombieDataLoader.loadZombieData();
-            
-            if (!zombieMap || zombieMap.size === 0) {
-                console.warn('⚠️ No se pudieron cargar datos reales, usando categorías estáticas');
-                // Si no hay datos, usar categorías estáticas como fallback
-                this.zombieCategories = ZOMBIE_CATEGORIES;
-                this.zombieData = this.createZombieDataFromCategories();
-                return;
-            }
-            
-            // 1. Obtener los datos de zombies procesados
-            this.zombieData = this.zombieDataLoader.getAllZombies();
-            console.log(`✓ ${this.zombieData.length} zombies cargados con datos reales`);
-            
-            // 2. Obtener las categorías DINÁMICAS del JSON
-            this.zombieCategories = this.zombieDataLoader.getCategories();
-            
-            // 3. Combinar con categorías estáticas si es necesario
-            this.mergeCategoriesWithDefaults();
-            
-            console.log(`✓ Categorías disponibles: ${Object.keys(this.zombieCategories).length}`);
-            console.log('📊 Distribución por categoría:');
-            Object.entries(this.zombieCategories).forEach(([category, zombies]) => {
-                console.log(`  - ${category}: ${zombies.length} zombies`);
-            });
-            
-        } catch (error) {
-            console.error('❌ Error cargando datos de zombies:', error);
-            
-            // Fallback a categorías estáticas
-            console.log('🔄 Usando categorías estáticas como respaldo...');
+ async loadZombieData() {
+    try {
+        console.log('📋 Cargando datos de zombies desde JSON...');
+        
+        // Cargar datos reales del archivo
+        const zombieMap = await this.zombieDataLoader.loadZombieData();
+        
+        if (!zombieMap || zombieMap.size === 0) {
+            console.warn('⚠️ No se pudieron cargar datos reales, usando categorías estáticas');
             this.zombieCategories = ZOMBIE_CATEGORIES;
             this.zombieData = this.createZombieDataFromCategories();
+            return;
         }
+        
+        // 1. Obtener los datos de zombies procesados
+        this.zombieData = this.zombieDataLoader.getAllZombies();
+        console.log(`✓ ${this.zombieData.length} zombies cargados con datos reales`);
+        
+        // 2. Obtener las categorías DINÁMICAS del JSON
+        this.zombieCategories = this.zombieDataLoader.getCategories();
+        
+        // 3. Detectar y agrupar mods automáticamente
+        this.detectAndGroupMods();
+        
+        // 4. Combinar con categorías estáticas si es necesario
+        this.mergeCategoriesWithDefaults();
+        
+        console.log(`✓ Categorías disponibles: ${Object.keys(this.zombieCategories).length}`);
+        console.log('📊 Distribución por tipo:');
+        
+        // Contar por tipo
+        const counts = { Mundos: 0, Especiales: 0, Mods: 0, Otros: 0 };
+        Object.keys(this.zombieCategories).forEach(category => {
+            if (this.isWorldCategory(category)) counts.Mundos++;
+            else if (this.isSpecialCategory(category)) counts.Especiales++;
+            else if (this.isModCategory(category)) counts.Mods++;
+            else counts.Otros++;
+        });
+        
+        Object.entries(counts).forEach(([type, count]) => {
+            console.log(`  - ${type}: ${count} categorías`);
+        });
+        
+    } catch (error) {
+        console.error('❌ Error cargando datos de zombies:', error);
+        
+        // Fallback a categorías estáticas
+        console.log('🔄 Usando categorías estáticas como respaldo...');
+        this.zombieCategories = ZOMBIE_CATEGORIES;
+        this.zombieData = this.createZombieDataFromCategories();
     }
+}
 
 
      mergeCategoriesWithDefaults() {
@@ -2808,125 +2752,6 @@ isBasicZombie(zombieName) {
         !zombieName.includes('flag')
     );
 }
-
-
-
-    detectHomeWorld(zombieName) {
-        if (zombieName.includes('modern') || zombieName.includes('tutorial')) return 'modern';
-        if (zombieName.includes('mummy')) return 'egypt';
-        if (zombieName.includes('pirate')) return 'pirate';
-        return 'modern';
-    }
-
-    setupEventListeners() {
-        // Event listener para el método de selección de semillas
-        document.getElementById('seedSelectionMethod').addEventListener('change', (e) => {
-            this.levelData.seed_selection_method = e.target.value;
-            this.markTabAsChanged('basic');
-        });
-
-        document.getElementById('useUnderground').addEventListener('change', (e) => {
-            this.levelData.use_underground_zombies = e.target.checked;
-            this.updateUndergroundControls();
-            this.markTabAsChanged('basic');
-        });
-
-        // Añadir event listener para el control de caída de soles
-        document.getElementById('enableSunDropper').addEventListener('change', (e) => {
-            this.levelData.enable_sun_dropper = e.target.checked;
-            this.markTabAsChanged('basic');
-        });
-
-        // Event listeners para desafíos
-        document.getElementById('challengesEnabled').addEventListener('change', (e) => {
-            this.challengesData.enabled = e.target.checked;
-            this.toggleChallengesContainer(e.target.checked);
-            this.markTabAsChanged('challenges');
-        });
-
-        document.getElementById('enableSeedSlots').addEventListener('change', (e) => {
-            this.levelData.enable_seed_slots = e.target.checked;
-            this.updateSeedSlotsControl();
-            this.markTabAsChanged('basic');
-        });
-
-        document.getElementById('seedSlotsCount').addEventListener('input', (e) => {
-            this.levelData.seed_slots_count = parseInt(e.target.value) || 8;
-            this.markTabAsChanged('basic');
-        });
-
-        // Event listeners para checkboxes de desafíos individuales
-        document.querySelectorAll('.challenge-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const challengeId = e.target.dataset.challenge;
-                this.updateChallengeState(challengeId, e.target.checked);
-                this.markTabAsChanged('challenges');
-            });
-        });
-
-        // Event listeners para inputs de desafíos
-        document.querySelectorAll('.challenge-input').forEach(input => {
-            input.addEventListener('input', (e) => {
-                const challengeId = e.target.dataset.challenge;
-                this.updateChallengeValue(challengeId, e.target);
-                this.markTabAsChanged('challenges');
-            });
-        });
-
-        // Botones principales
-        document.getElementById('generateLevelBtn').addEventListener('click', () => this.generateLevel());
-        document.getElementById('generateThematicBtn').addEventListener('click', () => this.generateThematicLevel());
-        document.getElementById('saveLevelBtn').addEventListener('click', () => this.saveLevel());
-        document.getElementById('loadConfigBtn').addEventListener('click', () => this.loadConfig());
-
-        // Botones de zombies
-        document.getElementById('addZombiesBtn').addEventListener('click', () => {
-            this.addSelectedZombies();
-            this.markTabAsChanged('waves');
-        });
-
-        document.getElementById('clearZombiesBtn').addEventListener('click', () => {
-            this.clearAllZombies();
-            this.markTabAsChanged('waves');
-        });
-
-        // Botones de configuración
-        document.getElementById('autoDetectBtn').addEventListener('click', () => this.autoDetectSettings());
-        document.getElementById('generateWavesBtn').addEventListener('click', () => this.generateSmartWaves());
-        document.getElementById('updateStatsBtn').addEventListener('click', () => this.updateStats());
-
-        // Botones de utilidad
-        document.getElementById('copyJsonBtn').addEventListener('click', () => this.copyJsonToClipboard());
-        document.getElementById('resetBtn').addEventListener('click', () => this.resetAllSettings());
-        document.getElementById('exportSettingsBtn').addEventListener('click', () => this.exportSettings());
-        document.getElementById('importSettingsBtn').addEventListener('click', () => this.importSettings());
-
-        // Selectores
-        document.getElementById('categorySelect').addEventListener('change', () => {
-            this.updateZombieList();
-            this.markTabAsChanged('waves');
-        });
-
-        // Búsqueda
-        document.getElementById('zombieSearch').addEventListener('input', (e) => {
-            this.filterZombies(e.target.value);
-            this.markTabAsChanged('waves');
-        });
-
-        // Actualizaciones en tiempo real
-        document.getElementById('levelName').addEventListener('input', (e) => {
-            this.levelData.level_name = e.target.value;
-            this.markTabAsChanged('basic');
-        });
-
-        // Dificultad
-        document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
-            radio.addEventListener('change', () => this.markTabAsChanged('waves'));
-        });
-
-        // Plant food waves
-        document.getElementById('plantFoodWaves').addEventListener('input', () => this.markTabAsChanged('waves'));
-    }
 
     updateAllControls() {
         // Actualizar todos los controles con los valores actuales
