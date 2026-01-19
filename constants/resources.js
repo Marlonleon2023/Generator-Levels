@@ -14,6 +14,7 @@ export const PATHS = {
         DESAFIOS: "Assets/Desafios/",
         PLANTS: "Assets/Plants/",
         ZOMBIES: "Assets/Zombies/",
+        REWARDS: "Assets/Rewards/",
         GRAVESTONES: "Assets/Gravestones/",
         CONDITIONS: "Assets/Condiciones/"
     },
@@ -269,6 +270,27 @@ export const COLORS = {
 
 
 
+
+
+
+
+
+export const REWARDS = [
+   'moneybag','big_moneybag', 'coin_gold', 'coin_gold_fake', 'coin_silver', 'coin_treasure_chest',
+    'dangerroom_beach', 'dangerroom_cowboy', 'dangerroom_dark', 'dangerroom_dino',
+     'dangerroom_egypt', 'dangerroom_eighties', 'dangerroom_future', 'dangerroom_iceage',
+      'dangerroom_lostcity', 'dangerroom_modern', 'dangerroom_pirate', 'gem_diamond', 
+      'mapgadget',  'note_beach', 'note_cowboy', 'note_dark', 'note_dino',
+       'note_egypt', 'note_eighties', 'note_future', 'note_iceage', 'note_lostcity', 
+       'note_modern', 'note_pirate', 'pinata_beach', 'pinata_cowboy', 'pinata_dark',
+        'pinata_dino', 'pinata_egypt', 'pinata_eighties', 'pinata_future', 'pinata_iceage', 
+        'pinata_lostcity', 'pinata_modern', 'pinata_pirate', 'plantfood', 'powerupflamethrower', 
+        'powerupflickzombie', 'powerupgadget', 'powerupsnowball', 'powerupvasebreakerbutter', 
+        'powerupvasebreakermove', 'powerupvasebreakerreveal', 'powerupwizardfinger', 'present',
+         'present_shiny', 'sprout', 'sun', 'sun_large', 'sun_medium', 'sun_small', 'taco', 
+         'worldkey_beach', 'worldkey_cowboy', 'worldkey_dark', 'worldkey_dino', 'worldkey_eighties', 'worldkey_future', 'worldkey_iceage', 'worldkey_lostcity', 'worldkey_modern', 'worldkey_pirate', 'worldtrophy_beach', 'worldtrophy_cowboy', 'worldtrophy_dark', 'worldtrophy_dino', 'worldtrophy_egypt', 'worldtrophy_eighties', 'worldtrophy_future', 'worldtrophy_iceage', 'worldtrophy_lostcity', 'worldtrophy_modern', 'worldtrophy_pirate'
+  
+];
 
 // ============================================
 // CONSTANTES DE PLANTAS Y LÁPIDAS

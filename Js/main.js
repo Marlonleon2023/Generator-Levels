@@ -19,7 +19,10 @@ import {
     FALLBACK_IMAGES // Nueva importación
 } from '../constants/resources.js';
 
+import { RewardManager } from './reward-manager.js';
+
 import { ZombieDataLoader } from './zombieDataLoader.js';
+
 
 class EnhancedLevelGenerator {
      constructor() {
@@ -70,6 +73,10 @@ class EnhancedLevelGenerator {
         this.colors = COLORS;
         this.zombieCategories = {}
         this.modConfig = MOD_CONFIG;
+
+         this.rewardManager = new RewardManager(this);
+
+
 
         console.log('✓ Recursos y constantes cargados');
         console.log(`- Mundos: ${Object.keys(this.worldImages).length}`);
@@ -1966,6 +1973,8 @@ async init() {
         console.log('✓ Datos de zombies cargados');
         
         // 5. Depurar datos (opcional)
+   
+
         this.debugZombieData();
         
         // 6. Inicializar componentes que necesitan datos (con try-catch)
@@ -2375,6 +2384,146 @@ checkRequiredElements() {
         }
     }
 
+
+    applyTabData(tabId, data) {
+    console.log(`Aplicando datos para pestaña ${tabId}`, data);
+    
+    if (!data) return;
+    
+    switch (tabId) {
+        case 'basic':
+            // Aplicar valores a controles de la pestaña básica
+            this.safeAssignValue('levelName', data.level_name);
+            this.safeAssignValue('levelNumber', data.level_number.toString());
+            this.safeAssignValue('startingSun', data.starting_sun?.toString());
+            this.safeAssignValue('zombieLevel', data.zombie_level?.toString());
+            this.safeAssignValue('gridLevel', data.grid_level?.toString());
+            this.safeAssignValue('waveCount', data.wave_count?.toString());
+            this.safeAssignValue('flagInterval', data.flag_interval?.toString());
+            this.safeAssignValue('spawnColStart', data.spawn_col_start?.toString());
+            this.safeAssignValue('spawnColEnd', data.spawn_col_end?.toString());
+            this.safeAssignValue('wavePoints', data.wave_points?.toString());
+            this.safeAssignValue('waveIncrement', data.wave_increment?.toString());
+            this.safeAssignValue('seedSlotsCount', data.seed_slots_count?.toString());
+            
+            // Checkboxes
+            this.safeAssignValue('enableSunDropper', data.enable_sun_dropper, 'checked');
+            this.safeAssignValue('enableSeedSlots', data.enable_seed_slots, 'checked');
+            this.safeAssignValue('useUnderground', data.use_underground, 'checked');
+            
+            // Actualizar selecciones visuales
+            if (data.mower_type) {
+                this.selectMower(data.mower_type);
+            }
+            if (data.world) {
+                this.selectWorld(data.world);
+            }
+            if (data.stage) {
+                this.selectScenario(data.stage);
+            }
+            if (data.visual_effect) {
+                this.safeAssignValue('effectSelect', data.visual_effect);
+            }
+            if (data.seed_selection_method) {
+                this.safeAssignValue('seedSelectionMethod', data.seed_selection_method);
+            }
+            
+            // Controles subterráneos
+            if (data.use_underground !== undefined) {
+                this.levelData.use_underground_zombies = data.use_underground;
+                this.updateUndergroundControls();
+            }
+            
+            // Valores subterráneos
+            this.safeAssignValue('undergroundStart', data.underground_start?.toString());
+            this.safeAssignValue('undergroundInterval', data.underground_interval?.toString());
+            this.safeAssignValue('undergroundColStart', data.underground_col_start?.toString());
+            this.safeAssignValue('undergroundColEnd', data.underground_col_end?.toString());
+            this.safeAssignValue('undergroundMin', data.underground_min?.toString());
+            this.safeAssignValue('undergroundMax', data.underground_max?.toString());
+            
+            break;
+            
+        case 'waves':
+            // Aplicar zombies seleccionados
+            if (data.selected_zombies && Array.isArray(data.selected_zombies)) {
+                this.levelData.zombies = [...data.selected_zombies];
+                this.updateSelectedZombiesDisplay();
+            }
+            
+            // Dificultad
+            if (data.difficulty) {
+                const radio = document.querySelector(`input[name="difficulty"][value="${data.difficulty}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            // Otros controles
+            this.safeAssignValue('plantFoodWaves', data.plant_food_waves);
+            this.safeAssignValue('zombieSearch', data.zombie_search);
+            this.safeAssignValue('categorySelect', data.category);
+            
+            break;
+            
+        case 'challenges':
+            // Habilitar/deshabilitar contenedor
+            if (data.challenges_enabled !== undefined) {
+                this.challengesData.enabled = data.challenges_enabled;
+                this.safeAssignValue('challengesEnabled', data.challenges_enabled, 'checked');
+                this.toggleChallengesContainer(data.challenges_enabled);
+            }
+            
+            // Aplicar cada desafío
+            this.challengesData.challenges.forEach(challenge => {
+                const challengeData = data[`challenge_${challenge.id}`];
+                if (challengeData) {
+                    challenge.enabled = challengeData.enabled || false;
+                    
+                    // Actualizar checkbox
+                    const checkbox = document.getElementById(`challenge_${challenge.id.toLowerCase()}`);
+                    if (checkbox) {
+                        checkbox.checked = challenge.enabled;
+                    }
+                    
+                    // Actualizar valores
+                    if (challenge.id === 'KillZombies' && challengeData.values) {
+                        challenge.values = { ...challenge.values, ...challengeData.values };
+                        this.safeAssignValue('killZombies_count', challenge.values.zombies?.toString());
+                        this.safeAssignValue('killZombies_time', challenge.values.time?.toString());
+                    } else if (challengeData.value !== undefined) {
+                        challenge.value = challengeData.value;
+                        const input = document.getElementById(`${challenge.id.toLowerCase()}_value`);
+                        if (input) input.value = challenge.value;
+                    }
+                }
+            });
+            break;
+            
+        case 'preview':
+            // Solo mostrar el JSON
+            if (data.json_content) {
+                const preview = document.getElementById('jsonPreview');
+                if (preview) {
+                    preview.textContent = data.json_content;
+                    this.highlightJson(preview);
+                }
+            }
+            break;
+            
+        case 'stats':
+            // Solo mostrar estadísticas
+            if (data.stats_content) {
+                const stats = document.getElementById('statsContent');
+                if (stats) {
+                    stats.innerHTML = data.stats_content;
+                }
+            }
+            break;
+    }
+}
+    
+
+    
+
     loadSavedData() {
         // Cargar configuración general
         const savedConfig = localStorage.getItem('pvz_level_generator_config');
@@ -2692,14 +2841,7 @@ checkRequiredElements() {
                 if (data.plant_food_waves !== undefined) {
                     document.getElementById('plantFoodWaves').value = data.plant_food_waves;
                 }
-                if (data.zombie_search !== undefined) {
-                    document.getElementById('zombieSearch').value = data.zombie_search;
-                    this.filterZombies(data.zombie_search);
-                }
-                if (data.category !== undefined) {
-                    document.getElementById('categorySelect').value = data.category;
-                    this.updateZombieList();
-                }
+
 
                 this.hasUnsavedChanges['waves'] = false;
                 this.updateTabIndicator('waves', false);
@@ -2775,8 +2917,7 @@ checkRequiredElements() {
                 data.difficulty = difficultyRadio.value;
             }
             data.plant_food_waves = getValue('plantFoodWaves', '');
-            data.zombie_search = getValue('zombieSearch', '');
-            data.category = getValue('categorySelect', '');
+          
             break;
 
         case 'challenges':
@@ -4303,7 +4444,10 @@ createBasicZombieInfo(zombieName) {
             "objclass": "LevelDefinition",
             "objdata": {
                 "Description": this.levelData.level_name,
-                "FirstRewardType": "",
+                "FirstRewardType": this.rewardManager.rewardsData.firstReward?.type || "",
+                "FirstRewardParam": this.rewardManager.rewardsData.firstReward?.param || "",
+                "ReplayRewardType": this.rewardManager.rewardsData.replayReward?.type || "",
+                "ReplayRewardParam": this.rewardManager.rewardsData.replayReward?.param || "",
                 "LevelNumber": this.levelData.level_number,
                 "ForceToWorldMap": true,
                 "Loot": "RTID(DefaultLoot@LevelModules)",

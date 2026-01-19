@@ -1222,7 +1222,8 @@ body.modal-open {
     z-index: 9999;
     opacity: 0;
     visibility: hidden;
-    transform: scale(0.7);
+   transform: scale(1);
+    zoom: 0.9;
     transition: opacity 0.3s ease, visibility 0.3s ease;
     display: flex;
     align-items: center;
@@ -1237,19 +1238,38 @@ body.modal-open {
     visibility: visible;
 }
 
+
 .custom-modal {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(3, 1, 1, 0.413);
-    width: 600px;
-    max-width: 90%;
-    max-height: 90vh;
+ 
+    width: 700px;
+    max-width: 195%;
+
+    height: auto;          /* ✅ clave */
+    max-height: 90vh; 
+
     display: flex;
     flex-direction: column;
-    transform: translateY(-30px);
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
     overflow: hidden;
+}
+
+#scenarioModal .custom-modal-body {
+    max-height: 500vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.custom-modal-body {
+    padding: 24px;
+   
+    padding-right: 30px;
+    overflow-y: auto;
+    flex-grow: 1;
+    background-color: #ffffff;
 }
 
 .custom-modal-overlay.show .custom-modal {
@@ -1347,13 +1367,7 @@ body.modal-open {
     transform: rotate(90deg);
 }
 
-.custom-modal-body {
-    padding: 24px;
-    padding-right: 30px;
-    overflow-y: auto;
-    flex-grow: 1;
-    background-color: #ffffff;
-}
+
 
 .custom-modal-footer {
     padding: 16px 24px;
@@ -1626,11 +1640,7 @@ body.modal-open {
 
 /* ===== SELECCIÓN DE ESCENARIOS ===== */
 
-#scenarioModal .custom-modal-body {
-    max-height: 80vh;
-    overflow-y: auto;
-    padding: 20px;
-}
+
 
 .scenario-selection-container {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -3277,11 +3287,473 @@ body.modal-open {
 
 
 
+/* ============================================
+   ESTILOS PARA EL MODAL DE RECOMPENSAS - CORREGIDO
+   ============================================ */
+
+/* Overlay del modal */
+.reward-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+    transform: scale(0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+/* Animación de entrada */
+@keyframes reward-fade-in {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(4px);
+    }
+}
+
+/* Contenedor principal del modal - MÁS ALTO */
+.reward-container-modal {
+    background: #fff;
+    width: 100%;
+    max-width: 750px; /* Más ancho */
+    max-height: 160vh; /* Más alto relativo a la pantalla */
+    height: auto; /* Altura automática */
+    min-height: 600px; /* Altura mínima garantizada */
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    animation: modalIn .25s ease;
+}
+
+@keyframes reward-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header del modal */
+.reward-container-modal-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.reward-container-modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.reward-container-modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 6px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.reward-container-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Cuerpo del modal - MÁS ESPACIO */
+.reward-container-modal-body {
+    padding: 30px; /* Más padding */
+    overflow-y: auto;
+    flex: 1;
+    background: #f8f9fa;
+    min-height: 400px; /* Altura mínima */
+}
+
+/* Footer del modal */
+.reward-container-modal-footer {
+    padding: 18px 24px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #ffffff;
+}
+
+/* ============================================
+   ESTILOS PARA LOS PANELES DE RECOMPENSAS
+   ============================================ */
+
+/* Grid de plantas - MÁS COLUMNAS */
+.plants-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    padding: 10px;
+}
+
+
+.collectables-grid {
+      display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    padding: 10px;
+}
 
 
 
 
 
 
+.plant-option {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px 10px; /* Más padding */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px; /* Altura mínima para uniformidad */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.plant-option:hover {
+    border-color: #28a745;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.15);
+}
+
+.plant-option.selected {
+    border-color: #28a745;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+}
+
+.plant-option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+}
+
+.plant-option-img {
+    width: 80px; /* Más grande */
+    height: 80px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    flex-shrink: 0;
+}
+
+.plant-option-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.plant-option:hover .plant-option-img img {
+    transform: scale(1.05);
+}
+
+.plant-option-name {
+    font-size: 0.9rem; /* Texto más legible */
+    font-weight: 600;
+    color: #333;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 2.4em;
+    margin-top: auto;
+}
 
 
+
+
+.collectable-option {
+     border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px 10px; /* Más padding */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px; /* Altura mínima para uniformidad */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.collectable-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.15);
+    border-color: #ffc107;
+}
+
+.collectable-option.selected {
+    border-color: #ffc107;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+}
+
+.collectable-option .card-body {
+    padding: 20px 15px; /* Más padding */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+}
+
+
+
+
+.collectable-option img {
+ width: 80px; /* Más grande */
+    height: 80px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    flex-shrink: 0;
+}
+
+
+
+.collectable-option:hover img {
+    transform: scale(1.08);
+}
+
+.collectable-option .card-title {
+    font-size: 0.9rem; /* Texto más grande */
+    font-weight: 600;
+    color: #333;
+    line-height: 1.3;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 2.4em;
+}
+
+/* ============================================
+   CONTENEDORES DE GRIDS - MÁS ALTOS
+   ============================================ */
+
+/* Contenedores de grids CON ALTURA AUTOMÁTICA */
+.plants-grid-container,
+.collectables-grid-container {
+    height: auto !important; /* Altura automática */
+    min-height: 950px; /* Altura mínima visible */
+    max-height: none !important; /* Sin límite máximo */
+    overflow-y: visible !important; /* Sin scroll interno */
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px; /* Más padding */
+    background: white;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px; /* Separación entre secciones */
+}
+
+
+.collectables-grid-container {
+    height: 650px !important; 
+    overflow-y: auto;
+}
+
+.plants-grid-container,
+.collectables-grid-container {
+    height: 650px !important; 
+    overflow-y: auto;
+}
+
+
+/* Personalización del scrollbar (si usas altura fija) */
+.plants-grid-container::-webkit-scrollbar,
+.collectables-grid-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.plants-grid-container::-webkit-scrollbar-track,
+.collectables-grid-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.plants-grid-container::-webkit-scrollbar-thumb,
+.collectables-grid-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.plants-grid-container::-webkit-scrollbar-thumb:hover,
+.collectables-grid-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+
+/* ============================================
+   ESTILOS RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .reward-container-modal {
+        width: 95%;
+        max-height: 90vh; /* Más alto en móvil */
+        max-width: 95%;
+    }
+    
+    .reward-container-modal-header {
+        flex-wrap: wrap;
+        padding: 15px;
+    }
+    
+    .reward-container-modal-title {
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .search-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 10px 0 !important;
+    }
+    
+    .reward-container-modal-body {
+        padding: 20px;
+        max-height: calc(90vh - 130px);
+    }
+    
+    .reward-container-modal-footer {
+        padding: 15px;
+    }
+    
+    .plants-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+    }
+    
+    .collectables-grid .col-md-4 {
+        width: 50%;
+    }
+    
+    /* Contenedores más compactos en móvil */
+    .plants-grid-container,
+    .collectables-grid-container {
+        min-height: 350px;
+        padding: 15px;
+    }
+    
+    .plant-option {
+        min-height: 120px;
+        padding: 10px 6px;
+    }
+    
+    .plant-option-img {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 576px) {
+    .plants-grid {
+        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+        gap: 10px;
+    }
+    
+    .collectables-grid .col-md-4 {
+        width: 100%;
+    }
+    
+    .plant-option-img {
+        width: 50px;
+        height: 50px;
+    }
+    
+ .collectable-option img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 12px;
+}
+    
+    .plants-grid-container,
+    .collectables-grid-container {
+        min-height: 300px;
+        padding: 12px;
+    }
+}
+
+/* ============================================
+   ESTILOS PARA CUANDO EL MODAL ESTÁ ABIERTO
+   ============================================ */
+
+/* Clase que se añade al body cuando el modal está abierto */
+body.reward-modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
+}
+
+/* Asegurar que el overlay esté siempre encima */
+.reward-modal-overlay.show {
+    display: flex !important;
+}
+
+/* Para prevenir que otros elementos interfieran */
+.reward-modal-overlay * {
+    box-sizing: border-box;
+}
+
+/* Asegurar que el modal esté centrado correctamente */
+.reward-container-modal {
+    position: relative;
+    margin: 20px;
+}

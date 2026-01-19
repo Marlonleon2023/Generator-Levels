@@ -269,6 +269,49 @@
                                             </div>
                                         </div>
 
+                                        <!-- En la pestaña basic, después del campo startingSun -->
+<div class="col-md-6">
+    <label class="form-label fw-bold">Recompensas:</label>
+    <div class="rewards-container mb-3">
+        <!-- Recompensa Primera Victoria -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                <h6 class="mb-0"><i class="bi bi-award me-2"></i>Primera Victoria</h6>
+                <button class="btn btn-sm btn-outline-primary add-reward-btn" 
+                        data-reward-type="first">
+                    <i class="bi bi-plus-circle me-1"></i>Añadir
+                </button>
+            </div>
+            <div class="card-body p-3" id="firstRewardContainer">
+                <div class="text-center text-muted py-2">
+                    <i class="bi bi-gift display-6 mb-2"></i>
+                    <p class="mb-0">No hay recompensa configurada</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recompensa Rejugabilidad -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                <h6 class="mb-0"><i class="bi bi-repeat me-2"></i>Rejugabilidad</h6>
+                <button class="btn btn-sm btn-outline-success add-reward-btn" 
+                        data-reward-type="replay">
+                    <i class="bi bi-plus-circle me-1"></i>Añadir
+                </button>
+            </div>
+            <div class="card-body p-3" id="replayRewardContainer">
+                <div class="text-center text-muted py-2">
+                    <i class="bi bi-arrow-repeat display-6 mb-2"></i>
+                    <p class="mb-0">No hay recompensa configurada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                                        
+
+
+
 
 
 
@@ -1007,9 +1050,7 @@
 
                         </div>
                     </div>
-                </div>
-
-                    <!-- Configuración Subterránea -->
+                        <!-- Configuración Subterránea -->
                     <div class="card shadow-sm mt-4">
                         <div class="card-header bg-light">
                             <h5 class="mb-0"><i class="bi bi-arrow-down-up me-2"></i>Zombies Subterráneos</h5>
@@ -1062,6 +1103,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                
 
 
 
@@ -1587,9 +1631,87 @@
             </div>
         </div>
 
+        
+
+
     </div>
 
 
+
+    
+
+<div class="reward-modal-overlay" id="rewardModalOverlay" style="display: none;">
+    <div class="reward-container-modal" id="rewardModal" style="max-width: 700px;">
+        <div class="reward-container-modal-header bg-success text-white">
+            <h5 class="reward-container-modal-title">
+                <i class="bi bi-gift me-2"></i>Seleccionar Recompensa
+            </h5>
+            
+            <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                <input type="text" class="form-control form-control-sm" id="rewardSearch"
+                    placeholder="Buscar recompensa...">
+            </div>
+            
+            <button type="button" class="reward-container-modal-close" id="rewardModalClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="reward-container-modal-body">
+            <!-- Tipo de recompensa -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="form-label fw-bold">Tipo de Recompensa:</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="rewardType" id="rewardTypePlant" 
+                               autocomplete="off" checked value="unlock_plant">
+                        <label class="btn btn-outline-success" for="rewardTypePlant">
+                            <i class="bi bi-flower1 me-2"></i>Planta
+                        </label>
+                        
+                        <input type="radio" class="btn-check" name="rewardType" id="rewardTypeCollectable" 
+                               autocomplete="off" value="collectable">
+                        <label class="btn btn-outline-warning" for="rewardTypeCollectable">
+                            <i class="bi bi-coin me-2"></i>Coleccionable
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Plantas -->
+            <div class="reward-panel" id="plantRewardPanel">
+                <h6><i class="bi bi-search me-2"></i>Buscar Planta:</h6>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="plantSearch" placeholder="Escribe para buscar plantas...">
+                </div>
+                
+                <!-- Contenedor para las plantas -->
+                <div class="plants-grid-container" style="max-height: 300px; overflow-y: auto;">
+                    <div class="plants-grid" id="plantsGrid">
+                        <!-- Las plantas se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Coleccionables -->
+          <div class="collectables-grid-container" id="collectableRewardPanel">
+        <h6><i class="bi bi-collection me-2"></i>Seleccionar Coleccionable:</h6>
+        <div class="collectables-grid" id="collectablesGridContent">
+            <!-- Los coleccionables se cargarán dinámicamente con la misma estructura que plantas -->
+        </div>
+    </div>
+     </div>
+            
+        <div class="reward-container-modal-footer">
+            <button type="button" class="btn btn-secondary" id="rewardModalCancel">Cancelar</button>
+            <button type="button" class="btn btn-success" id="saveRewardBtn">
+                <i class="bi bi-check-circle me-2"></i>Guardar Recompensa
+            </button>
+        </div>
+    </div>
+</div>
+    
     <!-- Modal personalizado para selección de escenario -->
     <!-- Modal personalizado para selección de escenario -->
     <div class="custom-modal-overlay" id="scenarioModalOverlay">
@@ -1676,6 +1798,10 @@
 
 
 
+
+
+
+
     <div class="wave-separator">
         <img src="/Assets/Icons/pvz2font.webp" alt="olas">
     </div>
@@ -1683,6 +1809,8 @@
 
     <script src="/Js/bootstrap.bundle.min.js"></script>
     <script src="/Js/sweetalert2.min.js"></script>
+
+   <script type="module"  src="/Js/reward-manager.js"></script>
 
     <script type="module" src="/Js/main.js"></script>
     <script src="/Js/plant-manager.js"></script>
