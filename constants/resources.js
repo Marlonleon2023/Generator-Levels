@@ -27,89 +27,78 @@ export const WORLD_IMAGES = {
     "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.webp`,
     "Oeste": `${PATHS.IMAGES.MUNDOS}cowboy.webp`,
     "Futuro": `${PATHS.IMAGES.MUNDOS}future.webp`,
-    "eighties": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
+    "Eighties": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
     "Lostcity": `${PATHS.IMAGES.MUNDOS}lostcity.webp`,
-    "Canival": `${PATHS.IMAGES.MUNDOS}circus.webp`,
     "Iceage": `${PATHS.IMAGES.MUNDOS}iceage.webp`,
     "Atlantis": `${PATHS.IMAGES.MUNDOS}atlantis.webp`,
-    "Renai": `${PATHS.IMAGES.MUNDOS}renai.webp`
+    "Renai": `${PATHS.IMAGES.MUNDOS}renai.webp`,
+
+    /* Circus / Carnival */
+    "Carnival": `${PATHS.IMAGES.MUNDOS}circus.webp`
 };
 
 // Imágenes de escenarios (stages)
 export const STAGE_IMAGES = {
-  "ModernStage": `${PATHS.IMAGES.BOARD}ModernStage.webp`,
-  "EgyptStage": `${PATHS.IMAGES.BOARD}EgyptStage.webp`,
-  "PirateStage": `${PATHS.IMAGES.BOARD}PirateStage.webp`,
-  "WestStage": `${PATHS.IMAGES.BOARD}WestStage.webp`,
-  "DinoStage": `${PATHS.IMAGES.BOARD}DinoStage.webp`,
-  "LostcityStage": `${PATHS.IMAGES.BOARD}LostcityStage.webp`,
-  "DarkStage": `${PATHS.IMAGES.BOARD}DarkStage.webp`,
-  "IceageStage": `${PATHS.IMAGES.BOARD}IceageStage.webp`,
-  "EightiesStage": `${PATHS.IMAGES.BOARD}EightiesStage.webp`,
-  "FutureStage": `${PATHS.IMAGES.BOARD}FutureStage.webp`,
-  "BeachStage": `${PATHS.IMAGES.BOARD}BeachStage.webp`,
+    "ModernStage": `${PATHS.IMAGES.BOARD}ModernStage.webp`,
+    "EgyptStage": `${PATHS.IMAGES.BOARD}EgyptStage.webp`,
+    "PirateStage": `${PATHS.IMAGES.BOARD}PirateStage.webp`,
+    "WestStage": `${PATHS.IMAGES.BOARD}WestStage.webp`,
+    "DinoStage": `${PATHS.IMAGES.BOARD}DinoStage.webp`,
+    "LostcityStage": `${PATHS.IMAGES.BOARD}LostcityStage.webp`,
+    "DarkStage": `${PATHS.IMAGES.BOARD}DarkStage.webp`,
+    "IceageStage": `${PATHS.IMAGES.BOARD}IceageStage.webp`,
+    "EightiesStage": `${PATHS.IMAGES.BOARD}EightiesStage.webp`,
+    "FutureStage": `${PATHS.IMAGES.BOARD}FutureStage.webp`,
+    "BeachStage": `${PATHS.IMAGES.BOARD}BeachStage.webp`,
 
-  /* Extra stages */
-  "RiftStage": `${PATHS.IMAGES.BOARD}RiftStage.webp`,
-  "FoodfightStage": `${PATHS.IMAGES.BOARD}FoodfightStage.webp`,
-  "ZCorpStage": `${PATHS.IMAGES.BOARD}ZCorpStage.webp`,
-  "SportzballStage": `${PATHS.IMAGES.BOARD}SportzballStage.webp`,
-  "JoustStage": `${PATHS.IMAGES.BOARD}JoustStage.webp`,
-  "RomanStage": `${PATHS.IMAGES.BOARD}RomanStage.webp`,
-  "CarnivalStage": `${PATHS.IMAGES.BOARD}CarnivalStage.webp`,
-  "LunarStage": `${PATHS.IMAGES.BOARD}LunarStage.webp`,
-  "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
-  "RiftStageLawnOfDoom": `${PATHS.IMAGES.BOARD}RiftStageLawnOfDoom.webp`
+    /* Extra stages */
+    "RiftStage": `${PATHS.IMAGES.BOARD}RiftStage.webp`,
+    "FoodfightStage": `${PATHS.IMAGES.BOARD}FoodfightStage.webp`,
+    "ZCorpStage": `${PATHS.IMAGES.BOARD}ZCorpStage.webp`,
+    "SportzballStage": `${PATHS.IMAGES.BOARD}SportzballStage.webp`,
+    "JoustStage": `${PATHS.IMAGES.BOARD}JoustStage.webp`,
+    "RomanStage": `${PATHS.IMAGES.BOARD}RomanStage.webp`,
+    "CarnivalStage": `${PATHS.IMAGES.BOARD}CarnivalStage.webp`,
+    "LunarStage": `${PATHS.IMAGES.BOARD}LunarStage.webp`,
+    "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
+    "RiftStageLawnOfDoom": `${PATHS.IMAGES.BOARD}RiftStageLawnOfDoom.webp`
 };
-
 
 // Imágenes de las podadoras
 export const MOWER_IMAGES = {
-  "ModernMowers": `${PATHS.IMAGES.MOWERS}ModernMowers.webp`,
-  "EgyptMowers": `${PATHS.IMAGES.MOWERS}EgyptMowers.webp`,
-  "PirateMowers": `${PATHS.IMAGES.MOWERS}PirateMowers.webp`,
-  "WestMowers": `${PATHS.IMAGES.MOWERS}WestMowers.webp`,
-  "DinoMowers": `${PATHS.IMAGES.MOWERS}DinoMowers.webp`,
-  "LostcityMowers": `${PATHS.IMAGES.MOWERS}LostcityMowers.webp`,
-  "DarkMowers": `${PATHS.IMAGES.MOWERS}DarkMowers.webp`,
-  "IceageMowers": `${PATHS.IMAGES.MOWERS}IceageMowers.webp`,
-  "EightiesMowers": `${PATHS.IMAGES.MOWERS}EightiesMowers.webp`,
-  "FutureMowers": `${PATHS.IMAGES.MOWERS}FutureMowers.webp`,
-  "BeachMowers": `${PATHS.IMAGES.MOWERS}BeachMowers.webp`,
+    "ModernMowers": `${PATHS.IMAGES.MOWERS}ModernMowers.webp`,
+    "EgyptMowers": `${PATHS.IMAGES.MOWERS}EgyptMowers.webp`,
+    "PirateMowers": `${PATHS.IMAGES.MOWERS}PirateMowers.webp`,
+    "WestMowers": `${PATHS.IMAGES.MOWERS}WestMowers.webp`,
+    "DinoMowers": `${PATHS.IMAGES.MOWERS}DinoMowers.webp`,
+    "LostcityMowers": `${PATHS.IMAGES.MOWERS}LostcityMowers.webp`,
+    "DarkMowers": `${PATHS.IMAGES.MOWERS}DarkMowers.webp`,
+    "IceageMowers": `${PATHS.IMAGES.MOWERS}IceageMowers.webp`,
+    "EightiesMowers": `${PATHS.IMAGES.MOWERS}EightiesMowers.webp`,
+    "FutureMowers": `${PATHS.IMAGES.MOWERS}FutureMowers.webp`,
+    "BeachMowers": `${PATHS.IMAGES.MOWERS}BeachMowers.webp`,
+    "RomanMowers": `${PATHS.IMAGES.MOWERS}RomanMowers.webp`,
+    "RenaiMowers": `${PATHS.IMAGES.MOWERS}RenaiMowers.webp`,
 
-  "CarnivalMowers": `${PATHS.IMAGES.MOWERS}CarnivalMowers.webp`
+    /* Carnival */
+    "CarnivalMowers": `${PATHS.IMAGES.MOWERS}CarnivalMowers.webp`
 };
 
 export const WORLDS = {
-  "Moderno": ["ModernStage"],
-  "Egipto": ["EgyptStage"],
-  "Pirata": ["PirateStage"],
-  "Oeste": ["WestStage"],
-  "Dino": ["DinoStage"],
-  "Lostcity": ["LostcityStage"],
-  "Dark": ["DarkStage"],
-  "Iceage": ["IceageStage"],
-  "Eighties": ["EightiesStage"],
-  "Futuro": ["FutureStage"],
-  "Playa": ["BeachStage"],
+    "Moderno": ["ModernStage"],
+    "Egipto": ["EgyptStage"],
+    "Pirata": ["PirateStage"],
+    "Oeste": ["WestStage"],
+    "Dino": ["DinoStage"],
+    "Lostcity": ["LostcityStage"],
+    "Dark": ["DarkStage"],
+    "Iceage": ["IceageStage"],
+    "Eighties": ["EightiesStage"],
+    "Futuro": ["FutureStage"],
+    "Playa": ["BeachStage"],
 
-
-  "Carnival": ["CarnivalStage"]
-};
-
-
-// Efectos visuales
-export const VISUAL_EFFECTS = {
-    "Volcán": "RTID(VolcanoPattern1@LevelModules)",
-    "Nieve": "RTID(SnowRain@LevelModules)",
-    "Agua Movimiento Día": "RTID(PoolDay@LevelModules)",
-    "Agua Movimiento Noche": "RTID(PoolNight@LevelModules)",
-    "Tormenta + Lluvia": "RTID(TormPattern1@LevelModules)",
-    "Solo Lluvia": "RTID(RainPattern2@LevelModules)",
-    "Atlantis": "RTID(AtlantisPattern1@LevelModules)",
-    "Fog West": "RTID(WestNight@LevelModules)",
-    "Torm Egypt": "RTID(EgyptSandStormT@LevelModules)",
-    "Ninguno": ""
+    /* Carnival */
+    "Carnival": ["CarnivalStage"]
 };
 
 // Tipos de podadoras disponibles
@@ -131,6 +120,24 @@ export const MOWER_DISPLAY_NAMES = {
     "BeachMowers": "Podadoras de Playa",
     "RenaiMowers": "Podadoras Renai"
 };
+
+
+
+// Efectos visuales
+export const VISUAL_EFFECTS = {
+    "Volcán": "RTID(VolcanoPattern1@LevelModules)",
+    "Nieve": "RTID(SnowRain@LevelModules)",
+    "Agua Movimiento Día": "RTID(PoolDay@LevelModules)",
+    "Agua Movimiento Noche": "RTID(PoolNight@LevelModules)",
+    "Tormenta + Lluvia": "RTID(TormPattern1@LevelModules)",
+    "Solo Lluvia": "RTID(RainPattern2@LevelModules)",
+    "Atlantis": "RTID(AtlantisPattern1@LevelModules)",
+    "Fog West": "RTID(WestNight@LevelModules)",
+    "Torm Egypt": "RTID(EgyptSandStormT@LevelModules)",
+    "Ninguno": ""
+};
+
+
 
 
 // CONFIGURACIÓN DE MODS DETECTABLES
