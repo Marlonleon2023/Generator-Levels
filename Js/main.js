@@ -3201,17 +3201,23 @@ applyTabData(tabId, data) {
     detectHomeWorldFromCategory(category, zombieName) {
         // Mapear categorías a mundos
         const worldMapping = {
-            'Tutorial': 'tutorial',
-            'Moderno': 'modern',
-            'Egipto': 'egypt',
-            'Pirate': 'pirate',
-            'Oeste': 'west',
-            'Futuro': 'future',
-            'Antiguo': 'roman',
-            'Edad de Hielo': 'iceage',
-            'Atlantis': 'atlantis',
-            'Renai': 'renai',
-            'Canival': 'carnival'
+        'Modern': 'modern',
+        'Egypt': 'egypt',
+        'Pirate': 'pirate',
+        'Wildwest': 'wildwest',
+        'Dino': 'dino',
+        'Lostcity': 'lostcity',
+        'Dark': 'dark',
+        'Iceage': 'iceage',
+        'Eighties': 'eighties',
+        'Future': 'future',
+        'Beach': 'beach',
+        'Atlantis': 'atlantis',
+        'Renai': 'renai',
+        'Canival': 'carnival'
+
+
+
         };
 
         // Primero intentar por categoría

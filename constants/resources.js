@@ -27,51 +27,76 @@ export const WORLD_IMAGES = {
     "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.webp`,
     "Oeste": `${PATHS.IMAGES.MUNDOS}cowboy.webp`,
     "Futuro": `${PATHS.IMAGES.MUNDOS}future.webp`,
-    "Antiguo": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
-    "Journey": `${PATHS.IMAGES.MUNDOS}lostcity.webp`,
+    "eighties": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
+    "Lostcity": `${PATHS.IMAGES.MUNDOS}lostcity.webp`,
     "Canival": `${PATHS.IMAGES.MUNDOS}circus.webp`,
-    "Edad de Hielo": `${PATHS.IMAGES.MUNDOS}iceage.webp`,
+    "Iceage": `${PATHS.IMAGES.MUNDOS}iceage.webp`,
     "Atlantis": `${PATHS.IMAGES.MUNDOS}atlantis.webp`,
     "Renai": `${PATHS.IMAGES.MUNDOS}renai.webp`
 };
 
 // Imágenes de escenarios (stages)
 export const STAGE_IMAGES = {
-    "ModernStage": `${PATHS.IMAGES.BOARD}ModernStage.webp`,
-    "EgyptStage": `${PATHS.IMAGES.BOARD}EgyptStage.webp`,
-    "PirateStage": `${PATHS.IMAGES.BOARD}PirateStage.webp`,
-    "WestStage": `${PATHS.IMAGES.BOARD}WestStage.webp`,   
-    "FutureStage": `${PATHS.IMAGES.BOARD}FutureStage.webp`,
-    "IceageStage": `${PATHS.IMAGES.BOARD}IceageStage.webp`,
-    "BeachStage": `${PATHS.IMAGES.BOARD}BeachStage.webp`,
-    "DarkStage": `${PATHS.IMAGES.BOARD}DarkStage.webp`,
-    "DinoStage": `${PATHS.IMAGES.BOARD}DinoStage.webp`,
-    "EightiesStage": `${PATHS.IMAGES.BOARD}EightiesStage.webp`,
-    "RiftStage": `${PATHS.IMAGES.BOARD}RiftStage.webp`,
-    "FoodfightStage": `${PATHS.IMAGES.BOARD}FoodfightStage.webp`,
-    "ZCorpStage": `${PATHS.IMAGES.BOARD}ZCorpStage.webp`,
-    "SportzballStage": `${PATHS.IMAGES.BOARD}SportzballStage.webp`,
-    "JoustStage": `${PATHS.IMAGES.BOARD}JoustStage.webp`,
-    "RomanStage": `${PATHS.IMAGES.BOARD}RomanStage.webp`,
-    "CarnivalStage": `${PATHS.IMAGES.BOARD}CarnivalStage.webp`,
-    "LunarStage": `${PATHS.IMAGES.BOARD}LunarStage.webp`,
-     "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
-      "RiftStageLawnOfDoom": `${PATHS.IMAGES.BOARD}RiftStageLawnOfDoom.webp`,
+  "ModernStage": `${PATHS.IMAGES.BOARD}ModernStage.webp`,
+  "EgyptStage": `${PATHS.IMAGES.BOARD}EgyptStage.webp`,
+  "PirateStage": `${PATHS.IMAGES.BOARD}PirateStage.webp`,
+  "WestStage": `${PATHS.IMAGES.BOARD}WestStage.webp`,
+  "DinoStage": `${PATHS.IMAGES.BOARD}DinoStage.webp`,
+  "LostcityStage": `${PATHS.IMAGES.BOARD}LostcityStage.webp`,
+  "DarkStage": `${PATHS.IMAGES.BOARD}DarkStage.webp`,
+  "IceageStage": `${PATHS.IMAGES.BOARD}IceageStage.webp`,
+  "EightiesStage": `${PATHS.IMAGES.BOARD}EightiesStage.webp`,
+  "FutureStage": `${PATHS.IMAGES.BOARD}FutureStage.webp`,
+  "BeachStage": `${PATHS.IMAGES.BOARD}BeachStage.webp`,
 
-  //  "BajoCeroStage": `${PATHS.IMAGES.BOARD}BajoCeroStage.webp`,
-   // "AtlantisStage": `${PATHS.IMAGES.BOARD}AtlantisStage.webp`,
-   // "DeepseaStage": `${PATHS.IMAGES.BOARD}DeepseaStage.webp`,
-   // "RenaiDayStage": `${PATHS.IMAGES.BOARD}RenaiDayStage.webp`,
-   // "RenaiNightStage": `${PATHS.IMAGES.BOARD}RenaiNightStage.webp`,
-   // "FairyStage": `${PATHS.IMAGES.BOARD}FairyStage.webp`,
-   // "JourneyStage": `${PATHS.IMAGES.BOARD}JourneyStage.webp`,
-   
-   // "VolcanoStage": `${PATHS.IMAGES.BOARD}VolcanoStage.webp`,
-    //"FutureNightStage": `${PATHS.IMAS.BOARD}FutureNightStage.webp`,
-    //"WestNightStage": `${PATHS.IMAGES.BOARD}WestNightStage.webp`,
-    // "PirateNightStage": `${PATHS.IMAGES.BOARD}PirateNightStage.webp`,
-    //"default": `${PATHS.IMAGES.BOARD}default.webp`
+  /* Extra stages */
+  "RiftStage": `${PATHS.IMAGES.BOARD}RiftStage.webp`,
+  "FoodfightStage": `${PATHS.IMAGES.BOARD}FoodfightStage.webp`,
+  "ZCorpStage": `${PATHS.IMAGES.BOARD}ZCorpStage.webp`,
+  "SportzballStage": `${PATHS.IMAGES.BOARD}SportzballStage.webp`,
+  "JoustStage": `${PATHS.IMAGES.BOARD}JoustStage.webp`,
+  "RomanStage": `${PATHS.IMAGES.BOARD}RomanStage.webp`,
+  "CarnivalStage": `${PATHS.IMAGES.BOARD}CarnivalStage.webp`,
+  "LunarStage": `${PATHS.IMAGES.BOARD}LunarStage.webp`,
+  "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
+  "RiftStageLawnOfDoom": `${PATHS.IMAGES.BOARD}RiftStageLawnOfDoom.webp`
 };
+
+
+// Imágenes de las podadoras
+export const MOWER_IMAGES = {
+  "ModernMowers": `${PATHS.IMAGES.MOWERS}ModernMowers.webp`,
+  "EgyptMowers": `${PATHS.IMAGES.MOWERS}EgyptMowers.webp`,
+  "PirateMowers": `${PATHS.IMAGES.MOWERS}PirateMowers.webp`,
+  "WestMowers": `${PATHS.IMAGES.MOWERS}WestMowers.webp`,
+  "DinoMowers": `${PATHS.IMAGES.MOWERS}DinoMowers.webp`,
+  "LostcityMowers": `${PATHS.IMAGES.MOWERS}LostcityMowers.webp`,
+  "DarkMowers": `${PATHS.IMAGES.MOWERS}DarkMowers.webp`,
+  "IceageMowers": `${PATHS.IMAGES.MOWERS}IceageMowers.webp`,
+  "EightiesMowers": `${PATHS.IMAGES.MOWERS}EightiesMowers.webp`,
+  "FutureMowers": `${PATHS.IMAGES.MOWERS}FutureMowers.webp`,
+  "BeachMowers": `${PATHS.IMAGES.MOWERS}BeachMowers.webp`,
+
+  "CarnivalMowers": `${PATHS.IMAGES.MOWERS}CarnivalMowers.webp`
+};
+
+export const WORLDS = {
+  "Moderno": ["ModernStage"],
+  "Egipto": ["EgyptStage"],
+  "Pirata": ["PirateStage"],
+  "Oeste": ["WestStage"],
+  "Dino": ["DinoStage"],
+  "Lostcity": ["LostcityStage"],
+  "Dark": ["DarkStage"],
+  "Iceage": ["IceageStage"],
+  "Eighties": ["EightiesStage"],
+  "Futuro": ["FutureStage"],
+  "Playa": ["BeachStage"],
+
+
+  "Carnival": ["CarnivalStage"]
+};
+
 
 // Efectos visuales
 export const VISUAL_EFFECTS = {
@@ -107,43 +132,6 @@ export const MOWER_DISPLAY_NAMES = {
     "RenaiMowers": "Podadoras Renai"
 };
 
-// Imágenes de las podadoras
-export const MOWER_IMAGES = {
-    "ModernMowers": `${PATHS.IMAGES.MOWERS}ModernMowers.webp`,
-    "EgyptMowers": `${PATHS.IMAGES.MOWERS}EgyptMowers.webp`,
-    "PirateMowers": `${PATHS.IMAGES.MOWERS}PirateMowers.webp`,
-    "WestMowers": `${PATHS.IMAGES.MOWERS}WestMowers.webp`,
-    "CarnivalMowers": `${PATHS.IMAGES.MOWERS}CarnivalMowers.webp`,
-    "FutureMowers": `${PATHS.IMAGES.MOWERS}FutureMowers.webp`,
-    "RomanMowers": `${PATHS.IMAGES.MOWERS}RomanMowers.webp`,
-    "IceageMowers": `${PATHS.IMAGES.MOWERS}IceageMowers.webp`,
-    "BeachMowers": `${PATHS.IMAGES.MOWERS}BeachMowers.webp`,
-    "RenaiMowers": `${PATHS.IMAGES.MOWERS}RenaiMowers.webp`,
-   // "default": `${PATHS.IMAGES.MOWERS}default.webp`
-};
-
-// Mapeo de mundos a sus escenarios disponibles
-export const WORLDS = {
-    "Moderno": ["ModernStage"],
-    "Egipto": ["EgyptStage"],
-    "Pirata": ["PirateStage"],
-    "Oeste": ["WestStage"],
-    "Futuro": ["FutureStage"],
-    "Antiguo": ["RomanStage"],
-    "Journey": ["JourneyStage"],
-    "Canival": ["CarnivalStage"],
-    "Edad de Hielo": ["IceageStage"],
-    "Iceage": ["IceageStage"],
-    "Atlantis": ["AtlantisStage", "DeepseaStage"],
-    "Renai": ["RenaiDayStage", "RenaiNightStage"],
-    "Otros": ["FairyStage", "LunarStage", "VolcanoStage", "RiftStageLawnOfDoom"]
-};
-
-
-
-
-
-// resources.js - Agregar al final del archivo
 
 // CONFIGURACIÓN DE MODS DETECTABLES
 // CONFIGURACIÓN DE MODS DETECTABLES
@@ -570,48 +558,7 @@ export const GRAVESTONE_DISPLAY_NAMES = {
 
 // En constants/resources.js - AGREGAR esto:
 export const STANDARD_WORLDS = {
-    "Moderno": {
-        display: "Moderno",
-        internal: "modern",
-        stages: ["ModernStage"],
-        mowers: "ModernMowers"
-    },
-    "Egipto": {
-        display: "Egipto", 
-        internal: "egypt",
-        stages: ["EgyptStage"],
-        mowers: "EgyptMowers"
-    },
-    "Pirata": {
-        display: "Pirata",
-        internal: "pirate",
-        stages: ["PirateStage"],
-        mowers: "PirateMowers"
-    },
-    "Oeste": {
-        display: "Oeste",
-        internal: "west",
-        stages: ["WestStage"],
-        mowers: "WestMowers"
-    },
-    "Futuro": {
-        display: "Futuro",
-        internal: "future",
-        stages: ["FutureStage"],
-        mowers: "FutureMowers"
-    },
-    "Antiguo": {
-        display: "Antiguo",
-        internal: "roman",
-        stages: ["RomanStage"],
-        mowers: "RomanMowers"
-    },
-    "Edad de Hielo": {
-        display: "Edad de Hielo",
-        internal: "iceage",
-        stages: ["IceageStage"],
-        mowers: "IceageMowers"
-    },
+   
     "Atlantis": {
         display: "Atlantis",
         internal: "atlantis",
