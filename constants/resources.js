@@ -25,7 +25,6 @@ export const WORLD_IMAGES = {
     "Moderno": `${PATHS.IMAGES.MUNDOS}modern.webp`,
     "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.webp`,
     "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.webp`,
-    "Oeste": `${PATHS.IMAGES.MUNDOS}cowboy.webp`,
     "Futuro": `${PATHS.IMAGES.MUNDOS}future.webp`,
     "Eighties": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
     "Lostcity": `${PATHS.IMAGES.MUNDOS}lostcity.webp`,
@@ -42,7 +41,6 @@ export const STAGE_IMAGES = {
     "ModernStage": `${PATHS.IMAGES.BOARD}ModernStage.webp`,
     "EgyptStage": `${PATHS.IMAGES.BOARD}EgyptStage.webp`,
     "PirateStage": `${PATHS.IMAGES.BOARD}PirateStage.webp`,
-    "WestStage": `${PATHS.IMAGES.BOARD}WestStage.webp`,
     "DinoStage": `${PATHS.IMAGES.BOARD}DinoStage.webp`,
     "LostcityStage": `${PATHS.IMAGES.BOARD}LostcityStage.webp`,
     "DarkStage": `${PATHS.IMAGES.BOARD}DarkStage.webp`,
@@ -61,6 +59,12 @@ export const STAGE_IMAGES = {
     "CarnivalStage": `${PATHS.IMAGES.BOARD}CarnivalStage.webp`,
     "LunarStage": `${PATHS.IMAGES.BOARD}LunarStage.webp`,
     "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
+
+    "SummerNightsStage": `${PATHS.IMAGES.BOARD}SummerNightsStage.webp`,
+    "SpringStage": `${PATHS.IMAGES.BOARD}SpringStage.webp`,
+    "ValenbrainzStage": `${PATHS.IMAGES.BOARD}ValenbrainzStage.webp`,
+
+
     "RiftStageLawnOfDoom": `${PATHS.IMAGES.BOARD}RiftStageLawnOfDoom.webp`
 };
 
@@ -71,7 +75,7 @@ export const MOWER_IMAGES = {
     "PirateMowers": `${PATHS.IMAGES.MOWERS}PirateMowers.webp`,
     "WestMowers": `${PATHS.IMAGES.MOWERS}WestMowers.webp`,
     "DinoMowers": `${PATHS.IMAGES.MOWERS}DinoMowers.webp`,
-    "LostcityMowers": `${PATHS.IMAGES.MOWERS}LostcityMowers.webp`,
+    "LostCityMowers": `${PATHS.IMAGES.MOWERS}LostCityMowers.webp`,
     "DarkMowers": `${PATHS.IMAGES.MOWERS}DarkMowers.webp`,
     "IceageMowers": `${PATHS.IMAGES.MOWERS}IceageMowers.webp`,
     "EightiesMowers": `${PATHS.IMAGES.MOWERS}EightiesMowers.webp`,
@@ -103,7 +107,7 @@ export const WORLDS = {
 
 // Tipos de podadoras disponibles
 export const MOWER_TYPES = [
-    "ModernMowers", "EgyptMowers", "PirateMowers", "WestMowers", "CarnivalMowers",
+    "ModernMowers", "EgyptMowers","DarkMowers","LostCityMowers","EightiesMowers", "DinoMowers", "PirateMowers", "CarnivalMowers",
     "FutureMowers", "RomanMowers", "IceageMowers", "BeachMowers", "RenaiMowers"
 ];
 
@@ -112,7 +116,7 @@ export const MOWER_DISPLAY_NAMES = {
     "ModernMowers": "Podadoras Modernas",
     "EgyptMowers": "Podadoras Egipcias",
     "PirateMowers": "Podadoras Piratas",
-    "WestMowers": "Podadoras del Oeste",
+    "LostCityMowers": "Podadoras del Oeste",
     "CarnivalMowers": "Podadoras de Carnaval",
     "FutureMowers": "Podadoras Futuristas",
     "RomanMowers": "Podadoras Romanas",
@@ -408,6 +412,7 @@ export const PLANTS = [
     "armamint",
     "concealmint",
     "spearmint",
+    "chardguard",
     "shadowpeashooter",
     "poisonpeashooter",
     "slingpea",
