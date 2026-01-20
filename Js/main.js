@@ -4293,7 +4293,9 @@ updateSeedSlotsControl() {
             const placementOrder = [
                 "MountingPlants",
                 "MountingZombies",
-                "MountingGravestones"
+                "MountingGravestones",
+                "MountingSliders",
+                "MountingPotions"
             ];
 
             placementOrder.forEach(moduleName => {
@@ -4567,7 +4569,9 @@ updateSeedSlotsControl() {
                 const validPlacementModules = [
                     "MountingPlants",
                     "MountingZombies",
-                    "MountingGravestones"
+                    "MountingGravestones",
+                    "MountingSliders",
+                    "MountingPotions"
                 ];
                 return validPlacementModules.includes(alias);
             });

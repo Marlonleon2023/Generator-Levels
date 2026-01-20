@@ -16,9 +16,26 @@ export const PATHS = {
         ZOMBIES: "Assets/Zombies/",
         REWARDS: "Assets/Rewards/",
         GRAVESTONES: "Assets/Gravestones/",
-        CONDITIONS: "Assets/Condiciones/"
+        CONDITIONS: "Assets/Condiciones/",
+        SLIDERS: 'Assets/Sliders/',
+        POTIONS: 'Assets/Potions/', // Nueva ruta
     },
 };
+
+
+// En constants/resources.js, agrega:
+export const SLIDERS = [
+    'slider_up',
+    'slider_down',
+    'slider_up_modern', 
+    'slider_down_modern'
+];
+
+
+export const POTIONS = [
+    'speed',
+    'toughness',
+];
 
 // Imágenes de mundos
 export const WORLD_IMAGES = {

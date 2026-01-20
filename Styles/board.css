@@ -1,4 +1,3 @@
-
 /* Estilos para las capas de condición */
 .condition-layer {
     position: absolute;
@@ -22,7 +21,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-   
     border-radius: 4px;
 }
 
@@ -45,9 +43,10 @@
 
 .ice-zombie-layer .ice-overlay {
     filter: drop-shadow(0 0 3px rgba(100, 200, 255, 0.5));
+    width: 140%;
+    height: 140%;
+    margin-bottom: 70%;
 }
-
-
 
 .table-bordered {
     background-image: url(/Assets/Board/Rift.webp);
@@ -55,6 +54,7 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
 
 /* Estilos para el tablero */
 .board-table {
@@ -70,8 +70,8 @@ tr td{
 }
 
 .board-cell {
-    width: 100px;
-    height: 110px;
+    width: 140px;
+    height: 140px;
     position: relative;
     cursor: pointer;
     transition: all 0.2s;
@@ -93,24 +93,17 @@ tr td{
     position: relative;
 }
 
+/* CORREGIR: Los elementos deben ocupar toda la celda */
 .cell-element {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    position: absolute;
+    width: 100%; /* Cambiar a 100% */
+    height: 100%; /* Cambiar a 100% */
+    top: 0;
+    left: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-}
-
-
-
-
-
-
-/* Los elementos deben tener un z-index mayor que la capa de derrota */
-.cell-element {
-    position: relative;
+    border-radius: 0 !important;
     z-index: 2; /* Encima de la baldosa de derrota */
 }
 
@@ -136,84 +129,111 @@ tr td{
     display: inline-block;
     background: #4CAF50;
     color: white;
-    padding: 1px 4px;
+    padding: 2px 5px;
     border-radius: 3px;
-    font-size: 10px;
-    margin-left: 2px;
-}
-
-
-
-
-/* CORREGIR: Eliminar border-radius que crea círculos */
-.cell-element {
+    font-size: 11px;
     position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* REMOVER border-radius que crea círculos */
-    border-radius: 0 !important; /* Cambia de 50% a 0 */
+    bottom: 5px;
+    right: 5px;
+    z-index: 10;
 }
 
+/* Asegurar esquinas rectas */
 .plant-element {
     background: linear-gradient(135deg, rgba(88, 123, 97, 0) 0%, rgba(32, 201, 150, 0) 100%);
-    /* Asegurar esquinas rectas */
     border-radius: 0 !important;
     border: none;
 }
 
 .zombie-element {
     background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
-    /* Asegurar esquinas rectas */
-     border: none;
+    border: none;
     border-radius: 0 !important;
 }
 
 .gravestone-element {
     background: linear-gradient(135deg, rgba(108, 117, 125, 0.1) 0%, rgba(73, 80, 87, 0.1) 100%);
-    /* Asegurar esquinas rectas */
-     border: none;
+    border: none;
     border-radius: 0 !important;
 }
 
-/* También asegurarte que la imagen no tenga bordes redondeados */
+/* NUEVO: Estilos para sliders */
+.slider-element {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: none;
+    border-radius: 0 !important;
+    z-index: 1; /* Debajo de otros elementos */
+}
+
+/* Asegurar que las imágenes ocupen toda la celda */
 .cell-thumbnail {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    /* Sin bordes redondeados */
-    border-radius: 0 !important;
-}
-
-
-
-.cell-content {
     width: 100%;
     height: 100%;
-    position: relative;
+    object-fit: contain;
+    border-radius: 0 !important;
+    padding: 10px; /* Espacio alrededor de la imagen */
 }
 
-/* Si el problema persiste, prueba con estos estilos más específicos */
+.zombie-element .cell-thumbnail {
+    width: 170px;
+    height: 170px;
+    margin-bottom: 70%;
+    z-index: 2;
+}
+
+.gravestone-element .cell-thumbnail {
+    width: 190px;
+    height: 170px;
+    z-index: 4;
+    margin-bottom: 50%;
+}
+
+
+.slider-element .cell-thumbnail {
+    width: 150px;
+    height: 150px;
+    z-index: 4;
+}
+
+.plant-element .cell-thumbnail{
+ 
+    width: 120px;
+    height: 120px;
+    z-index: 4;
+    margin-bottom: 30%;
+
+}
+
+
+.potion-element .cell-thumbnail {
+    width: 190px;
+    height: 120px;
+    z-index: 4;
+    padding: 12px;
+}
+
+/* Específico para sliders */
+.slider-thumbnail {
+    padding: 15px; /* Más espacio para sliders */
+    opacity: 0.9;
+}
+
+/* Estilos más específicos para asegurar bordes rectos */
 .cell-element[class*="plant-element"],
 .cell-element[class*="zombie-element"],
-.cell-element[class*="gravestone-element"] {
+.cell-element[class*="gravestone-element"],
+.cell-element[class*="slider-element"]
+.cell-element[class*="potion-element"] {
     border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
 }
 
-
-
-   
-
-
 .lawn-dialog-backdrop {
     position: fixed;
     inset: 0;
     z-index: 1040;
-    transform: scale(0.6);
+    transform: scale(0.73);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -222,7 +242,7 @@ tr td{
 
 /* Modal */
 .lawn-dialog {
-    background: #fff;
+    background: #ffffff;
     width: 100%;
     max-width: 650px;
     max-height: 160vh;
@@ -231,8 +251,15 @@ tr td{
     border-radius: 12px;
     overflow: hidden;
     animation: modalIn .25s ease;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.304), 0 35px 90px rgba(0, 0, 0, 0.95);
 }
 
+
+.dialog-body {
+    max-height: calc(100vh);
+    overflow-y: auto;
+    flex: 1;
+}
 
 .dialog-header {
     padding: 16px 20px;
@@ -274,21 +301,7 @@ tr td{
     color: #0f172a;
 }
 
-.dialog-body {
-    padding: 16px 20px;
-    overflow-y: auto;
-    flex: 1;
-}
 
-
-.dialog-footer {
-    padding: 14px 20px;
-    border-top: 1px solid #e5e7eb;
-    display: flex;
-    gap: 12px;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
 /* Minimalist Form Elements */
 .form-row {
     display: grid;
@@ -350,10 +363,7 @@ tr td{
     gap: 10px;
 }
 
-.dialog-body {
-    display: flex;
-    flex-direction: column;
-}
+
 
 .elements-section {
     flex: 1;
@@ -367,7 +377,6 @@ tr td{
 
 .elements-grid::-webkit-scrollbar {
     width: 6px;
-
 }
 
 .elements-grid::-webkit-scrollbar-track {
@@ -391,7 +400,6 @@ tr td{
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    
     position: relative;
     overflow: hidden;
 }
@@ -537,51 +545,9 @@ tr td{
     gap: 16px;
 }
 
-.modifier-controls {
-    display: flex;
-    gap: 14px;
-}
 
 
-.modifier-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    color: #475569;
-    cursor: pointer;
-    padding: 6px 0;
-    transition: color 0.2s ease;
-}
 
-.modifier-label:hover {
-    color: #334155;
-}
-
-.modifier-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    border: 1px solid #cbd5e1;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.modifier-label input[type="checkbox"]:checked {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
-}
-
-.modifier-label .emoji {
-    font-size: 16px;
-    opacity: 0.8;
-}
-
-/* Minimalist Buttons */
-.button-group {
-    display: flex;
-    gap: 10px;
-}
 
 
 .btn-remove, .btn-add {
@@ -657,26 +623,91 @@ tr td{
         border-radius: 10px;
     }
 
+   .board-cell {
+        width: 70px;
+        height: 75px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Ajustar imágenes de zombies para tablets */
+    .zombie-element .cell-thumbnail {
+        width: 100px; /* Reducido de 160px */
+        height: 100px; /* Reducido de 160px */
+        margin-bottom: 40%; /* Reducido de 70% */
+        z-index: 2;
+    }
+    
+    /* Ajustar imágenes de lápidas para tablets */
+    .gravestone-element .cell-thumbnail {
+        width: 90px; /* Reducido de 150px */
+        height: 90px; /* Reducido de 150px */
+        margin-bottom: 30%; /* Reducido de 50% */
+        z-index: 4;
+    }
+    
+    /* Ajustar imágenes de sliders para tablets */
+    .slider-element .cell-thumbnail {
+        width: 80px; /* Reducido de 130px */
+        height: 80px; /* Reducido de 130px */
+        z-index: 4;
+    }
 
-    .board-cell {
-    width: 50px;
-    height: 55px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    vertical-align: middle;
+    .plant-element .cell-thumbnail{
+ 
+    width: 70px;
+    height: 70px;
+    z-index: 4;
+    margin-bottom: 30%;
+
 }
     
+    /* Ajustar imágenes de pociones para tablets */
+    .potion-element .cell-thumbnail {
+        width: 95px; /* Reducido de 120px */
+        height: 95px; /* Reducido de 120px */
+        padding: 8px; /* Reducido de 12px */
+        z-index: 4;
+    }
+    
+    /* Ajustar hielo en zombies para tablets */
+    .ice-zombie-layer .ice-overlay {
+        width: 110%; /* Reducido de 140% */
+        height: 110%; /* Reducido de 140% */
+        margin-bottom: 40%; /* Reducido de 70% */
+    }
+    
+    /* Mantener las plantas con su tamaño normal */
+    .plant-element .cell-thumbnail {
+        /* Las plantas ya se ajustan automáticamente porque no tienen tamaño fijo */
+        padding: 5px; /* Menos padding en móvil */
+    }
+    
+    .cell-thumbnail {
+        padding: 5px; /* Menos padding en móvil */
+    }
+    
+    .slider-thumbnail {
+        padding: 8px; /* Menos padding para sliders en móvil */
+    }
+    
+    .cell-modifier.level {
+        font-size: 9px;
+        padding: 1px 3px;
+        bottom: 3px;
+        right: 3px;
+    }
 
-.footer-modifiers {
+    .footer-modifiers {
         flex-direction: column;     /* De horizontal a vertical */
         align-items: stretch;       /* Ocupar todo el ancho */
         gap: 12px;
         padding: 12px 16px;
     }
 
-    /* Si tienes controles dentro */
     .modifier-controls {
         width: 100%;
         justify-content: space-between;
@@ -684,7 +715,6 @@ tr td{
         gap: 12px;
     }
 
-    /* Grupo de botones */
     .button-group {
         width: 100%;
         display: flex;
@@ -744,6 +774,43 @@ tr td{
         flex: 1;
         justify-content: center;
     }
+
+    .dialog-footer {
+        flex-direction: column;
+        gap: 16px;
+        padding: 12px 16px;
+    }
+    
+    .modifier-controls {
+        width: 100%;
+        justify-content: space-between;
+        order: 1;
+    }
+    
+    .button-group {
+        width: 100%;
+        justify-content: flex-end;
+        order: 2;
+        margin-left: 0;
+    }
+    
+    .footer-info {
+        width: 100%;
+        justify-content: center;
+        order: 3;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .btn-confirm,
+    .btn-cancel-change {
+        flex: 1;
+        min-width: auto;
+    }
+
+
+    
 }
 
 @media (max-width: 480px) {
@@ -752,8 +819,81 @@ tr td{
         gap: 8px;
     }
 
+     .board-cell {
+        width: 60px;
+        height: 45px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Ajustar imágenes de zombies para móviles pequeños */
+    .zombie-element .cell-thumbnail {
+        width: 60px; /* Reducido de 100px */
+        height: 60px; /* Reducido de 100px */
+        margin-bottom: 80%; /* Reducido de 40% */
+        z-index: 2;
+    }
+    
+    /* Ajustar imágenes de lápidas para móviles pequeños */
+    .gravestone-element .cell-thumbnail {
+        width: 60px; /* Reducido de 90px */
+        height: 60px; /* Reducido de 90px */
+        margin-bottom: 50%; /* Reducido de 30% */
+        z-index: 4;
+    }
+    
+    /* Ajustar imágenes de sliders para móviles pequeños */
+    .slider-element .cell-thumbnail {
+        width: 55px; /* Reducido de 80px */
+        height: 55px; /* Reducido de 80px */
+        z-index: 4;
+    }
 
- .footer-modifiers {
+        .plant-element .cell-thumbnail{
+ 
+    width: 45px;
+    height: 45px;
+    z-index: 4;
+    margin-bottom: 30%;
+
+}
+    
+    /* Ajustar imágenes de pociones para móviles pequeños */
+    .potion-element .cell-thumbnail {
+        width: 50px; /* Reducido de 75px */
+        height: 50px; /* Reducido de 75px */
+        padding: 5px; /* Reducido de 8px */
+        z-index: 4;
+    }
+    
+    /* Ajustar hielo en zombies para móviles pequeños */
+    .ice-zombie-layer .ice-overlay {
+        width: 90%; /* Reducido de 110% */
+        height: 90%; /* Reducido de 110% */
+        margin-bottom: 30%; /* Reducido de 40% */
+    }
+    
+    /* Ajustar padding general para imágenes */
+    .cell-thumbnail {
+        padding: 3px; /* Mínimo padding en móvil pequeño */
+    }
+    
+    .slider-thumbnail {
+        padding: 5px;
+    }
+    
+    /* Ajustar tamaño del indicador de nivel */
+    .cell-modifier.level {
+        font-size: 7px;
+        padding: 1px 2px;
+        bottom: 2px;
+        right: 2px;
+    }
+
+    .footer-modifiers {
         flex-direction: column;     /* Todo en columna */
         align-items: stretch;
         gap: 10px;
@@ -784,16 +924,6 @@ tr td{
         justify-content: center;
     }
 
-        .board-cell {
-    width: 30px;
-    height: 35px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    vertical-align: middle;
-}
-    
     .element-image-container {
         width: 48px;
         height: 48px;
@@ -802,4 +932,1356 @@ tr td{
     .element-name {
         font-size: 11px;
     }
+
+    .dialog-footer {
+        padding: 10px 12px;
+    }
+    
+    .modifier-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .modifier-label {
+        width: 100%;
+        justify-content: space-between;
+        padding: 8px;
+    }
+    
+    .button-group {
+        gap: 8px;
+    }
+    
+    .btn-confirm,
+    .btn-cancel-change {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    .plant-level {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+
+
+
+
+
+
+/* ============================================
+   ESTILOS PARA LA MODAL "¿QUÉ QUIERES AGREGAR?"
+   ============================================ */
+
+.element-selection-dialog {
+    max-width: 650px;
+    min-width: 500px;
+}
+
+.element-selection-section {
+    padding: 20px 0;
+}
+
+.selection-description {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 25px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.element-type-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .element-type-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.element-type-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 130px;
+}
+
+.element-type-card:hover {
+    background: #f1f5f9;
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.element-type-card.selected {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-color: #3b82f6;
+    color: #1e40af;
+}
+
+.element-type-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.element-type-icon img {
+    width: 50px;
+    margin-bottom: 8px;
+}
+
+.element-type-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: #334155;
+}
+
+.element-type-count {
+    font-size: 11px;
+    color: #64748b;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.element-type-card.selected .element-type-count {
+    color: #3b82f6;
+}
+
+/* Recuadro de "+" para abrir modal normal */
+.add-more-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.add-more-card {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #bae6fd;
+    border-radius: 10px;
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #0369a1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.add-more-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.15);
+    border-color: #7dd3fc;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+}
+
+.add-more-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+}
+
+.add-more-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+    line-height: 1;
+    opacity: 0.9;
+}
+
+.add-more-text {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.add-more-card small {
+    font-size: 12px;
+    opacity: 0.8;
+    max-width: 280px;
+    line-height: 1.4;
+    color: #475569;
+}
+
+/* ============================================
+   ESTILOS PARA LA MODAL DE EDICIÓN DE ELEMENTO
+   ============================================ */
+
+.element-edit-dialog {
+    max-width: 500px;
+    min-width: 450px;
+}
+
+.element-header-info {
+    padding: 15px 0;
+}
+
+/* ============================================
+   NUEVOS ESTILOS PARA EL ELEMENT PREVIEW CON IMAGEN
+   ============================================ */
+.element-preview {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 5px;
+}
+
+.element-image-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px solid #e2e8f0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.element-thumbnail-large {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background-color: white;
+}
+
+.element-details {
+    flex-grow: 1;
+}
+
+.element-details h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.4rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.element-type-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.element-modifiers {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.status-badge.level {
+    background: #10b981;
+    color: white;
+}
+
+.status-badge.frozen {
+    background: #0ea5e9;
+    color: white;
+}
+
+.status-badge.defeat {
+    background: #f59e0b;
+    color: #78350f;
+}
+
+/* Botones de acción específicos para cada tipo */
+.element-actions-section {
+    padding: 20px 0 10px;
+}
+
+.element-actions-section h6 {
+    margin-bottom: 15px;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.action-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    text-align: left;
+    color: #475569;
+}
+
+.action-btn:hover {
+    background: #f1f5f9;
+    transform: translateY(-1px);
+    border-color: #cbd5e1;
+}
+
+.action-btn.delete-btn:hover {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.action-btn.toggle-btn:hover {
+    background: #f0f9ff;
+    color: #0369a1;
+    border-color: #bae6fd;
+}
+
+.action-btn.toggle-btn.active {
+    background: #0ea5e9;
+    color: white;
+    border-color: #0ea5e9;
+}
+
+.action-btn.change-btn:hover {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.action-btn.level-btn:hover {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.action-icon {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.action-text {
+    font-weight: 500;
+}
+
+/* Panel de cambiar nivel */
+.change-level-panel {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 18px;
+    border: 1px solid #e2e8f0;
+}
+
+.change-level-panel .panel-header {
+    margin-bottom: 15px;
+}
+
+.change-level-panel h6 {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.level-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.level-option {
+    flex: 1;
+    position: relative;
+}
+
+.level-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.level-badge {
+    display: block;
+    padding: 12px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    color: #475569;
+    font-size: 13px;
+}
+
+.level-option input[type="radio"]:checked + .level-badge {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border-color: #3b82f6;
+}
+
+.level-badge:hover {
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+}
+
+.panel-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.panel-actions button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    color: #475569;
+}
+
+.panel-actions button:hover {
+    transform: translateY(-1px);
+}
+
+
+
+
+/* Animaciones para las modales */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.element-selection-dialog,
+.element-edit-dialog {
+    animation: modalFadeIn 0.25s ease;
+}
+
+/* Responsive para ambas modales */
+@media (max-width: 768px) {
+    .element-selection-dialog,
+    .element-edit-dialog {
+        min-width: 95%;
+        max-width: 95%;
+        margin: 10px;
+    }
+    
+    .element-type-card {
+        height: 110px;
+        padding: 15px 10px;
+    }
+    
+    .add-more-card {
+        padding: 18px 15px;
+    }
+    
+    .add-more-icon {
+        font-size: 36px;
+    }
+    
+    .add-more-text {
+        font-size: 15px;
+    }
+    
+    .action-buttons-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .level-options {
+        flex-direction: column;
+    }
+    
+    .element-preview {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .element-image-large {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .element-details h3 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .element-type-card {
+        height: 100px;
+    }
+    
+    .element-type-icon {
+        font-size: 28px;
+    }
+    
+    .element-type-name {
+        font-size: 14px;
+    }
+    
+    .add-more-card {
+        padding: 15px 12px;
+    }
+    
+    .add-more-icon {
+        font-size: 32px;
+    }
+    
+    .add-more-text {
+        font-size: 14px;
+    }
+    
+    .add-more-card small {
+        font-size: 11px;
+    }
+    
+    .element-edit-dialog {
+        min-width: 90%;
+        max-width: 90%;
+    }
+    
+    .element-image-large {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .element-details h3 {
+        font-size: 1.1rem;
+    }
+}
+
+
+
+
+@media (max-width: 360px) {
+      .board-cell {
+        width: 60px;
+        height: 35px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    /* Ajustes extremos para pantallas muy pequeñas */
+    .zombie-element .cell-thumbnail {
+        width: 45px;
+        height: 45px;
+        margin-bottom: 75%;
+    }
+    
+    .gravestone-element .cell-thumbnail {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 45%;
+    }
+    
+    .slider-element .cell-thumbnail {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .potion-element .cell-thumbnail {
+        width: 40px;
+        height: 40px;
+        padding: 3px;
+    }
+
+            .plant-element .cell-thumbnail{
+ 
+    width: 38px;
+    height: 38px;
+    z-index: 4;
+    margin-bottom: 30%;
+
+}
+    
+    /* Ocultar indicador de nivel en pantallas muy pequeñas */
+    .cell-modifier.level {
+        display: none;
+    }
+}
+
+
+/* ============================================
+   ESTILOS PARA LA TABLA DE INFORME
+   ============================================ */
+
+.table-responsive {
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.board-table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.board-table td {
+    vertical-align: middle;
+    border-color: #e9ecef;
+}
+
+.board-table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* ============================================
+   ESTILOS PARA NOTIFICACIONES TOAST
+   ============================================ */
+
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 4px solid;
+}
+
+.toast-notification.success {
+    background: #f0fdf4;
+    border-left-color: #22c55e;
+    color: #166534;
+}
+
+.toast-notification.error {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+    color: #991b1b;
+}
+
+.toast-notification.warning {
+    background: #fefce8;
+    border-left-color: #f59e0b;
+    color: #92400e;
+}
+
+.toast-notification.info {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+    color: #1e40af;
+}
+
+.toast-notification strong {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.toast-notification div {
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+.toast-notification button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.7;
+    color: inherit;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.toast-notification button:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   ESTILOS PARA LA INFO DE CELDA SELECCIONADA
+   ============================================ */
+
+.cell-info-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.cell-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.plant-tag, .zombie-tag, .gravestone-tag, .slider-tag, .potion-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.plant-tag {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.zombie-tag {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.gravestone-tag {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+.slider-tag {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.potion-tag {
+    background: #fae8ff;
+    color: #86198f;
+    border: 1px solid #f5d0fe;
+}
+
+.empty-cell-tag {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.plant-level-tag, .frozen-tag, .defeat-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 4px;
+}
+
+.plant-level-tag {
+    background: #10b981;
+    color: white;
+}
+
+.frozen-tag {
+    background: #0ea5e9;
+    color: white;
+}
+
+.defeat-tag {
+    background: #f59e0b;
+    color: #78350f;
+}
+
+.edit-cell-btn {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.edit-cell-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+
+
+/* ============================================
+   ESTILOS PARA EL JSON PREVIEW
+   ============================================ */
+
+#board-json-preview {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 300px;
+    max-height: 400px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid #334155;
+    margin-top: 15px;
+}
+
+#board-json-preview::-webkit-scrollbar {
+    width: 8px;
+}
+
+#board-json-preview::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-radius: 4px;
+}
+
+#board-json-preview::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+#board-json-preview::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Resaltado de sintaxis básico */
+#board-json-preview .key {
+    color: #7dd3fc;
+}
+
+#board-json-preview .string {
+    color: #86efac;
+}
+
+#board-json-preview .number {
+    color: #fbbf24;
+}
+
+#board-json-preview .boolean {
+    color: #f472b6;
+}
+
+#board-json-preview .null {
+    color: #94a3b8;
+}
+
+#board-json-preview .bracket {
+    color: #cbd5e1;
+}
+
+
+
+
+
+/* ============================================
+   MEJORAS PARA DIALOG-FOOTER (BOTONES)
+   ============================================ */
+
+
+
+
+
+.dialog-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
+}
+
+/* Grupo de botones principal */
+.button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+}
+
+
+.btn-confirm {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    min-width: 100px;
+    height: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-confirm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-confirm:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-confirm:hover::before {
+    left: 100%;
+}
+
+.btn-confirm:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Botón secundario (Cancelar) */
+.btn-cancel-change,
+.cancel-level-btn {
+    padding: 10px 20px;
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    height: 40px;
+    min-width: 90px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cancel-change:hover,
+.cancel-level-btn:hover {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+
+/* Controles de modificadores (checkboxes) */
+.modifier-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 4px 0;
+}
+
+
+
+
+
+.modifier-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #475569;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.modifier-label:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+/* Checkbox personalizado */
+.modifier-label input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #cbd5e1;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modifier-label input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #10b981;
+}
+
+.modifier-label input[type="checkbox"]:checked::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modifier-label input[type="checkbox"]:hover {
+    border-color: #94a3b8;
+}
+
+.modifier-label input[type="checkbox"]:checked:hover {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Grupo de nivel de planta */
+.modifier-controls .form-group {
+    margin: 0;
+}
+
+.modifier-controls .form-group label {
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.plant-level {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.plant-level:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.plant-level:hover {
+    border-color: #cbd5e1;
+}
+
+/* Información de celda en el footer */
+.footer-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 12px;
+    padding: 4px 0;
+}
+
+.footer-info small {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.footer-info small::before {
+    content: '📍';
+    font-size: 10px;
+}
+
+/* Botones de acción en la modal de edición */
+.action-btn {
+    padding: 10px 14px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Botón eliminar */
+.action-btn.delete-btn {
+    border-color: #fecaca;
+    color: #dc2626;
+    background: #fef2f2;
+}
+
+.action-btn.delete-btn:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+/* Botón congelar/descongelar */
+.action-btn.toggle-btn {
+    border-color: #bae6fd;
+    color: #0369a1;
+    background: #f0f9ff;
+}
+
+.action-btn.toggle-btn.active {
+    background: #0ea5e9;
+    color: white;
+    border-color: #0ea5e9;
+}
+
+.action-btn.toggle-btn:hover {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+}
+
+/* Botón cambiar elemento */
+.action-btn.change-btn {
+    border-color: #fde68a;
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.action-btn.change-btn:hover {
+    background: #fde68a;
+    border-color: #fbbf24;
+}
+
+/* Botón cambiar nivel */
+.action-btn.level-btn {
+    border-color: #a7f3d0;
+    color: #065f46;
+    background: #d1fae5;
+}
+
+.action-btn.level-btn:hover {
+    background: #a7f3d0;
+    border-color: #34d399;
+}
+
+/* Panel de acciones en modal de edición */
+.panel-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+
+
+
+
+/* Estilos específicos para el footer en modal de selección de elementos */
+.element-selection-dialog .dialog-footer {
+    justify-content: center;
+    background: transparent;
+    border-top: none;
+    padding-top: 8px;
+}
+
+/* Estilos para el footer en modal de edición */
+.element-edit-dialog .dialog-footer {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Animación sutil para botones al aparecer */
+@keyframes buttonFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dialog-footer > * {
+    animation: buttonFadeIn 0.3s ease forwards;
+}
+
+.dialog-footer .button-group {
+    animation-delay: 0.1s;
+}
+
+.dialog-footer .modifier-controls {
+    animation-delay: 0.2s;
+}
+
+/* Estado deshabilitado */
+.btn-confirm:disabled,
+.btn-cancel-change:disabled,
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-confirm:disabled:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Indicador de carga en botones */
+.btn-confirm.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-confirm.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
