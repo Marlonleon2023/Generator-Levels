@@ -4297,7 +4297,8 @@ updateSeedSlotsControl() {
                 "MountingSliders",
                 "MountingPotions",
                 "MountingOthers",
-                "MountingMolds"
+                "MountingMolds",
+                "MountingRails"
             ];
 
             placementOrder.forEach(moduleName => {
@@ -4596,7 +4597,8 @@ generateJson() {
                 "MountingGravestones",
                 "MountingSliders",
                 "MountingPotions",
-                "MountingOthers"
+                "MountingOthers",
+                "MountingRails"
             ];
             
             // IMPORTANTE: NO incluir ProtectThePlant aquí - se agregará en la sección 4

@@ -20,7 +20,8 @@ export const PATHS = {
         SLIDERS: 'Assets/Sliders/',
         POTIONS: 'Assets/Potions/', // Nueva ruta
         OTHERS: 'Assets/Others/',
-        MOLDS: 'Assets/Molds/'
+        MOLDS: 'Assets/Molds/',
+        RAILCARTS: 'Assets/Railcarts/'
     },
 };
 
@@ -60,6 +61,21 @@ export const OTHERS = [
 export const MOLDS = [
     'mold'
 ];
+
+
+export const RAILCARTS = [
+    'railcart_cowboy',
+    'railcart_future', 
+    'railcart_pirate',
+    'railcart_egypt'
+];
+
+export const RAILCART_DISPLAY_NAMES = {
+    'railcart_cowboy': 'Vagón del Oeste',
+    'railcart_future': 'Vagón futurista',
+    'railcart_pirate': 'Vagón pirata',
+    'railcart_egypt': 'Vagón oscuro/gótico'
+};
 
 // Imágenes de mundos
 export const WORLD_IMAGES = {

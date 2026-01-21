@@ -5,7 +5,9 @@ import {
     POTIONS,
     OTHERS,
     MOLDS,
+    RAILCARTS,
     GRAVESTONE_DISPLAY_NAMES,
+     RAILCART_DISPLAY_NAMES,
     PATHS,
     FALLBACK_IMAGES 
 } from '../constants/resources.js';
@@ -27,6 +29,8 @@ class BoardManager {
             potions: [],
             molds: [],
             others: [],
+            railcarts: [], // NUEVO
+            rails: [], // NUEVO
             protectedPlants: [] // Añadido aquí también
         };
         
@@ -39,7 +43,8 @@ class BoardManager {
             sliders: [],
             potions: [],
             others: [],
-            molds: []
+            molds: [],
+            railcarts: [] 
         };
         
         this.imagePaths = PATHS?.IMAGES || {
@@ -49,8 +54,17 @@ class BoardManager {
             SLIDERS: 'Assets/Sliders/',
             POTIONS: 'Assets/Potions/',
             OTHERS: 'Assets/Others/',
-            MOLDS: 'Assets/Molds/'
+            MOLDS: 'Assets/Molds/',
+            RAILCARTS: 'Assets/Railcarts/'
         };
+
+        this.railcartElements = {
+            type: '', // Tipo seleccionado: railcart_cowboy, railcart_future, etc.
+            parts: [], // Array de objetos { Part, Column, Row }
+            rails: [] // Array de objetos { Column, RowStart, RowEnd }
+        };
+
+        this.railcartParts = ['bottom', 'cart', 'mid', 'top'];
         
         this.fallbackImages = {
             plants: FALLBACK_IMAGES?.plants || 'Assets/Plants/error.webp',
@@ -67,6 +81,9 @@ class BoardManager {
         this.lawnDialog = null;
         this.lawnDialogBackdrop = null;
     }
+
+
+
 
     async loadElementData() {
         try {
@@ -152,12 +169,23 @@ class BoardManager {
                 console.warn('⚠️ No se encontró la constante MOLDS o no es un array');
                 this.availableElements.molds = this.loadDefaultMolds();
             }
+
+
+             if (RAILCARTS && Array.isArray(RAILCARTS)) {
+                this.availableElements.railcarts = RAILCARTS.map(railcart => ({
+                    alias_type: railcart,
+                    name: this.formatRailcartName(railcart),
+                    type: 'railcart',
+                    imageUrl: this.getRailcartImageUrl(railcart, false) // railcart image
+                }));
+                console.log(`✅ Railcarts cargados desde constants: ${RAILCARTS.length}`);
+            } else {
+                console.warn('⚠️ No se encontró la constante RAILCARTS o no es un array');
+                this.availableElements.railcarts = this.loadDefaultRailcarts();
+            }
             
 
     
-
-
-
             if (window.levelGenerator && window.levelGenerator.zombieData) {
                 this.availableElements.zombies = window.levelGenerator.zombieData.map(zombie => ({
                     alias_type: zombie.alias_type,
@@ -192,6 +220,17 @@ class BoardManager {
         }
     }
 
+
+    getPartIcon(part) {
+    const icons = {
+        'bottom': '⬇️',
+        'cart': '🛒',
+        'mid': '🟨',
+        'top': '⬆️'
+    };
+    return icons[part] || '📦';
+}
+
     loadDefaultElements() {
         console.log('🔄 Cargando elementos por defecto...');
         this.availableElements.plants = this.loadDefaultPlants();
@@ -200,6 +239,24 @@ class BoardManager {
         this.availableElements.sliders = this.loadDefaultSliders();
         this.availableElements.potions = this.loadDefaultPotions();
         console.log('✅ Elementos por defecto cargados');
+    }
+
+
+     loadDefaultRailcarts() {
+        return [
+            { 
+                alias_type: 'railcart_cowboy', 
+                name: 'Vagón del Oeste', 
+                type: 'railcart',
+                imageUrl: this.getRailcartImageUrl('railcart_cowboy', false)
+            },
+            { 
+                alias_type: 'railcart_future', 
+                name: 'Vagón futurista', 
+                type: 'railcart',
+                imageUrl: this.getRailcartImageUrl('railcart_future', false)
+            }
+        ];
     }
 
     loadDefaultPlants() {
@@ -266,6 +323,29 @@ class BoardManager {
 
 
 
+formatPartName(part) {
+    const names = {
+        'bottom': 'Parte inferior',
+        'cart': 'Carro/Vagón',
+        'mid': 'Parte media',
+        'top': 'Parte superior'
+    };
+    return names[part] || part;
+}
+
+
+
+ formatRailcartName(railcartId) {
+        if (RAILCART_DISPLAY_NAMES && RAILCART_DISPLAY_NAMES[railcartId]) {
+            return RAILCART_DISPLAY_NAMES[railcartId];
+        }
+        
+        return railcartId
+            .replace('railcart_', 'Vagón ')
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
 
 // Función para formatear nombres de molds
 formatMoldName(moldId) {
@@ -308,6 +388,16 @@ formatMoldName(moldId) {
 }
 
 
+
+
+getRailcartImageUrl(railcartType, isRail = false) {
+    if (!railcartType) return 'Assets/Railcarts/railcart_cowboy/cart.webp';
+    
+    // La estructura es: Assets/Railcarts/railcart_cowboy/cart.webp
+    // o Assets/Railcarts/railcart_cowboy/rail.webp
+    const part = isRail ? 'rail' : 'cart';
+    return `Assets/Railcarts/${railcartType}/${part}.webp`;
+}
 
 
 getMoldImageUrl(itemName) {
@@ -420,7 +510,8 @@ getOtherImageUrl(itemName) {
                     sliders: [],
                     potions: [],
                     others: [],
-                    molds: []
+                    molds: [],
+                    railcarts: []
                 };
             }
         }
@@ -449,6 +540,74 @@ getOtherImageUrl(itemName) {
                 cellContent.className = 'cell-content';
                 
                 const elements = this.board[row][col];
+
+
+  // MOSTRAR PARTES DE RAILCART (puede haber múltiples en la misma celda)
+            const partsInCell = this.railcartElements.parts.filter(
+                part => parseInt(part.Row) === row && parseInt(part.Column) === col
+            );
+            
+            partsInCell.forEach(part => {
+                const partDiv = document.createElement('div');
+                
+                if (part.Part === 'cart') {
+                    // ES UN VAGÓN
+                    partDiv.className = 'cell-element railcart-element';
+                    partDiv.title = `${this.formatRailcartName(this.railcartElements.type)} - Vagón`;
+                    
+                    const imageUrl = this.getRailcartPartImageUrl(this.railcartElements.type, 'cart');
+                    
+                    partDiv.innerHTML = `
+                        <img src="${imageUrl}" alt="Vagón" 
+                             class="cell-thumbnail railcart-thumbnail"
+                             onerror="this.onerror=null; this.src='Assets/Railcarts/${this.railcartElements.type}/cart.webp';">
+                        <span class="part-indicator">🛒</span>
+                    `;
+                } else {
+                    // ES UN RIEL (bottom, mid, top, etc.)
+                    partDiv.className = `cell-element rail-element part-${part.Part}`;
+                    partDiv.title = `Riel - ${this.formatPartName(part.Part)}`;
+                    
+                    const imageUrl = this.getRailcartPartImageUrl(this.railcartElements.type, part.Part);
+                    
+                    partDiv.innerHTML = `
+                        <img src="${imageUrl}" alt="${part.Part}" 
+                             class="cell-thumbnail rail-thumbnail"
+                             onerror="this.onerror=null; this.src='Assets/Railcarts/${this.railcartElements.type}/${part.Part}.webp';">
+                        <span class="part-indicator">${this.getPartIcon(part.Part)}</span>
+                    `;
+                }
+                
+                cellContent.appendChild(partDiv);
+            });
+
+            // MOSTRAR RAILES DE RANGO (si no hay parte específica en esa celda)
+            this.railcartElements.rails.forEach(rail => {
+                const railCol = parseInt(rail.Column);
+                const startRow = parseInt(rail.RowStart);
+                const endRow = parseInt(rail.RowEnd);
+                
+                if (railCol === col && row >= startRow && row <= endRow) {
+                    // Verificar si ya hay una parte específica en esta celda
+                    const hasSpecificPart = partsInCell.length > 0;
+                    
+                    if (!hasSpecificPart) {
+                        // Solo mostrar riel genérico si no hay parte específica
+                        const railDiv = document.createElement('div');
+                        railDiv.className = 'cell-element rail-track';
+                        railDiv.title = 'Riel de tren';
+                        
+                        railDiv.innerHTML = `
+                            <div class="rail-track-icon">─</div>
+                        `;
+                        cellContent.appendChild(railDiv);
+                    }
+                }
+            });
+
+            
+
+
 
                  if (elements.others.length > 0) {
                 const otherItem = elements.others[0];
@@ -610,6 +769,39 @@ getOtherImageUrl(itemName) {
         }
     }
 
+
+    // 3. AGREGAR MÉTODO PARA ELIMINAR PARTES DE RAILCART
+deleteRailcartPart(row, col, partName) {
+    const index = this.railcartElements.parts.findIndex(part => 
+        parseInt(part.Row) === row && 
+        parseInt(part.Column) === col && 
+        part.Part === partName
+    );
+    
+    if (index >= 0) {
+        this.railcartElements.parts.splice(index, 1);
+        
+        // Si eliminamos el vagón principal ("cart"), limpiar rieles asociados
+        if (partName === 'cart') {
+            const colToClean = this.railcartElements.parts
+                .filter(p => p.Part === 'cart')
+                .map(p => parseInt(p.Column));
+            
+            // Limpiar rieles en columnas sin vagón
+            this.railcartElements.rails = this.railcartElements.rails.filter(rail => {
+                return colToClean.includes(parseInt(rail.Column));
+            });
+        }
+        
+        this.renderBoard();
+        this.updatePreview();
+        this.showToast('Parte eliminada', `${this.formatPartName(partName)} eliminada de (${row}, ${col})`, 'success');
+        return true;
+    }
+    
+    return false;
+}
+
     getPlantTitle(plant) {
         let title = `Planta: ${plant.name}`;
         if (plant.plantLevel > 0) title += ` (Nivel ${plant.plantLevel})`;
@@ -677,7 +869,14 @@ getOtherImageUrl(itemName) {
             element: elements.others[0],
             data: { row, col, elementType: 'others' }
         };
-         }
+         } else if (elements.railcarts.length > 0) {
+            return {
+                type: 'railcart',
+                element: elements.railcarts[0],
+                data: { row, col, elementType: 'railcarts' }
+            };
+        }
+        
 
        // Agregar molds al orden de prioridad
         if (elements.molds.length > 0) {
@@ -691,39 +890,159 @@ getOtherImageUrl(itemName) {
         return null; // Celda vacía
     }
 
-    handleCellClick(row, col, event) {
-        event.stopPropagation();
-        this.selectedCell = { row, col };
-        
-        // Usar el nuevo método para detectar cualquier elemento
+handleCellClick(row, col, event) {
+    event.stopPropagation();
+    this.selectedCell = { row, col };
+    
+    // Primero verificar si hay una parte de railcart
+    const railcartPart = this.getRailcartPartAtCell(row, col);
+    
+    if (railcartPart) {
+        // Si hay una parte de railcart, abrir diálogo de edición específico
+        this.openRailcartPartEditDialog(row, col, railcartPart);
+    } else {
+        // Si no hay parte de railcart, seguir con la lógica normal
         const existingElement = this.getFirstElementInCell(row, col);
         
         if (existingElement) {
-            // Si hay un elemento, abrir diálogo de edición específico
             this.openElementEditDialog(row, col, existingElement);
         } else {
-            // Si la celda está vacía, abrir la modal de selección inicial
             this.openAddElementSelectionDialog(row, col);
         }
-        
-        this.updateCellInfo();
-        this.renderBoard();
-        
-        // Resaltar celdas con plantas en peligro
-        const cells = document.querySelectorAll('.board-cell');
-        cells.forEach(cell => {
-            const r = parseInt(cell.dataset.row);
-            const c = parseInt(cell.dataset.col);
-            const cellElements = this.board[r][c];
-            const hasDefeat = cellElements.plants.length > 0 && cellElements.plants[0].defeat;
-            
-            if (hasDefeat) {
-                cell.classList.add('has-defeat');
-            } else {
-                cell.classList.remove('has-defeat');
-            }
-        });
     }
+    
+    this.updateCellInfo();
+    this.renderBoard();
+}
+
+
+// 5. AGREGAR MÉTODO AUXILIAR
+getRailcartPartAtCell(row, col) {
+    for (const part of this.railcartElements.parts) {
+        if (parseInt(part.Row) === row && parseInt(part.Column) === col) {
+            return {
+                type: 'railcartPart',
+                part: part.Part,
+                data: part
+            };
+        }
+    }
+    return null;
+}
+
+// 6. CREAR DIÁLOGO DE EDICIÓN PARA PARTES DE RAILCART
+openRailcartPartEditDialog(row, col, partInfo) {
+    if (this.lawnDialog) {
+        this.closeDialog();
+    }
+    
+    this.createRailcartPartEditDialog(row, col, partInfo);
+}
+
+createRailcartPartEditDialog(row, col, partInfo) {
+    this.lawnDialogBackdrop = document.createElement('div');
+    this.lawnDialogBackdrop.className = 'lawn-dialog-backdrop';
+    
+    this.lawnDialog = document.createElement('div');
+    this.lawnDialog.className = 'lawn-dialog railcart-part-edit-dialog';
+    
+    const partName = this.formatPartName(partInfo.part);
+    const isCart = partInfo.part === 'cart';
+    
+    this.lawnDialog.innerHTML = `
+        <div class="lawn-dialog-content">
+            <header class="dialog-header">
+                <h3>${isCart ? 'Editar Vagón' : 'Editar Riel'}</h3>
+                <button class="close-btn" aria-label="Cerrar">✕</button>
+            </header>
+
+            <section class="dialog-body">
+                <div class="railcart-part-info">
+                    <div class="part-preview-large">
+                        <img src="${this.getRailcartPartImageUrl(this.railcartElements.type, partInfo.part)}" 
+                             alt="${partName}"
+                             onerror="this.src='Assets/Railcarts/${this.railcartElements.type}/${partInfo.part}.webp'">
+                    </div>
+                    <div class="part-details">
+                        <h4>${partName}</h4>
+                        <p><strong>Tipo:</strong> ${isCart ? 'Vagón principal' : 'Parte de riel'}</p>
+                        <p><strong>Estilo:</strong> ${this.formatRailcartName(this.railcartElements.type)}</p>
+                        <p><strong>Posición:</strong> Fila ${row}, Columna ${col}</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons-grid">
+                    <button class="action-btn move-btn" data-action="move">
+                        <span class="action-icon">📤</span>
+                        <span class="action-text">Mover ${isCart ? 'Vagón' : 'Riel'}</span>
+                    </button>
+                    
+                    <button class="action-btn delete-btn" data-action="delete">
+                        <span class="action-icon">🗑️</span>
+                        <span class="action-text">Eliminar ${isCart ? 'Vagón' : 'Riel'}</span>
+                    </button>
+                    
+                    ${isCart ? `
+                    <button class="action-btn add-rail-btn" data-action="add-rail">
+                        <span class="action-icon">➕</span>
+                        <span class="action-text">Añadir Riel en esta columna</span>
+                    </button>
+                    ` : ''}
+                </div>
+            </section>
+
+            <footer class="dialog-footer">
+                <div class="button-group">
+                    <button class="btn-back">← Volver</button>
+                </div>
+            </footer>
+        </div>
+    `;
+    
+    this.lawnDialogBackdrop.appendChild(this.lawnDialog);
+    document.body.appendChild(this.lawnDialogBackdrop);
+    
+    this.setupRailcartPartEditDialogListeners(row, col, partInfo);
+}
+
+setupRailcartPartEditDialogListeners(row, col, partInfo) {
+    const closeBtn = this.lawnDialog.querySelector('.close-btn');
+    const backBtn = this.lawnDialog.querySelector('.btn-back');
+    
+    closeBtn.addEventListener('click', () => this.closeDialog());
+    backBtn.addEventListener('click', () => this.closeDialog());
+    
+    const actionButtons = this.lawnDialog.querySelectorAll('.action-btn');
+    actionButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const action = btn.dataset.action;
+            this.handleRailcartPartAction(action, row, col, partInfo);
+        });
+    });
+}
+
+handleRailcartPartAction(action, row, col, partInfo) {
+    switch(action) {
+        case 'delete':
+            if (confirm(`¿Estás seguro de eliminar este ${partInfo.part === 'cart' ? 'vagón' : 'riel'}?`)) {
+                this.deleteRailcartPart(row, col, partInfo.part);
+                this.closeDialog();
+            }
+            break;
+            
+        case 'move':
+            // Implementar lógica para mover la parte
+            this.moveRailcartPart(row, col, partInfo);
+            break;
+            
+        case 'add-rail':
+            // Añadir riel automáticamente en la columna actual
+            this.addDefaultRails(col);
+            this.closeDialog();
+            this.showToast('Riel añadido', `Riel añadido en la columna ${col}`, 'success');
+            break;
+    }
+}
 
     // NUEVO MÉTODO: Diálogo de selección inicial (¿Qué quieres agregar?)
     openAddElementSelectionDialog(row, col) {
@@ -800,6 +1119,13 @@ getOtherImageUrl(itemName) {
                                 <div class="element-type-count">${this.availableElements.molds.length} disponibles</div>
                             </div>
 
+
+                            <div class="element-type-card" data-type="railcarts">
+                            <div class="element-type-icon"><img src="/Assets/Railcarts/railcart_cowboy/cart.webp" alt=""></div>
+                            <div class="element-type-name">Vagones y Rieles</div>
+                            <div class="element-type-count">${this.availableElements.railcarts.length} estilos</div>
+                        </div>
+
                             
 
                         </div>
@@ -830,6 +1156,404 @@ getOtherImageUrl(itemName) {
         // Configurar event listeners
         this.setupAddElementSelectionDialogListeners(row, col);
     }
+
+
+    openRailcartSetupDialog() {
+        if (this.lawnDialog) {
+            this.closeDialog();
+        }
+        
+        this.createRailcartSetupDialog();
+    }
+
+createRailcartSetupDialog() {
+    this.lawnDialogBackdrop = document.createElement('div');
+    this.lawnDialogBackdrop.className = 'lawn-dialog-backdrop';
+    
+    this.lawnDialog = document.createElement('div');
+    this.lawnDialog.className = 'lawn-dialog railcart-setup-dialog';
+    
+    // Generar opciones de railcart types
+    let railcartOptions = '';
+    this.availableElements.railcarts.forEach(railcart => {
+        const isSelected = this.railcartElements.type === railcart.alias_type;
+        railcartOptions += `
+            <div class="railcart-option ${isSelected ? 'selected' : ''}" 
+                 data-type="${railcart.alias_type}">
+                <div class="railcart-preview">
+                    <img src="${railcart.imageUrl}" alt="${railcart.name}"
+                         onerror="this.src='Assets/Railcarts/railcart_cowboy/cart.webp'">
+                </div>
+                <div class="railcart-name">${railcart.name}</div>
+                <div class="railcart-check">${isSelected ? '✓' : ''}</div>
+            </div>
+        `;
+    });
+    
+    // Generar controles para cada parte
+    let partsControls = '';
+    this.railcartParts.forEach((part, index) => {
+        const existingPart = this.railcartElements.parts.find(p => p.Part === part);
+        
+        // Posiciones por defecto más separadas
+        let defaultCol = 4;
+        switch(part) {
+            case 'bottom': defaultCol = 3; break;
+            case 'cart': defaultCol = 4; break;
+            case 'mid': defaultCol = 5; break;
+            case 'top': defaultCol = 6; break;
+        }
+        
+        partsControls += `
+            <div class="part-control" data-part="${part}">
+                <div class="part-header">
+                    <div class="part-icon">${this.getPartIcon(part)}</div>
+                    <div class="part-name">${this.formatPartName(part)}</div>
+                    <label class="part-toggle">
+                        <input type="checkbox" class="enable-part" 
+                               ${existingPart ? 'checked' : ''}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="part-coordinates" style="${existingPart ? '' : 'display: none;'}">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fila (1-5)</label>
+                            <input type="number" class="part-row" min="1" max="5" 
+                                   value="${existingPart ? existingPart.Row : '3'}" 
+                                   ${!existingPart ? 'disabled' : ''}>
+                        </div>
+                        <div class="form-group">
+                            <label>Columna (1-9)</label>
+                            <input type="number" class="part-col" min="1" max="9" 
+                                   value="${existingPart ? existingPart.Column : defaultCol}" 
+                                   ${!existingPart ? 'disabled' : ''}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Configuración de rieles
+    const railCol = this.railcartElements.rails.length > 0 ? this.railcartElements.rails[0].Column : '4';
+    const railStart = this.railcartElements.rails.length > 0 ? this.railcartElements.rails[0].RowStart : '2';
+    const railEnd = this.railcartElements.rails.length > 0 ? this.railcartElements.rails[0].RowEnd : '4';
+    
+    this.lawnDialog.innerHTML = `
+        <div class="lawn-dialog-content">
+            <header class="dialog-header">
+                <h3>Configurar Vagones y Rieles</h3>
+                <button class="close-btn" aria-label="Cerrar">✕</button>
+            </header>
+
+            <section class="dialog-body">
+                <div class="railcart-setup-section">
+                    <!-- Selección de estilo -->
+                    <div class="setup-step">
+                        <h6>1. Seleccionar estilo de vagón</h6>
+                        <div class="railcart-type-grid">
+                            ${railcartOptions}
+                        </div>
+                    </div>
+                    
+                    <!-- Configuración de partes -->
+                    <div class="setup-step">
+                        <h6>2. Configurar partes del vagón</h6>
+                        <div class="parts-controls">
+                            ${partsControls}
+                        </div>
+                    </div>
+                    
+                    <!-- Configuración de rieles -->
+                    <div class="setup-step">
+                        <h6>3. Configurar rieles</h6>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enable-rails" 
+                                       ${this.railcartElements.rails.length > 0 ? 'checked' : ''}>
+                                Habilitar rieles
+                            </label>
+                        </div>
+                        <div class="rail-configuration" id="rail-configuration" 
+                             style="${this.railcartElements.rails.length > 0 ? '' : 'display: none;'}">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Columna de rieles</label>
+                                    <input type="number" id="rail-col" min="1" max="9" value="${railCol}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fila inicio</label>
+                                    <input type="number" id="rail-start" min="1" max="5" value="${railStart}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fila fin</label>
+                                    <input type="number" id="rail-end" min="1" max="5" value="${railEnd}">
+                                </div>
+                            </div>
+                            <small class="form-hint">Las filas deben estar en orden (inicio ≤ fin)</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Vista previa -->
+                    <div class="setup-step">
+                        <h6>Vista previa</h6>
+                        <div class="railcart-preview-grid" id="railcart-preview">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="dialog-footer">
+                <div class="button-group">
+                    <button class="btn-clear-railcarts" id="btn-clear-railcarts">
+                        🗑️ Limpiar todo
+                    </button>
+                    <button class="btn-confirm" id="btn-confirm-railcarts">
+                        ✅ Aplicar configuración
+                    </button>
+                </div>
+            </footer>
+        </div>
+    `;
+    
+    this.lawnDialogBackdrop.appendChild(this.lawnDialog);
+    document.body.appendChild(this.lawnDialogBackdrop);
+    
+    this.setupRailcartDialogListeners();
+    this.updateRailcartPreview();
+}
+
+
+
+
+setupRailcartDialogListeners() {
+    const closeBtn = this.lawnDialog.querySelector('.close-btn');
+    const clearBtn = this.lawnDialog.querySelector('#btn-clear-railcarts');
+    const confirmBtn = this.lawnDialog.querySelector('#btn-confirm-railcarts');
+    
+    closeBtn.addEventListener('click', () => this.closeDialog());
+    
+    clearBtn.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de eliminar todos los vagones y rieles?')) {
+            this.railcartElements = {
+                type: '',
+                parts: [],
+                rails: []
+            };
+            this.updatePreview();
+            this.renderBoard();
+            this.updateRailcartPreview();
+            this.showToast('Vagones limpiados', 'Se han eliminado todos los vagones y rieles', 'success');
+        }
+    });
+    
+    confirmBtn.addEventListener('click', () => {
+        this.saveRailcartConfiguration();
+    });
+    
+    // Seleccionar tipo de railcart
+    const railcartOptions = this.lawnDialog.querySelectorAll('.railcart-option');
+    railcartOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            railcartOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            this.railcartElements.type = option.dataset.type;
+            this.updateRailcartPreview();
+        });
+    });
+    
+    // Habilitar/deshabilitar partes
+    const partControls = this.lawnDialog.querySelectorAll('.part-control');
+    partControls.forEach(control => {
+        const toggle = control.querySelector('.enable-part');
+        const coordinates = control.querySelector('.part-coordinates');
+        const rowInput = control.querySelector('.part-row');
+        const colInput = control.querySelector('.part-col');
+        
+        toggle.addEventListener('change', () => {
+            coordinates.style.display = toggle.checked ? 'block' : 'none';
+            if (rowInput) rowInput.disabled = !toggle.checked;
+            if (colInput) colInput.disabled = !toggle.checked;
+            this.updateRailcartPreview();
+        });
+    });
+    
+    // Habilitar/deshabilitar rieles
+    const enableRails = this.lawnDialog.querySelector('#enable-rails');
+    const railConfiguration = this.lawnDialog.querySelector('#rail-configuration');
+    
+    enableRails.addEventListener('change', () => {
+        railConfiguration.style.display = enableRails.checked ? 'block' : 'none';
+        this.updateRailcartPreview();
+    });
+    
+    // Actualizar vista previa cuando cambian los inputs
+    const inputsToWatch = ['rail-col', 'rail-start', 'rail-end'];
+    inputsToWatch.forEach(id => {
+        const input = this.lawnDialog.querySelector(`#${id}`);
+        if (input) {
+            input.addEventListener('change', () => this.updateRailcartPreview());
+            input.addEventListener('input', () => this.updateRailcartPreview());
+        }
+    });
+    
+    // También para los inputs de partes
+    partControls.forEach(control => {
+        const rowInput = control.querySelector('.part-row');
+        const colInput = control.querySelector('.part-col');
+        
+        if (rowInput) {
+            rowInput.addEventListener('input', () => this.updateRailcartPreview());
+            rowInput.addEventListener('change', () => this.updateRailcartPreview());
+        }
+        if (colInput) {
+            colInput.addEventListener('input', () => this.updateRailcartPreview());
+            colInput.addEventListener('change', () => this.updateRailcartPreview());
+        }
+    });
+}
+
+
+updateRailcartPreview() {
+    const previewGrid = this.lawnDialog.querySelector('#railcart-preview');
+    if (!previewGrid) return;
+    
+    previewGrid.innerHTML = '';
+    
+    // Crear mini-tablero 5x9
+    for (let row = 1; row <= 5; row++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'preview-row';
+        
+        for (let col = 1; col <= 9; col++) {
+            const cellDiv = document.createElement('div');
+            cellDiv.className = 'preview-cell';
+            cellDiv.dataset.row = row;
+            cellDiv.dataset.col = col;
+            cellDiv.title = `Fila ${row}, Columna ${col}`;
+            
+            // Verificar si hay una parte del railcart aquí
+            let partInCell = null;
+            const partControls = this.lawnDialog.querySelectorAll('.part-control');
+            
+            partControls.forEach(control => {
+                const toggle = control.querySelector('.enable-part');
+                const partName = control.dataset.part;
+                
+                if (toggle && toggle.checked) {
+                    const partRow = parseInt(control.querySelector('.part-row').value) || 3;
+                    const partCol = parseInt(control.querySelector('.part-col').value) || 4;
+                    
+                    if (row === partRow && col === partCol) {
+                        partInCell = partName;
+                    }
+                }
+            });
+            
+            // Verificar si hay riel aquí
+            let hasRail = false;
+            const enableRails = this.lawnDialog.querySelector('#enable-rails');
+            
+            if (enableRails && enableRails.checked) {
+                const railCol = parseInt(this.lawnDialog.querySelector('#rail-col').value) || 4;
+                const railStart = parseInt(this.lawnDialog.querySelector('#rail-start').value) || 2;
+                const railEnd = parseInt(this.lawnDialog.querySelector('#rail-end').value) || 4;
+                
+                if (col === railCol && row >= railStart && row <= railEnd) {
+                    hasRail = true;
+                }
+            }
+            
+            // Mostrar contenido de la celda
+            if (partInCell) {
+                cellDiv.classList.add(`has-part`, `part-${partInCell}`);
+                cellDiv.innerHTML = `<span class="part-marker">${this.getPartIcon(partInCell)}</span>`;
+                cellDiv.title += `\n${this.formatPartName(partInCell)}`;
+            } else if (hasRail) {
+                cellDiv.classList.add('has-rail');
+                cellDiv.innerHTML = '─';
+                cellDiv.title += '\nRiel';
+            }
+            
+            rowDiv.appendChild(cellDiv);
+        }
+        
+        previewGrid.appendChild(rowDiv);
+    }
+}
+
+saveRailcartConfiguration() {
+    const railcartType = this.railcartElements.type;
+    if (!railcartType) {
+        this.showToast('Error', 'Selecciona un estilo de vagón', 'error');
+        return;
+    }
+    
+    // Recopilar partes configuradas
+    const parts = [];
+    const partControls = this.lawnDialog.querySelectorAll('.part-control');
+    
+    partControls.forEach(control => {
+        const toggle = control.querySelector('.enable-part');
+        const partName = control.dataset.part;
+        
+        if (toggle && toggle.checked) {
+            const partRow = parseInt(control.querySelector('.part-row').value) || 3;
+            const partCol = parseInt(control.querySelector('.part-col').value) || 4;
+            
+            parts.push({
+                Part: partName,
+                Column: partCol.toString(),
+                Row: partRow.toString()
+            });
+        }
+    });
+    
+    if (parts.length === 0) {
+        this.showToast('Advertencia', 'No hay partes del vagón habilitadas', 'warning');
+    }
+    
+    // Configurar rieles
+    const rails = [];
+    const enableRails = this.lawnDialog.querySelector('#enable-rails');
+    
+    if (enableRails && enableRails.checked) {
+        const railCol = parseInt(this.lawnDialog.querySelector('#rail-col').value) || 4;
+        const railStart = parseInt(this.lawnDialog.querySelector('#rail-start').value) || 2;
+        const railEnd = parseInt(this.lawnDialog.querySelector('#rail-end').value) || 4;
+        
+        // Validar que las filas estén en orden
+        if (railStart > railEnd) {
+            this.showToast('Error', 'La fila inicio debe ser menor o igual a la fila fin', 'error');
+            return;
+        }
+        
+        rails.push({
+            Column: railCol.toString(),
+            RowStart: railStart.toString(),
+            RowEnd: railEnd.toString()
+        });
+    }
+    
+    // Actualizar railcartElements
+    this.railcartElements.type = railcartType;
+    this.railcartElements.parts = parts;
+    this.railcartElements.rails = rails;
+    
+    // Actualizar UI
+    this.updatePreview();
+    this.renderBoard();
+    this.closeDialog();
+    
+    // Mostrar mensaje de éxito
+    const partCount = parts.length;
+    const railInfo = rails.length > 0 ? ` con rieles en columna ${rails[0].Column}` : '';
+    this.showToast('Configuración guardada', 
+        `${this.formatRailcartName(railcartType)} con ${partCount} parte(s)${railInfo}`, 
+        'success');
+}
 
     setupAddElementSelectionDialogListeners(row, col) {
         if (!this.lawnDialog) return;
@@ -1231,13 +1955,594 @@ getOtherImageUrl(itemName) {
     }
 
     // MODIFICADO: Modal normal (para añadir o cambiar elementos)
-    openNormalElementDialog(row, col, elementType = 'plants', isChanging = false, originalElementInfo = null) {
-        if (this.lawnDialog) {
-            this.closeDialog();
+   // MODIFICADO: Modal normal (para añadir o cambiar elementos)
+openNormalElementDialog(row, col, elementType = 'plants', isChanging = false, originalElementInfo = null) {
+    if (this.lawnDialog) {
+        this.closeDialog();
+    }
+
+    if (elementType === 'railcarts') {
+        // Primero mostrar estilos de vagones
+        this.openRailcartStyleDialog(row, col);
+        return;
+    }
+    
+    this.createNormalElementDialog(row, col, elementType, isChanging, originalElementInfo);
+}
+
+
+
+openRailcartStyleDialog(row, col) {
+    if (this.lawnDialog) {
+        this.closeDialog();
+    }
+    
+    // Ir directamente al diálogo de partes, mostrando primero los estilos disponibles
+    this.createCombinedRailcartDialog(row, col);
+}
+
+createCombinedRailcartDialog(row, col) {
+    this.lawnDialogBackdrop = document.createElement('div');
+    this.lawnDialogBackdrop.className = 'lawn-dialog-backdrop';
+    
+    this.lawnDialog = document.createElement('div');
+    this.lawnDialog.className = 'lawn-dialog railcart-combined-dialog';
+    
+    // Header con selector de estilo
+    let styleOptions = '';
+    const railcarts = this.availableElements.railcarts;
+    
+    // Si no hay tipo seleccionado, usar el primero por defecto
+    const initialType = this.railcartElements.type || (railcarts.length > 0 ? railcarts[0].alias_type : '');
+    
+    railcarts.forEach(railcart => {
+        const isSelected = initialType === railcart.alias_type;
+        styleOptions += `
+            <option value="${railcart.alias_type}" ${isSelected ? 'selected' : ''}>
+                ${railcart.name}
+            </option>
+        `;
+    });
+    
+    // Asegurar que el tipo esté establecido
+    if (!this.railcartElements.type && railcarts.length > 0) {
+        this.railcartElements.type = initialType;
+    }
+    
+    // Generar opciones de partes
+    let partsOptions = '';
+    const currentRailcartType = this.railcartElements.type;
+    
+    if (currentRailcartType) {
+        this.railcartParts.forEach(part => {
+            const imageUrl = this.getRailcartPartImageUrl(currentRailcartType, part);
+            const displayName = this.formatPartName(part);
+            
+            partsOptions += `
+                <div class="railcart-part-option combined" data-part="${part}">
+                    <div class="part-preview">
+                        <img src="${imageUrl}" alt="${displayName}"
+                             onerror="this.src='Assets/Railcarts/${currentRailcartType}/${part}.webp'">
+                    </div>
+                    <div class="part-name">${displayName}</div>
+                    <div class="part-description">${this.getPartDescription(part)}</div>
+                </div>
+            `;
+        });
+    }
+    
+    this.lawnDialog.innerHTML = `
+        <div class="lawn-dialog-content">
+            <header class="dialog-header">
+                <h3>Agregar parte de vagón</h3>
+                <div class="style-selector">
+                    <label>Estilo:</label>
+                    <select id="railcart-style-selector">
+                        ${styleOptions}
+                    </select>
+                </div>
+                <button class="close-btn" aria-label="Cerrar">✕</button>
+            </header>
+
+            <section class="dialog-body">
+                <div class="railcart-parts-section">
+                    <p class="selection-description">
+                        Selecciona una parte del vagón para colocarla en la celda (${row}, ${col})
+                    </p>
+                    
+                    <div class="railcart-parts-grid">
+                        ${partsOptions || '<div class="no-parts">No hay estilos de vagón disponibles</div>'}
+                    </div>
+                    
+                    <div class="cell-info-display">
+                        <strong>Celda destino:</strong> Fila ${row}, Columna ${col}
+                    </div>
+                </div>
+            </section>
+
+            <footer class="dialog-footer">
+                <div class="button-group">
+                    <button class="btn-back" id="btn-back-railcart">
+                        ← Volver a elementos
+                    </button>
+                    <button class="btn-confirm" id="btn-place-part" ${!currentRailcartType ? 'disabled' : ''}>
+                        ✅ Selecciona una parte primero
+                    </button>
+                </div>
+            </footer>
+        </div>
+    `;
+    
+    this.lawnDialogBackdrop.appendChild(this.lawnDialog);
+    document.body.appendChild(this.lawnDialogBackdrop);
+    
+    this.setupCombinedRailcartDialogListeners(row, col);
+}
+
+
+
+setupCombinedRailcartDialogListeners(row, col) {
+    const closeBtn = this.lawnDialog.querySelector('.close-btn');
+    const backBtn = this.lawnDialog.querySelector('#btn-back-railcart');
+    const confirmBtn = this.lawnDialog.querySelector('#btn-place-part');
+    const styleSelector = this.lawnDialog.querySelector('#railcart-style-selector');
+    
+    closeBtn.addEventListener('click', () => this.closeDialog());
+    
+    backBtn.addEventListener('click', () => {
+        this.closeDialog();
+        this.openAddElementSelectionDialog(row, col);
+    });
+    
+    // Cambiar estilo
+    styleSelector.addEventListener('change', () => {
+        const newType = styleSelector.value;
+        this.railcartElements.type = newType;
+        
+        // Actualizar imágenes de partes
+        const partOptions = this.lawnDialog.querySelectorAll('.railcart-part-option');
+        partOptions.forEach(option => {
+            const part = option.dataset.part;
+            const img = option.querySelector('img');
+            img.src = this.getRailcartPartImageUrl(newType, part);
+        });
+    });
+    
+    // Selección de parte
+    let selectedPart = null;
+    const partOptions = this.lawnDialog.querySelectorAll('.railcart-part-option');
+    
+    partOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            partOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            selectedPart = option.dataset.part;
+            
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = `✅ Colocar ${this.formatPartName(selectedPart)}`;
+        });
+    });
+    
+    confirmBtn.addEventListener('click', () => {
+        if (!selectedPart) {
+            this.showToast('Error', 'Selecciona una parte primero', 'error');
+            return;
         }
         
-        this.createNormalElementDialog(row, col, elementType, isChanging, originalElementInfo);
+        // Asegurar que tenemos el tipo correcto
+        const railcartType = styleSelector.value;
+        if (railcartType && railcartType !== this.railcartElements.type) {
+            this.railcartElements.type = railcartType;
+        }
+        
+        this.placeRailcartPart(row, col, selectedPart);
+    });
+    
+    // Seleccionar automáticamente la primera parte si hay partes disponibles
+    setTimeout(() => {
+        if (partOptions.length > 0) {
+            partOptions[0].click();
+            
+            // Asegurar que el botón esté habilitado
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = `✅ Colocar ${this.formatPartName(partOptions[0].dataset.part)}`;
+        }
+    }, 100);
+}
+
+createRailcartStyleDialog(row, col) {
+    this.lawnDialogBackdrop = document.createElement('div');
+    this.lawnDialogBackdrop.className = 'lawn-dialog-backdrop';
+    
+    this.lawnDialog = document.createElement('div');
+    this.lawnDialog.className = 'lawn-dialog railcart-style-dialog';
+    
+    // Generar opciones de railcart types
+    let railcartOptions = '';
+    this.availableElements.railcarts.forEach(railcart => {
+        const isSelected = this.railcartElements.type === railcart.alias_type;
+        railcartOptions += `
+            <div class="railcart-style-option ${isSelected ? 'selected' : ''}" 
+                 data-type="${railcart.alias_type}">
+                <div class="railcart-preview">
+                    <img src="${railcart.imageUrl}" alt="${railcart.name}"
+                         onerror="this.src='Assets/Railcarts/railcart_cowboy/cart.webp'">
+                </div>
+                <div class="railcart-name">${railcart.name}</div>
+                <div class="railcart-check">${isSelected ? '✓' : ''}</div>
+            </div>
+        `;
+    });
+    
+    this.lawnDialog.innerHTML = `
+        <div class="lawn-dialog-content">
+            <header class="dialog-header">
+                <h3>Seleccionar estilo de vagón</h3>
+                <button class="close-btn" aria-label="Cerrar">✕</button>
+            </header>
+
+            <section class="dialog-body">
+                <div class="railcart-style-section">
+                    <p class="selection-description">
+                        Elige un estilo de vagón. Luego podrás seleccionar las partes individuales.
+                    </p>
+                    
+                    <div class="railcart-style-grid">
+                        ${railcartOptions}
+                    </div>
+                </div>
+            </section>
+
+            <footer class="dialog-footer">
+                <div class="button-group">
+                    <button class="btn-back" id="btn-back-railcart">
+                        ← Volver
+                    </button>
+                    <button class="btn-continue" id="btn-continue-railcart" ${!this.railcartElements.type ? 'disabled' : ''}>
+                        Continuar →
+                    </button>
+                </div>
+            </footer>
+        </div>
+    `;
+    
+    this.lawnDialogBackdrop.appendChild(this.lawnDialog);
+    document.body.appendChild(this.lawnDialogBackdrop);
+    
+    this.setupRailcartStyleDialogListeners(row, col);
+}
+
+setupRailcartStyleDialogListeners(row, col) {
+    const closeBtn = this.lawnDialog.querySelector('.close-btn');
+    const backBtn = this.lawnDialog.querySelector('#btn-back-railcart');
+    const continueBtn = this.lawnDialog.querySelector('#btn-continue-railcart');
+    
+    closeBtn.addEventListener('click', () => this.closeDialog());
+    
+    backBtn.addEventListener('click', () => {
+        // Volver al diálogo anterior
+        this.closeDialog();
+        // Abrir diálogo de selección de tipo de elemento
+        this.openAddElementSelectionDialog(row, col);
+    });
+    
+    continueBtn.addEventListener('click', () => {
+        // Continuar a seleccionar partes
+        this.openRailcartPartsDialog(row, col);
+    });
+    
+    // Seleccionar tipo de railcart
+    const railcartOptions = this.lawnDialog.querySelectorAll('.railcart-style-option');
+    railcartOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            railcartOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            this.railcartElements.type = option.dataset.type;
+            continueBtn.disabled = false;
+        });
+    });
+}
+
+openRailcartPartsDialog(row, col) {
+    if (this.lawnDialog) {
+        this.closeDialog();
     }
+    
+    this.createRailcartPartsDialog(row, col);
+}
+
+createRailcartPartsDialog(row, col) {
+    this.lawnDialogBackdrop = document.createElement('div');
+    this.lawnDialogBackdrop.className = 'lawn-dialog-backdrop';
+    
+    this.lawnDialog = document.createElement('div');
+    this.lawnDialog.className = 'lawn-dialog railcart-parts-dialog';
+    
+    // Obtener el estilo seleccionado
+    const railcartType = this.railcartElements.type;
+    const railcartName = this.formatRailcartName(railcartType);
+    
+    // Generar opciones de partes
+    let partsOptions = '';
+    this.railcartParts.forEach(part => {
+        const imageUrl = this.getRailcartPartImageUrl(railcartType, part);
+        const displayName = this.formatPartName(part);
+        
+        partsOptions += `
+            <div class="railcart-part-option" data-part="${part}">
+                <div class="part-preview">
+                    <img src="${imageUrl}" alt="${displayName}"
+                         onerror="this.src='Assets/Railcarts/${railcartType}/${part}.webp'">
+                </div>
+                <div class="part-name">${displayName}</div>
+                <div class="part-description">${this.getPartDescription(part)}</div>
+            </div>
+        `;
+    });
+    
+    this.lawnDialog.innerHTML = `
+        <div class="lawn-dialog-content">
+            <header class="dialog-header">
+                <h3>Seleccionar parte del vagón</h3>
+                <div class="current-railcart-info">
+                    <span>Estilo: <strong>${railcartName}</strong></span>
+                </div>
+                <button class="close-btn" aria-label="Cerrar">✕</button>
+            </header>
+
+            <section class="dialog-body">
+                <div class="railcart-parts-section">
+                    <p class="selection-description">
+                        Selecciona una parte del vagón para colocarla en la celda (${row}, ${col})
+                    </p>
+                    
+                    <div class="railcart-parts-grid">
+                        ${partsOptions}
+                    </div>
+                    
+                    <div class="cell-info-display">
+                        <strong>Celda destino:</strong> Fila ${row}, Columna ${col}
+                    </div>
+                </div>
+            </section>
+
+            <footer class="dialog-footer">
+                <div class="button-group">
+                    <button class="btn-back" id="btn-back-parts">
+                        ← Cambiar estilo
+                    </button>
+                    <button class="btn-confirm" id="btn-place-part" disabled>
+                        ✅ Selecciona una parte primero
+                    </button>
+                </div>
+            </footer>
+        </div>
+    `;
+    
+    this.lawnDialogBackdrop.appendChild(this.lawnDialog);
+    document.body.appendChild(this.lawnDialogBackdrop);
+    
+    this.setupRailcartPartsDialogListeners(row, col);
+}
+
+setupRailcartPartsDialogListeners(row, col) {
+    const closeBtn = this.lawnDialog.querySelector('.close-btn');
+    const backBtn = this.lawnDialog.querySelector('#btn-back-parts');
+    const confirmBtn = this.lawnDialog.querySelector('#btn-place-part');
+    
+    closeBtn.addEventListener('click', () => this.closeDialog());
+    
+    backBtn.addEventListener('click', () => {
+        // Volver a seleccionar estilo
+        this.openRailcartStyleDialog(row, col);
+    });
+    
+    // Variable local para almacenar la parte seleccionada
+    let selectedPart = null;
+    
+    // Seleccionar parte
+    const partOptions = this.lawnDialog.querySelectorAll('.railcart-part-option');
+    
+    partOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            console.log('🚀 Clic en parte:', option.dataset.part);
+            
+            // Remover selección de todas las opciones
+            partOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Agregar selección a la opción actual
+            option.classList.add('selected');
+            selectedPart = option.dataset.part;
+            
+            console.log('✅ Parte seleccionada:', selectedPart);
+            
+            // Habilitar y actualizar botón
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = `✅ Colocar ${this.formatPartName(selectedPart)}`;
+        });
+    });
+    
+    confirmBtn.addEventListener('click', () => {
+        console.log('🔍 Intentando colocar parte:', selectedPart);
+        
+        if (!selectedPart) {
+            this.showToast('Error', 'Selecciona una parte primero', 'error');
+            return;
+        }
+        
+        console.log('🚀 Llamando a placeRailcartPart con:', {
+            row, col, selectedPart
+        });
+        
+        this.placeRailcartPart(row, col, selectedPart);
+    });
+    
+    // Inicializar con la primera parte seleccionada
+    setTimeout(() => {
+        if (partOptions.length > 0) {
+            console.log('🔄 Seleccionando primera opción automáticamente');
+            partOptions[0].click();
+        }
+    }, 100);
+}
+
+// MODIFICAR placeRailcartPart para recibir la parte como parámetro
+placeRailcartPart(row, col, selectedPart) {
+    console.log('🎯 Ejecutando placeRailcartPart:', {
+        row, col, selectedPart,
+        railcartType: this.railcartElements.type
+    });
+    
+    const railcartType = this.railcartElements.type;
+    if (!railcartType) {
+        this.showToast('Error', 'No hay estilo de vagón seleccionado', 'error');
+        return;
+    }
+    
+    // Validar que selectedPart no sea null/undefined
+    if (!selectedPart) {
+        this.showToast('Error', 'Parte no válida seleccionada', 'error');
+        return;
+    }
+    
+    // Verificar si ya hay una parte en esta celda específica
+    const existingPartIndex = this.railcartElements.parts.findIndex(p => 
+        parseInt(p.Row) === row && 
+        parseInt(p.Column) === col &&
+        p.Part === selectedPart
+    );
+    
+    console.log('🔍 Buscando parte existente en esta celda:', {
+        existingPartIndex,
+        parts: this.railcartElements.parts
+    });
+    
+    if (existingPartIndex >= 0) {
+        // Si ya existe la misma parte en la misma celda, eliminarla (toggle)
+        this.railcartElements.parts.splice(existingPartIndex, 1);
+        console.log('🗑️ Eliminando parte existente');
+    } else {
+        // Agregar nueva parte - PERMITIR MÚLTIPLES PARTES DEL MISMO TIPO
+        const newPart = {
+            Part: selectedPart,
+            Column: col.toString(),
+            Row: row.toString()
+        };
+        this.railcartElements.parts.push(newPart);
+        console.log('➕ Agregando nueva parte:', newPart);
+        
+        // Si es un vagón (cart), agregar riel automáticamente en la misma posición
+        if (selectedPart === 'cart') {
+            // Agregar un riel en la misma fila y columna
+            const railExists = this.railcartElements.rails.some(rail => 
+                parseInt(rail.Column) === col && 
+                parseInt(rail.RowStart) <= row && 
+                parseInt(rail.RowEnd) >= row
+            );
+            
+            if (!railExists) {
+                this.railcartElements.rails.push({
+                    Column: col.toString(),
+                    RowStart: row.toString(),
+                    RowEnd: row.toString()
+                });
+                console.log('🛤️ Agregando riel específico para vagón');
+            }
+        }
+    }
+    
+    console.log('✅ Partes después de modificar:', this.railcartElements.parts);
+    console.log('✅ Rieles después de modificar:', this.railcartElements.rails);
+    
+    // Actualizar UI
+    this.renderBoard();
+    this.updatePreview();
+    this.closeDialog();
+    
+    // Mostrar mensaje
+    const partName = this.formatPartName(selectedPart);
+    const railcartName = this.formatRailcartName(railcartType);
+    const action = existingPartIndex >= 0 ? 'eliminada' : 'colocada';
+    this.showToast(`Parte ${action}`, 
+        `${partName} de ${railcartName} ${action} en (${row}, ${col})`, 
+        existingPartIndex >= 0 ? 'warning' : 'success');
+}
+
+clearRailcartParts(partType = null) {
+    if (partType) {
+        // Limpiar solo partes del tipo especificado
+        const beforeCount = this.railcartElements.parts.length;
+        this.railcartElements.parts = this.railcartElements.parts.filter(
+            part => part.Part !== partType
+        );
+        const afterCount = this.railcartElements.parts.length;
+        
+        // Si eliminamos vagones, también limpiar rieles asociados
+        if (partType === 'cart') {
+            const remainingCartColumns = this.railcartElements.parts
+                .filter(p => p.Part === 'cart')
+                .map(p => parseInt(p.Column));
+            
+            this.railcartElements.rails = this.railcartElements.rails.filter(rail => {
+                return remainingCartColumns.includes(parseInt(rail.Column));
+            });
+        }
+        
+        console.log(`🧹 Limpiadas ${beforeCount - afterCount} partes de tipo ${partType}`);
+    } else {
+        // Limpiar todo
+        this.railcartElements.parts = [];
+        this.railcartElements.rails = [];
+        console.log('🧹 Limpiadas todas las partes de railcart');
+    }
+    
+    this.renderBoard();
+    this.updatePreview();
+}
+
+// CORREGIR LA FUNCIÓN addDefaultRails
+addDefaultRails(column) {
+    // Verificar si ya hay rieles en esta columna
+    const existingRail = this.railcartElements.rails.find(rail => 
+        parseInt(rail.Column) === column
+    );
+    
+    if (!existingRail) {
+        // Agregar rieles en la misma columna, desde la fila 1 hasta la 5
+        this.railcartElements.rails.push({
+            Column: column.toString(),
+            RowStart: '1',
+            RowEnd: '5'
+        });
+    }
+    
+    this.renderBoard();
+    this.updatePreview();
+}
+
+
+
+
+
+
+// Función para obtener descripción de las partes
+getPartDescription(part) {
+    const descriptions = {
+        'bottom': 'Parte inferior/base del vagón',
+        'cart': 'Cuerpo principal del vagón',
+        'mid': 'Parte media/central',
+        'top': 'Parte superior/techo'
+    };
+    return descriptions[part] || 'Parte del vagón';
+}
+
+// Función para obtener URL de imagen de parte específica
+getRailcartPartImageUrl(railcartType, part) {
+    return `Assets/Railcarts/${railcartType}/${part}.webp`;
+}
+
 
     createNormalElementDialog(row, col, elementType, isChanging, originalElementInfo) {
         // Crear backdrop
@@ -1763,6 +3068,7 @@ getOtherImageUrl(itemName) {
             potions: [],
             others: [],
             molds: [], // NUEVO
+            railcarts: [],
             protectedPlants: []
         };
         
@@ -1955,10 +3261,68 @@ getOtherImageUrl(itemName) {
                 sliders: [],
                 potions: [],
                 others: [],
-                 molds: [],
+                molds: [],
+               railcarts: [], // Para vagones (cart)
+             rails: [],
                 protectedPlants: []
             };
         }
+
+
+     // MÓDULO PARA RAILCARTS - SOLO UN MÓDULO, NO DOS
+    if (this.railcartElements.type) {
+        const railcartData = {
+            RailcartType: this.railcartElements.type
+        };
+        
+        // 1. Obtener vagones (cart) - RESTAR 1 PARA CONTAR DESDE 0
+        const railcarts = this.railcartElements.parts
+            .filter(part => part.Part === 'cart')
+            .map(cart => ({
+                Column: (parseInt(cart.Column) - 1).toString(),  // RESTAR 1: 1-9 → 0-8
+                Row: (parseInt(cart.Row) - 1).toString()         // RESTAR 1: 1-5 → 0-4
+            }));
+        
+        // 2. Obtener todos los rieles - TAMBIÉN RESTAR 1
+        const rails = [];
+        
+        // Rieles de partes específicas
+        this.railcartElements.parts
+            .filter(part => part.Part !== 'cart')
+            .forEach(railPart => {
+                rails.push({
+                    Column: (parseInt(railPart.Column) - 1).toString(),
+                    RowStart: (parseInt(railPart.Row) - 1).toString(),
+                    RowEnd: (parseInt(railPart.Row) - 1).toString()
+                });
+            });
+        
+        // Rieles de rango
+        this.railcartElements.rails.forEach(rail => {
+            rails.push({
+                Column: (parseInt(rail.Column) - 1).toString(),
+                RowStart: (parseInt(rail.RowStart) - 1).toString(),
+                RowEnd: (parseInt(rail.RowEnd) - 1).toString()
+            });
+        });
+        
+        // Solo agregar el módulo si hay datos
+        if (railcarts.length > 0 || rails.length > 0) {
+            if (railcarts.length > 0) {
+                railcartData.Railcarts = railcarts;
+            }
+            
+            if (rails.length > 0) {
+                railcartData.Rails = rails;
+            }
+            
+            modules.push({
+                aliases: ["MountingRails"],
+                objclass: "RailcartProperties",
+                objdata: railcartData
+            });
+        }
+    }
 
 
             // MÓDULO PARA MOLDS - DEBE IR PRIMERO
@@ -2129,37 +3493,55 @@ getOtherImageUrl(itemName) {
     }
 
     setupEventListeners() {
-        const btnClearBoard = document.getElementById('btn-clear-board');
-        if (btnClearBoard) {
-            btnClearBoard.addEventListener('click', () => {
-                if (confirm('¿Estás seguro de limpiar todo el tablero?')) {
-                    this.board = this.initializeBoard();
-                    this.boardModules = {
-                        plants: [],
-                        zombies: [],
-                        gravestones: [],
-                        sliders: [],
-                        potions: [],
-                        protectedPlants: []
-                    };
-                    this.renderBoard();
-                    this.updatePreview();
-                    this.showToast('Tablero limpiado', 'Todos los elementos han sido removidos', 'warning');
-                }
-            });
-        }
-        
-        const btnEditCell = document.getElementById('btn-edit-cell');
-        if (btnEditCell) {
-            btnEditCell.addEventListener('click', () => {
-                if (this.selectedCell) {
-                    this.openAddElementSelectionDialog(this.selectedCell.row, this.selectedCell.col);
-                } else {
-                    this.showToast('Sin selección', 'Selecciona una celda primero', 'warning');
-                }
-            });
-        }
+    const btnClearBoard = document.getElementById('btn-clear-board');
+    if (btnClearBoard) {
+        btnClearBoard.addEventListener('click', () => {
+            // Limpiar sin preguntar confirmación
+            this.board = this.initializeBoard();
+            this.boardModules = {
+                plants: [],
+                zombies: [],
+                gravestones: [],
+                sliders: [],
+                potions: [],
+                others: [],
+                molds: [],
+                railcarts: [],
+                rails: [],
+                protectedPlants: []
+            };
+
+            // Limpiar también los railcart elements
+            this.railcartElements = {
+                type: '',
+                parts: [],
+                rails: []
+            };
+            
+            this.renderBoard();
+            this.updatePreview();
+            this.showToast('Tablero limpiado', 'Todos los elementos han sido removidos', 'warning');
+        });
     }
+
+    const btnRailcarts = document.getElementById('btn-railcarts');
+    if (btnRailcarts) {
+        btnRailcarts.addEventListener('click', () => {
+            this.openRailcartSetupDialog();
+        });
+    }
+    
+    const btnEditCell = document.getElementById('btn-edit-cell');
+    if (btnEditCell) {
+        btnEditCell.addEventListener('click', () => {
+            if (this.selectedCell) {
+                this.openAddElementSelectionDialog(this.selectedCell.row, this.selectedCell.col);
+            } else {
+                this.showToast('Sin selección', 'Selecciona una celda primero', 'warning');
+            }
+        });
+    }
+}
 }
 
 // Inicializar cuando la pestaña esté activa
