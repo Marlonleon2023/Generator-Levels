@@ -19,6 +19,8 @@ export const PATHS = {
         CONDITIONS: "Assets/Condiciones/",
         SLIDERS: 'Assets/Sliders/',
         POTIONS: 'Assets/Potions/', // Nueva ruta
+        OTHERS: 'Assets/Others/',
+        MOLDS: 'Assets/Molds/'
     },
 };
 
@@ -33,8 +35,30 @@ export const SLIDERS = [
 
 
 export const POTIONS = [
-    'speed',
-    'toughness',
+    'zombiepotion_speed',
+    'zombiepotion_toughness',
+];
+
+
+export const OTHERS = [
+   'backpack',
+'boulder_trap_falling_forward',
+'crater',
+'flame_spreader_trap',
+'goldtile',
+'potholepuddle',
+'shallowpuddle',
+'speaker',
+'surfboard',
+'tent',
+'zomboss_iceage_glacier_block'
+
+];
+
+
+
+export const MOLDS = [
+    'mold'
 ];
 
 // Imágenes de mundos

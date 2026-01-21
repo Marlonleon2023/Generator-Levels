@@ -4295,7 +4295,9 @@ updateSeedSlotsControl() {
                 "MountingZombies",
                 "MountingGravestones",
                 "MountingSliders",
-                "MountingPotions"
+                "MountingPotions",
+                "MountingOthers",
+                "MountingMolds"
             ];
 
             placementOrder.forEach(moduleName => {
@@ -4500,124 +4502,157 @@ updateSeedSlotsControl() {
         return objects;
     }
 
-    generateJson() {
-        // Obtener módulos del BoardManager si existe
-        let boardModules = [];
+generateJson() {
+    // Obtener módulos del BoardManager si existe
+    let boardModules = [];
 
-        if (this.boardManager && typeof this.boardManager.getAllModules === 'function') {
-            boardModules = this.boardManager.getAllModules();
-            console.log('Módulos del BoardManager:', boardModules);
-        } else if (window.boardManager && typeof window.boardManager.getAllModules === 'function') {
-            boardModules = window.boardManager.getAllModules();
-            console.log('Módulos del BoardManager (window):', boardModules);
-        }
-
-        const levelJson = {
-            "#comment": this.levelData.level_name,
-            "objects": [],
-            "version": 1
-        };
-
-        // **1. AGREGAR LevelDefinition PRIMERO**
-        levelJson.objects.push({
-            "objclass": "LevelDefinition",
-            "objdata": {
-                "Description": this.levelData.level_name,
-                "FirstRewardType": this.rewardManager.rewardsData.firstReward?.type || "",
-                "FirstRewardParam": this.rewardManager.rewardsData.firstReward?.param || "",
-                "ReplayRewardType": this.rewardManager.rewardsData.replayReward?.type || "",
-                "ReplayRewardParam": this.rewardManager.rewardsData.replayReward?.param || "",
-                "LevelNumber": this.levelData.level_number,
-                "ForceToWorldMap": true,
-                "Loot": "RTID(DefaultLoot@LevelModules)",
-                "Modules": this.generateModules(),
-                "ZombieLevel": this.levelData.zombie_level,
-                "GridItemLevel": this.levelData.grid_level,
-                "Name": this.levelData.level_name,
-                "NormalPresentTable": "modern_normal_03",
-                "RepeatPlayForceToWorldMap": false,
-                "ShinyPresentTable": "egypt_shiny_01",
-                "StageModule": `RTID(${this.levelData.stage}@LevelModules)`,
-                "StartingSun": this.levelData.starting_sun
-            }
-        });
-
-        // **2. AGREGAR SeedBank SEGUNDO**
-        const waveObjects = this.generateWaveObjects();
-        let seedBankObject = null;
-        let otherWaveObjects = [];
-
-        // Separar SeedBank del resto de wave objects
-        waveObjects.forEach(obj => {
-            if (obj.aliases && obj.aliases[0] === "SeedBank") {
-                seedBankObject = obj;
-            } else {
-                otherWaveObjects.push(obj);
-            }
-        });
-
-        if (seedBankObject) {
-            levelJson.objects.push(seedBankObject);
-            console.log('SeedBank agregado en posición 2');
-        }
-
-        // **3. AGREGAR MÓDULOS DE TABLERO (Plantas, Zombies, Lápidas)**
-        if (boardModules.length > 0) {
-            // Filtrar los módulos de colocación que deben ir aquí
-            const placementModules = boardModules.filter(module => {
-                const alias = module.aliases?.[0];
-                const validPlacementModules = [
-                    "MountingPlants",
-                    "MountingZombies",
-                    "MountingGravestones",
-                    "MountingSliders",
-                    "MountingPotions"
-                ];
-                return validPlacementModules.includes(alias);
-            });
-
-            if (placementModules.length > 0) {
-                levelJson.objects.push(...placementModules);
-                console.log(`${placementModules.length} módulos de colocación agregados después de SeedBank`);
-            }
-        }
-
-        // **4. AGREGAR ChallengeModule PRIMERO, luego otros desafíos**
-        const challengeObjects = this.generateChallengeObjects();
-
-        // **Primero el ChallengeModule**
-        const challengeModuleObject = challengeObjects.find(obj =>
-            obj.aliases?.[0] === "ChallengeModule"
-        );
-        if (challengeModuleObject) {
-            levelJson.objects.push(challengeModuleObject);
-            console.log('ChallengeModule agregado (primero en desafíos)');
-        }
-
-        // **Luego ProtectThePlant**
-        const protectPlantObject = challengeObjects.find(obj =>
-            obj.aliases?.[0] === "ProtectThePlant"
-        );
-        if (protectPlantObject) {
-            levelJson.objects.push(protectPlantObject);
-            console.log('ProtectThePlant agregado');
-        }
-
-        // **Finalmente otros desafíos individuales**
-        const otherChallenges = challengeObjects.filter(obj =>
-            !["ChallengeModule", "ProtectThePlant"].includes(obj.aliases?.[0])
-        );
-        if (otherChallenges.length > 0) {
-            levelJson.objects.push(...otherChallenges);
-            console.log(`${otherChallenges.length} desafíos individuales agregados`);
-        }
-
-        // **5. AGREGAR OTROS OBJETOS DE WAVE (NewWaves, WaveManagerProps, Waves)**
-        levelJson.objects.push(...otherWaveObjects);
-        console.log(`${otherWaveObjects.length} objetos de wave agregados al final`);
-
-        return levelJson;
+    if (this.boardManager && typeof this.boardManager.getAllModules === 'function') {
+        boardModules = this.boardManager.getAllModules();
+        console.log('Módulos del BoardManager:', boardModules);
+    } else if (window.boardManager && typeof window.boardManager.getAllModules === 'function') {
+        boardModules = window.boardManager.getAllModules();
+        console.log('Módulos del BoardManager (window):', boardModules);
     }
+
+    const levelJson = {
+        "#comment": this.levelData.level_name,
+        "objects": [],
+        "version": 1
+    };
+
+    // **1. AGREGAR LevelDefinition PRIMERO**
+    levelJson.objects.push({
+        "objclass": "LevelDefinition",
+        "objdata": {
+            "Description": this.levelData.level_name,
+            "FirstRewardType": this.rewardManager.rewardsData.firstReward?.type || "",
+            "FirstRewardParam": this.rewardManager.rewardsData.firstReward?.param || "",
+            "ReplayRewardType": this.rewardManager.rewardsData.replayReward?.type || "",
+            "ReplayRewardParam": this.rewardManager.rewardsData.replayReward?.param || "",
+            "LevelNumber": this.levelData.level_number,
+            "ForceToWorldMap": true,
+            "Loot": "RTID(DefaultLoot@LevelModules)",
+            "Modules": this.generateModules(),
+            "ZombieLevel": this.levelData.zombie_level,
+            "GridItemLevel": this.levelData.grid_level,
+            "Name": this.levelData.level_name,
+            "NormalPresentTable": "modern_normal_03",
+            "RepeatPlayForceToWorldMap": false,
+            "ShinyPresentTable": "egypt_shiny_01",
+            "StageModule": `RTID(${this.levelData.stage}@LevelModules)`,
+            "StartingSun": this.levelData.starting_sun
+        }
+    });
+
+    // **2. AGREGAR SeedBank SEGUNDO**
+    const waveObjects = this.generateWaveObjects();
+    let seedBankObject = null;
+    let otherWaveObjects = [];
+
+    // Separar SeedBank del resto de wave objects
+    waveObjects.forEach(obj => {
+        if (obj.aliases && obj.aliases[0] === "SeedBank") {
+            seedBankObject = obj;
+        } else {
+            otherWaveObjects.push(obj);
+        }
+    });
+
+    if (seedBankObject) {
+        levelJson.objects.push(seedBankObject);
+        console.log('SeedBank agregado en posición 2');
+    }
+
+    // **3. AGREGAR MÓDULOS DE TABLERO (EXCLUYENDO ProtectThePlant)**
+    if (boardModules.length > 0) {
+        console.log(`Total módulos del BoardManager: ${boardModules.length}`, 
+            boardModules.map(m => m.aliases?.[0]));
+        
+        // IMPORTANTE: Orden CORRECTO de módulos de molds
+        const placementModules = [];
+        
+        // Primero buscar MountingMolds (DEBE IR PRIMERO)
+        const mountingMoldsModule = boardModules.find(m => m.aliases?.[0] === "MountingMolds");
+        if (mountingMoldsModule) {
+            placementModules.push(mountingMoldsModule);
+            console.log('✅ MountingMolds agregado (debe ir primero)');
+        }
+        
+        // Luego buscar MoldLocationsCustom (DEBE IR DESPUÉS)
+        const moldLocationsModule = boardModules.find(m => m.aliases?.[0] === "MoldLocationsCustom");
+        if (moldLocationsModule) {
+            placementModules.push(moldLocationsModule);
+            console.log('✅ MoldLocationsCustom agregado (después de MountingMolds)');
+        }
+        
+        // Agregar el resto de módulos de colocación (evitando duplicados)
+        const moduleAliases = placementModules.map(m => m.aliases?.[0]);
+        
+        boardModules.forEach(module => {
+            const alias = module.aliases?.[0];
+            const placementModulesList = [
+                "MountingPlants",
+                "MountingZombies",
+                "MountingGravestones",
+                "MountingSliders",
+                "MountingPotions",
+                "MountingOthers"
+            ];
+            
+            // IMPORTANTE: NO incluir ProtectThePlant aquí - se agregará en la sección 4
+            if (placementModulesList.includes(alias) && !moduleAliases.includes(alias)) {
+                placementModules.push(module);
+                moduleAliases.push(alias);
+            }
+        });
+        
+        // NO agregar ProtectThePlant aquí - se manejará en la sección 4
+        
+        if (placementModules.length > 0) {
+            levelJson.objects.push(...placementModules);
+            console.log(`${placementModules.length} módulos de colocación agregados:`, 
+                placementModules.map(m => m.aliases?.[0]));
+        }
+    }
+
+    // **4. AGREGAR DESAFÍOS EN EL ORDEN CORRECTO**
+    const challengeObjects = this.generateChallengeObjects();
+
+    // **4.1 PRIMERO: ChallengeModule**
+    const challengeModuleObject = challengeObjects.find(obj =>
+        obj.aliases?.[0] === "ChallengeModule"
+    );
+    if (challengeModuleObject) {
+        levelJson.objects.push(challengeModuleObject);
+        console.log('✅ ChallengeModule agregado PRIMERO');
+    }
+
+    // **4.2 SEGUNDO: ProtectThePlant (si existe en challengeObjects)**
+    const protectPlantObject = challengeObjects.find(obj =>
+        obj.aliases?.[0] === "ProtectThePlant"
+    );
+    if (protectPlantObject) {
+        levelJson.objects.push(protectPlantObject);
+        console.log('✅ ProtectThePlant agregado SEGUNDO (después de ChallengeModule)');
+    }
+
+    // **4.3 FINALMENTE: Otros desafíos individuales (excluyendo los ya procesados)**
+    const otherChallenges = challengeObjects.filter(obj => {
+        const alias = obj.aliases?.[0];
+        return alias !== "ChallengeModule" && alias !== "ProtectThePlant";
+    });
+    
+    if (otherChallenges.length > 0) {
+        levelJson.objects.push(...otherChallenges);
+        console.log(`${otherChallenges.length} desafíos individuales agregados`);
+    }
+
+    // **5. AGREGAR OTROS OBJETOS DE WAVE (NewWaves, WaveManagerProps, Waves)**
+    levelJson.objects.push(...otherWaveObjects);
+    console.log(`${otherWaveObjects.length} objetos de wave agregados al final`);
+
+    return levelJson;
+}
 
     updateStats() {
         const container = document.getElementById('statsContent');

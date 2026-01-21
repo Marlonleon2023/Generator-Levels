@@ -3,6 +3,8 @@ import {
     GRAVESTONES, 
     SLIDERS,
     POTIONS,
+    OTHERS,
+    MOLDS,
     GRAVESTONE_DISPLAY_NAMES,
     PATHS,
     FALLBACK_IMAGES 
@@ -23,6 +25,8 @@ class BoardManager {
             gravestones: [],
             sliders: [],
             potions: [],
+            molds: [],
+            others: [],
             protectedPlants: [] // Añadido aquí también
         };
         
@@ -33,7 +37,9 @@ class BoardManager {
             zombies: [],
             gravestones: [],
             sliders: [],
-            potions: [] 
+            potions: [],
+            others: [],
+            molds: []
         };
         
         this.imagePaths = PATHS?.IMAGES || {
@@ -41,15 +47,19 @@ class BoardManager {
             ZOMBIES: 'Assets/Zombies/',
             GRAVESTONES: 'Assets/Gravestones/',
             SLIDERS: 'Assets/Sliders/',
-            POTIONS: 'Assets/Potions/'
+            POTIONS: 'Assets/Potions/',
+            OTHERS: 'Assets/Others/',
+            MOLDS: 'Assets/Molds/'
         };
         
         this.fallbackImages = {
             plants: FALLBACK_IMAGES?.plants || 'Assets/Plants/error.webp',
             zombies: `${this.imagePaths.ZOMBIES}error.webp`,
-            gravestones: FALLBACK_IMAGES?.gravestones || 'Assets/Gravestones/error.webp',
-            sliders: FALLBACK_IMAGES?.sliders || 'Assets/Sliders/error.webp',
-            potions: FALLBACK_IMAGES?.potions || 'Assets/Potions/error.webp'
+            gravestones: FALLBACK_IMAGES?.gravestones || 'Assets/Zombies/error.webp',
+            sliders: FALLBACK_IMAGES?.sliders || 'Assets/Zombies/error.webp',
+            potions: FALLBACK_IMAGES?.potions || 'Assets/Zombies/error.webp',
+            others: 'Assets/Others/error.webp' ,
+            molds: FALLBACK_IMAGES?.molds || 'Assets/Zombies/error.webp'
         };
         
         this.loadElementData();
@@ -114,6 +124,40 @@ class BoardManager {
                 this.availableElements.potions = this.loadDefaultPotions();
             }
 
+
+            if (OTHERS && Array.isArray(OTHERS)) {
+            this.availableElements.others = OTHERS.map(item => ({
+                alias_type: item,
+                name: this.formatOtherName(item),
+                type: 'other',
+                imageUrl: this.getOtherImageUrl(item)
+            }));
+            console.log(`✅ Elementos varios cargados: ${OTHERS.length}`);
+        } else {
+            console.warn('⚠️ No se encontró la constante OTHERS o no es un array');
+            this.availableElements.others = this.loadDefaultOthers();
+        }
+
+
+         // CARGAR MOLDS DESDE RESOURCES.JS
+            if (MOLDS && Array.isArray(MOLDS)) {
+                this.availableElements.molds = MOLDS.map(mold => ({
+                    alias_type: mold,
+                    name: this.formatMoldName(mold), // Usar función formateadora
+                    type: 'mold',
+                    imageUrl: this.getMoldImageUrl(mold)
+                }));
+                console.log(`✅ Molds cargados desde constants: ${MOLDS.length}`);
+            } else {
+                console.warn('⚠️ No se encontró la constante MOLDS o no es un array');
+                this.availableElements.molds = this.loadDefaultMolds();
+            }
+            
+
+    
+
+
+
             if (window.levelGenerator && window.levelGenerator.zombieData) {
                 this.availableElements.zombies = window.levelGenerator.zombieData.map(zombie => ({
                     alias_type: zombie.alias_type,
@@ -126,13 +170,20 @@ class BoardManager {
                 console.warn('⚠️ No se encontraron zombies en levelGenerator');
                 this.availableElements.zombies = this.loadDefaultZombies();
             }
+
+
+            
+
+
+
             
             console.log('✅ Elementos cargados:', {
                 plantas: this.availableElements.plants.length,
                 zombies: this.availableElements.zombies.length,
                 lápidas: this.availableElements.gravestones.length,
                 sliders: this.availableElements.sliders.length,
-                pociones: this.availableElements.potions.length
+                pociones: this.availableElements.potions.length,
+                 varios: this.availableElements.others.length
             });
             
         } catch (error) {
@@ -185,6 +236,51 @@ class BoardManager {
         ];
     }
 
+
+    loadDefaultMolds() {
+                return [
+                    { 
+                        alias_type: 'mold', 
+                        name: 'Mohó Básico', 
+                        type: 'mold', 
+                        imageUrl: this.getMoldImageUrl('mold') 
+                    },
+                    { 
+                        alias_type: 'mold_advanced', 
+                        name: 'Mohó Avanzado', 
+                        type: 'mold', 
+                        imageUrl: this.getMoldImageUrl('mold') 
+                    }
+                ];
+            }
+
+
+
+    loadDefaultOthers() {
+    return [
+        { alias_type: 'goldtile', name: 'Baldosa Dorada', type: 'other', imageUrl: this.getOtherImageUrl('goldtile') },
+        { alias_type: 'spiketrap', name: 'Trampa de Púas', type: 'other', imageUrl: this.getOtherImageUrl('spiketrap') },
+        { alias_type: 'spikeweed', name: 'Hierba Pincho', type: 'other', imageUrl: this.getOtherImageUrl('spikeweed') }
+    ];
+}
+
+
+
+
+// Función para formatear nombres de molds
+formatMoldName(moldId) {
+    // Si tienes MOLD_DISPLAY_NAMES en resources.js, úsalo
+    if (typeof MOLD_DISPLAY_NAMES !== 'undefined' && MOLD_DISPLAY_NAMES[moldId]) {
+        return MOLD_DISPLAY_NAMES[moldId];
+    }
+    
+    // Fallback: formatear el ID
+    return moldId
+        .replace('mold_', 'Mohó ')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+}
+
     formatGravestoneName(graveId) {
         if (GRAVESTONE_DISPLAY_NAMES && GRAVESTONE_DISPLAY_NAMES[graveId]) {
             return GRAVESTONE_DISPLAY_NAMES[graveId];
@@ -202,6 +298,44 @@ class BoardManager {
             .replace(/_/g, ' ')
             .replace(/\b\w/g, l => l.toUpperCase());
     }
+
+
+    formatOtherName(itemId) {
+    // Formatear nombres para mostrar
+    return itemId
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+}
+
+
+
+
+getMoldImageUrl(itemName) {
+    if (!itemName) {
+        console.warn('❌ getMoldImageUrl: itemName es undefined');
+        return this.fallbackImages.molds;
+    }
+    
+    const normalizedName = itemName.toLowerCase().replace(/\s+/g, '');
+    const url = `${this.imagePaths.MOLDS}${normalizedName}.webp`;
+    
+    console.log('🔍 getMoldImageUrl debug:', {
+        input: itemName,
+        normalizedName: normalizedName,
+        imagePaths: this.imagePaths,
+        url: url,
+        fallback: this.fallbackImages.molds
+    });
+    
+    return url;
+}
+
+
+getOtherImageUrl(itemName) {
+    if (!itemName) return this.fallbackImages.others;
+    const normalizedName = itemName.toLowerCase().replace(/\s+/g, '');
+    return `${this.imagePaths.OTHERS}${normalizedName}.webp`;
+}
 
     getPlantImageUrl(plantName) {
         if (!plantName) return this.fallbackImages.plants;
@@ -252,6 +386,8 @@ class BoardManager {
                 return this.getSliderImageUrl(element.name);
             case 'potion':
                 return this.getPotionImageUrl(element.name);
+            case 'mold': // AGREGAR ESTE CASO
+               return this.getMoldImageUrl(element.name);
             default:
                 return this.fallbackImages.plants;
         }
@@ -264,7 +400,8 @@ class BoardManager {
             'zombie': 'zombies',
             'gravestone': 'gravestones',
             'slider': 'sliders',
-            'potion': 'potions'
+            'potion': 'potions',
+            'mold': 'molds'
         };
         
         const fallbackType = typeMap[type] || 'plants';
@@ -281,7 +418,9 @@ class BoardManager {
                     zombies: [],
                     gravestones: [],
                     sliders: [],
-                    potions: []
+                    potions: [],
+                    others: [],
+                    molds: []
                 };
             }
         }
@@ -310,6 +449,21 @@ class BoardManager {
                 cellContent.className = 'cell-content';
                 
                 const elements = this.board[row][col];
+
+                 if (elements.others.length > 0) {
+                const otherItem = elements.others[0];
+                const otherDiv = document.createElement('div');
+                otherDiv.className = 'cell-element other-element';
+                otherDiv.title = `Otro: ${otherItem.name}`;
+                
+                const imageUrl = otherItem.imageUrl || this.getOtherImageUrl(otherItem.name);
+                
+                otherDiv.innerHTML = `
+                    <img src="${imageUrl}" alt="${otherItem.name}" class="cell-thumbnail other-thumbnail"
+                         onerror="this.onerror=null; this.src='${this.fallbackImages.others}'">
+                `;
+                cellContent.appendChild(otherDiv);
+            }
 
                 // Mostrar sliders
                 if (elements.sliders.length > 0) {
@@ -342,6 +496,24 @@ class BoardManager {
                     `;
                     cellContent.appendChild(potionDiv);
                 }
+
+
+                if (elements.molds.length > 0) {
+                        const mold = elements.molds[0];
+                        const moldDiv = document.createElement('div');
+                        moldDiv.className = 'cell-element mold-element';
+                        moldDiv.title = `Mohó: ${mold.name}`;
+                        
+                        const imageUrl = mold.imageUrl || this.getMoldImageUrl(mold.name);
+                        
+                        moldDiv.innerHTML = `
+                            <img src="${imageUrl}" alt="${mold.name}" class="cell-thumbnail mold-thumbnail"
+                                onerror="this.onerror=null; this.src='${this.fallbackImages.others}'">
+                        `;
+                        cellContent.appendChild(moldDiv);
+                    }
+
+
             
                 // CAPA DE DEFEAT
                 if (elements.plants.length > 0 && elements.plants[0].defeat) {
@@ -499,6 +671,21 @@ class BoardManager {
                 element: elements.potions[0],
                 data: { row, col, elementType: 'potions' }
             };
+        } else if (elements.others.length > 0) {
+        return {
+            type: 'other',
+            element: elements.others[0],
+            data: { row, col, elementType: 'others' }
+        };
+         }
+
+       // Agregar molds al orden de prioridad
+        if (elements.molds.length > 0) {
+            return {
+                type: 'mold',
+                element: elements.molds[0],
+                data: { row, col, elementType: 'molds' }
+            };
         }
         
         return null; // Celda vacía
@@ -594,10 +781,27 @@ class BoardManager {
                             </div>
                             
                             <div class="element-type-card" data-type="potions">
-                                <div class="element-type-icon"><img src="/Assets/Potions/toughness.webp" alt=""></div>
+                                <div class="element-type-icon"><img src="/Assets/Potions/zombiepotion_toughness.webp" alt=""></div>
                                 <div class="element-type-name">Pociones</div>
                                 <div class="element-type-count">${this.availableElements.potions.length} disponibles</div>
                             </div>
+
+
+                            <div class="element-type-card" data-type="others">
+                                <div class="element-type-icon"><img src="/Assets/Others/crater.webp" alt=""></div>
+                                <div class="element-type-name">Otros Elementos</div>
+                                <div class="element-type-count">${this.availableElements.others.length} disponibles</div>
+                            </div>
+
+                           
+                            <div class="element-type-card" data-type="molds">
+                                <div class="element-type-icon"><img src="/Assets/Molds/mold.webp" alt=""></div>
+                                <div class="element-type-name">Mohós</div>
+                                <div class="element-type-count">${this.availableElements.molds.length} disponibles</div>
+                            </div>
+
+                            
+
                         </div>
                         
                         <!-- Recuadro de "+" para abrir modal normal -->
@@ -1061,6 +1265,8 @@ class BoardManager {
                                 <option value="gravestones" ${elementType === 'gravestones' ? 'selected' : ''}>Lápidas</option>
                                 <option value="sliders" ${elementType === 'sliders' ? 'selected' : ''}>Sliders</option>
                                 <option value="potions" ${elementType === 'potions' ? 'selected' : ''}>Pociones</option>
+                                <option value="others" ${elementType === 'others' ? 'selected' : ''}>Otros Elementos</option>
+                                <option value="molds" ${elementType === 'molds' ? 'selected' : ''}>Mohós</option>
                             </select>
                         </div>
 
@@ -1536,7 +1742,8 @@ class BoardManager {
             zombies: [],
             gravestones: [],
             sliders: [],
-            potions: []
+            potions: [],
+            others: []
         };
         
         this.updateBoardModules();
@@ -1554,6 +1761,8 @@ class BoardManager {
             gravestones: [],
             sliders: [],
             potions: [],
+            others: [],
+            molds: [], // NUEVO
             protectedPlants: []
         };
         
@@ -1629,6 +1838,27 @@ class BoardManager {
                         TypeName: potion.rtid
                     });
                 });
+
+                
+
+
+                 cell.molds.forEach(mold => {
+                    this.boardModules.molds.push({
+                        GridY: row - 1,
+                        GridX: col - 1,
+                        // Los molds usan un sistema diferente (matriz binaria)
+                        // Este es solo para tracking interno
+                        TypeName: mold.rtid
+                    });
+                });
+
+                  cell.others.forEach(other => {
+                        this.boardModules.others.push({
+                            GridY: row - 1,
+                            GridX: col - 1,
+                            TypeName: other.rtid
+                        });
+                    });
             }
         }
     }
@@ -1664,6 +1894,9 @@ class BoardManager {
         if (elements.potions.length > 0) {
             elementList.push(`<span class="potion-tag">${elements.potions[0].name}</span>`);
         }
+         if (elements.others.length > 0) {
+        elementList.push(`<span class="other-tag">${elements.others[0].name}</span>`);
+    }
         
         if (elementList.length === 0) {
             cellInfo.innerHTML = `
@@ -1721,9 +1954,36 @@ class BoardManager {
                 gravestones: [],
                 sliders: [],
                 potions: [],
+                others: [],
+                 molds: [],
                 protectedPlants: []
             };
         }
+
+
+            // MÓDULO PARA MOLDS - DEBE IR PRIMERO
+    if (this.boardModules.molds && this.boardModules.molds.length > 0) {
+        // 1. Primero agregar MountingMolds
+        modules.push({
+            aliases: ["MountingMolds"],
+            objclass: "MoldColonyChallengeProps",
+            objdata: {
+                Locations: "RTID(MoldLocationsCustom@.)"
+            }
+        });
+        
+        // 2. Luego agregar MoldLocationsCustom
+        const moldMatrix = this.createMoldMatrix();
+        
+        modules.push({
+            aliases: ["MoldLocationsCustom"],
+            objclass: "BoardGridMapProps",
+            objdata: {
+                Values: moldMatrix
+            }
+        });
+    }
+    
         
         // Verificar cada propiedad antes de acceder a length
         if (this.boardModules.plants && this.boardModules.plants.length > 0) {
@@ -1793,9 +2053,48 @@ class BoardManager {
                 }
             });
         }
+
+            if (this.boardModules.others && this.boardModules.others.length > 0) {
+            modules.push({
+                aliases: ["MountingOthers"],
+                objclass: "InitialGridItemProperties",
+                objdata: {
+                    InitialGridItemPlacements: this.boardModules.others.map(other => ({
+                        GridY: other.GridY,
+                        GridX: other.GridX,
+                        TypeName: other.TypeName
+                    }))
+                }
+            });
+        }
+
+
+   
     
         return modules;
     }
+
+
+    // Método para crear la matriz de molds
+            createMoldMatrix() {
+                // Inicializar matriz 5x9 con ceros
+                const matrix = [];
+                for (let row = 0; row < 5; row++) {
+                    matrix[row] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                }
+                // Marcar celdas con molds
+                if (this.boardModules.molds) {
+                    this.boardModules.molds.forEach(mold => { 
+                        const row = mold.GridY;
+                        const col = mold.GridX;
+                        if (row >= 0 && row < 5 && col >= 0 && col < 9) {
+                            matrix[row][col] = 1;
+                        }
+                    });
+                }
+                
+                return matrix;
+            }
 
     showToast(title, message, type = 'info') {
         const toast = document.createElement('div');
