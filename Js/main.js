@@ -23,6 +23,8 @@ import { RewardManager } from './reward-manager.js';
 
 import { ZombieDataLoader } from './zombieDataLoader.js';
 
+import { TabStateManager } from './TabStateManager.js';
+
 
 class EnhancedLevelGenerator {
     constructor() {
@@ -73,6 +75,9 @@ class EnhancedLevelGenerator {
         this.colors = COLORS;
         this.zombieCategories = {}
         this.modConfig = MOD_CONFIG;
+
+
+        this.tabStateManager = null;
 
         this.rewardManager = new RewardManager(this);
 
@@ -1956,6 +1961,9 @@ class EnhancedLevelGenerator {
 
             console.log('✓ DOM completamente cargado');
 
+             this.tabStateManager = new TabStateManager();
+        console.log('✓ TabStateManager inicializado');
+
             // 2. Verificar elementos requeridos (solo críticos)
             const canContinue = this.checkRequiredElements();
             if (!canContinue) {
@@ -2061,13 +2069,22 @@ class EnhancedLevelGenerator {
                     this.markTabAsChanged('basic');
                 }
             },
-            {
-                id: 'useUnderground', event: 'change', handler: (e) => {
-                    this.levelData.use_underground_zombies = e.target.checked;
-                    this.updateUndergroundControls();
-                    this.markTabAsChanged('basic');
+             {
+            id: 'useUnderground', 
+            event: 'change', 
+            handler: (e) => {
+                this.levelData.use_underground_zombies = e.target.checked;
+                
+                // Sincronizar con TabStateManager
+                if (this.tabStateManager) {
+                    this.tabStateManager.states.underground = e.target.checked;
+                    this.tabStateManager.toggleUndergroundConfig(e.target.checked);
                 }
-            },
+                
+                this.updateUndergroundControls();
+                this.markTabAsChanged('basic');
+            }
+        },
             {
                 id: 'enableSunDropper', event: 'change', handler: (e) => {
                     this.levelData.enable_sun_dropper = e.target.checked;
@@ -2406,108 +2423,135 @@ applyTabData(tabId, data) {
 
     if (!data) return;
 
+    // *** NUEVO: Verificar si estamos iniciando desde cero o cargando cambios del usuario ***
+    const isInitialLoad = !this.hasLoadedTabs || !this.hasLoadedTabs[tabId];
+    if (isInitialLoad) {
+        // Inicializar el registro de pestañas cargadas
+        if (!this.hasLoadedTabs) this.hasLoadedTabs = {};
+        this.hasLoadedTabs[tabId] = true;
+    }
+
     switch (tabId) {
         case 'basic':
-            // Aplicar valores a controles de la pestaña básica
-            this.safeAssignValue('levelName', data.level_name);
-            this.safeAssignValue('levelNumber', data.level_number.toString());
-            this.safeAssignValue('startingSun', data.starting_sun?.toString());
-            this.safeAssignValue('zombieLevel', data.zombie_level?.toString());
-            this.safeAssignValue('gridLevel', data.grid_level?.toString());
-            this.safeAssignValue('waveCount', data.wave_count?.toString());
-            this.safeAssignValue('flagInterval', data.flag_interval?.toString());
-            this.safeAssignValue('spawnColStart', data.spawn_col_start?.toString());
-            this.safeAssignValue('spawnColEnd', data.spawn_col_end?.toString());
-            this.safeAssignValue('wavePoints', data.wave_points?.toString());
-            this.safeAssignValue('waveIncrement', data.wave_increment?.toString());
-            this.safeAssignValue('seedSlotsCount', data.seed_slots_count?.toString());
+            // *** CORREGIDO: Solo aplicar valores si existen en data ***
+            // NO sobrescribir con undefined/null
+            
+            if (data.level_name !== undefined) this.safeAssignValue('levelName', data.level_name);
+            if (data.level_number !== undefined) this.safeAssignValue('levelNumber', data.level_number.toString());
+            if (data.starting_sun !== undefined) this.safeAssignValue('startingSun', data.starting_sun.toString());
+            if (data.zombie_level !== undefined) this.safeAssignValue('zombieLevel', data.zombie_level.toString());
+            if (data.grid_level !== undefined) this.safeAssignValue('gridLevel', data.grid_level.toString());
+            if (data.wave_count !== undefined) this.safeAssignValue('waveCount', data.wave_count.toString());
+            if (data.flag_interval !== undefined) this.safeAssignValue('flagInterval', data.flag_interval.toString());
+            if (data.spawn_col_start !== undefined) this.safeAssignValue('spawnColStart', data.spawn_col_start.toString());
+            if (data.spawn_col_end !== undefined) this.safeAssignValue('spawnColEnd', data.spawn_col_end.toString());
+            if (data.wave_points !== undefined) this.safeAssignValue('wavePoints', data.wave_points.toString());
+            if (data.wave_increment !== undefined) this.safeAssignValue('waveIncrement', data.wave_increment.toString());
+            if (data.seed_slots_count !== undefined) this.safeAssignValue('seedSlotsCount', data.seed_slots_count.toString());
 
-            // Checkboxes
-            this.safeAssignValue('enableSunDropper', data.enable_sun_dropper, 'checked');
-            this.safeAssignValue('enableSeedSlots', data.enable_seed_slots, 'checked');
-            this.safeAssignValue('useUnderground', data.use_underground, 'checked');
+            // Checkboxes - usar el operador ?? para manejar undefined
+            const enableSunDropper = data.enable_sun_dropper ?? this.levelData.enable_sun_dropper;
+            const enableSeedSlots = data.enable_seed_slots ?? this.levelData.enable_seed_slots;
+            const useUnderground = data.use_underground ?? this.levelData.use_underground_zombies;
+            
+            this.safeAssignValue('enableSunDropper', enableSunDropper, 'checked');
+            this.safeAssignValue('enableSeedSlots', enableSeedSlots, 'checked');
+            this.safeAssignValue('useUnderground', useUnderground, 'checked');
+            
+            // Actualizar levelData con los valores reales
+            this.levelData.enable_sun_dropper = enableSunDropper;
+            this.levelData.enable_seed_slots = enableSeedSlots;
+            this.levelData.use_underground_zombies = useUnderground;
+            
+            // *** IMPORTANTE: Actualizar controles dependientes ***
+            this.updateUndergroundControls(); // Esto habilita/deshabilita los controles subterráneos
+            this.updateSeedSlotsControl(); // Esto habilita/deshabilita el campo de seed slots
 
-            // Actualizar selecciones visuales
-            if (data.mower_type) {
+            // Actualizar selecciones visuales - solo si hay datos válidos
+            if (data.mower_type && data.mower_type !== "undefined") {
                 this.selectMower(data.mower_type);
             }
-            if (data.world) {
+            if (data.world && data.world !== "undefined") {
                 this.selectWorld(data.world);
             }
-            if (data.stage) {
+            if (data.stage && data.stage !== "undefined") {
                 this.selectScenario(data.stage);
             }
-            if (data.visual_effect) {
+            if (data.visual_effect && data.visual_effect !== "undefined") {
                 this.safeAssignValue('effectSelect', data.visual_effect);
             }
-            if (data.seed_selection_method) {
+            if (data.seed_selection_method && data.seed_selection_method !== "undefined") {
                 this.safeAssignValue('seedSelectionMethod', data.seed_selection_method);
             }
 
-            // Controles subterráneos
-            if (data.use_underground !== undefined) {
-                this.levelData.use_underground_zombies = data.use_underground;
-                this.updateUndergroundControls();
-            }
-
-            // Valores subterráneos
-            this.safeAssignValue('undergroundStart', data.underground_start?.toString());
-            this.safeAssignValue('undergroundInterval', data.underground_interval?.toString());
-            this.safeAssignValue('undergroundColStart', data.underground_col_start?.toString());
-            this.safeAssignValue('undergroundColEnd', data.underground_col_end?.toString());
-            this.safeAssignValue('undergroundMin', data.underground_min?.toString());
-            this.safeAssignValue('undergroundMax', data.underground_max?.toString());
+            // Valores subterráneos - solo si existen
+            if (data.underground_start !== undefined) this.safeAssignValue('undergroundStart', data.underground_start.toString());
+            if (data.underground_interval !== undefined) this.safeAssignValue('undergroundInterval', data.underground_interval.toString());
+            if (data.underground_col_start !== undefined) this.safeAssignValue('undergroundColStart', data.underground_col_start.toString());
+            if (data.underground_col_end !== undefined) this.safeAssignValue('undergroundColEnd', data.underground_col_end.toString());
+            if (data.underground_min !== undefined) this.safeAssignValue('undergroundMin', data.underground_min.toString());
+            if (data.underground_max !== undefined) this.safeAssignValue('undergroundMax', data.underground_max.toString());
 
             break;
 
         case 'waves':
-            // Aplicar zombies seleccionados
-            if (data.selected_zombies && Array.isArray(data.selected_zombies)) {
+            // *** CORREGIDO: Solo aplicar zombies si existen y no estamos en carga inicial con array vacío ***
+            if (data.selected_zombies && Array.isArray(data.selected_zombies) && data.selected_zombies.length > 0) {
                 this.levelData.zombies = [...data.selected_zombies];
                 this.updateSelectedZombiesDisplay();
             }
 
-            // Dificultad
+            // Dificultad - solo si existe
             if (data.difficulty) {
                 const radio = document.querySelector(`input[name="difficulty"][value="${data.difficulty}"]`);
                 if (radio) radio.checked = true;
             }
 
-            // Otros controles
-            this.safeAssignValue('plantFoodWaves', data.plant_food_waves);
-            this.safeAssignValue('zombieSearch', data.zombie_search);
-            this.safeAssignValue('categorySelect', data.category);
+            // Otros controles - solo si existen
+            if (data.plant_food_waves !== undefined) this.safeAssignValue('plantFoodWaves', data.plant_food_waves);
+            if (data.zombie_search !== undefined) this.safeAssignValue('zombieSearch', data.zombie_search);
+            if (data.category !== undefined) this.safeAssignValue('categorySelect', data.category);
 
             break;
 
         case 'challenges':
-            // MODIFICADO: Siempre forzar que los desafíos inicien DESHABILITADOS
-            // Ignorar completamente el estado guardado en localStorage
-            this.challengesData.enabled = false;
-            this.safeAssignValue('challengesEnabled', false, 'checked');
+            // *** CORREGIDO: Cargar el estado REAL guardado por el usuario ***
+            // Solo forzar deshabilitado en carga INICIAL, no cuando el usuario cambia de pestaña
             
-            // Deshabilitar el contenedor (esto deshabilitará todos los controles internos)
-            this.toggleChallengesContainer(false);
+            if (isInitialLoad) {
+                // En carga inicial, usar valores por defecto
+                this.challengesData.enabled = false;
+                this.safeAssignValue('challengesEnabled', false, 'checked');
+                this.toggleChallengesContainer(false);
+                
+                console.log('Carga inicial de desafíos - Estado por defecto');
+            } else {
+                // Cuando el usuario cambia de pestaña, cargar lo que guardó
+                if (data.challenges_enabled !== undefined) {
+                    this.challengesData.enabled = data.challenges_enabled;
+                    this.safeAssignValue('challengesEnabled', data.challenges_enabled, 'checked');
+                    this.toggleChallengesContainer(data.challenges_enabled);
+                }
+                
+                console.log('Cambio de pestaña de desafíos - Cargando estado guardado');
+            }
 
-            // Aplicar valores de los desafíos, PERO NO su estado 'enabled'
+            // Siempre cargar valores, pero el estado (enabled) depende de si es carga inicial o no
             this.challengesData.challenges.forEach(challenge => {
                 const challengeData = data[`challenge_${challenge.id}`];
                 if (challengeData) {
-                    // FORZAR que el desafío esté deshabilitado
-                    challenge.enabled = false;
-
-                    // Actualizar checkbox (siempre desmarcado)
-                    const checkbox = document.getElementById(`challenge_${challenge.id.toLowerCase()}`);
-                    if (checkbox) {
-                        checkbox.checked = false;
+                    // Solo establecer enabled si NO es carga inicial
+                    if (!isInitialLoad && challengeData.enabled !== undefined) {
+                        challenge.enabled = challengeData.enabled;
+                        const checkbox = document.getElementById(`challenge_${challenge.id.toLowerCase()}`);
+                        if (checkbox) {
+                            checkbox.checked = challenge.enabled;
+                        }
                     }
 
-                    // Solo cargar los valores, no el estado
+                    // Cargar valores siempre (pero inputs pueden estar deshabilitados)
                     if (challenge.id === 'KillZombies' && challengeData.values) {
-                        challenge.values = { 
-                            ...challenge.values,  // Valores por defecto
-                            ...challengeData.values  // Sobreescribir con valores guardados
-                        };
+                        challenge.values = challengeData.values;
                         this.safeAssignValue('killZombies_count', challenge.values.zombies?.toString());
                         this.safeAssignValue('killZombies_time', challenge.values.time?.toString());
                     } else if (challengeData.value !== undefined) {
@@ -2518,7 +2562,6 @@ applyTabData(tabId, data) {
                 }
             });
             
-            console.log('Desafíos forzados a estado deshabilitado al cargar pestaña');
             break;
 
         case 'preview':
@@ -3441,17 +3484,26 @@ updateSeedSlotsControl() {
         }
     }
 
-    updateUndergroundControls() {
+   updateUndergroundControls() {
+    // Usar el valor del TabStateManager si está disponible
+    if (this.tabStateManager) {
+        this.levelData.use_underground_zombies = this.tabStateManager.states.underground;
+        document.getElementById('useUnderground').checked = this.levelData.use_underground_zombies;
+    } else {
+        // Fallback al valor del checkbox
         const isEnabled = document.getElementById('useUnderground').checked;
-        const configElements = document.querySelectorAll('#undergroundConfig');
-
-        configElements.forEach(el => {
-            const inputs = el.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.disabled = !isEnabled;
-            });
-        });
+        this.levelData.use_underground_zombies = isEnabled;
     }
+
+    const configElements = document.querySelectorAll('#undergroundConfig');
+
+    configElements.forEach(el => {
+        const inputs = el.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.disabled = !this.levelData.use_underground_zombies;
+        });
+    });
+}
 
 
 
