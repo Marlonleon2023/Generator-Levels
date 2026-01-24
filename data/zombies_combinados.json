@@ -6649,6 +6649,38 @@
    "tipo_mod": "china",
     "alias_properties": "ZombieIceAgeHunterElite"
   },
+    {
+    "alias_type": "iceage_chief",
+    "type_name": "iceage_chief",
+    "integer_id": -1,
+    "zombie_class": "ZombieIceAgeHunter",
+    "properties_rtid": "RTID(ZombieIceAgeChief@ZombieProperties)",
+    "home_world": "iceage",
+     "categorie": "ice_age",
+    "is_basic_zombie": false,
+    "hitpoints": 500,
+    "speed": 0.007,
+    "eat_dps": 2000,
+    "tiene_armadura": false,
+   "tipo_mod": "china",
+    "alias_properties": "ZombieIceAgeChief"
+  },
+  {
+    "alias_type": "iceage_chief_elite",
+    "type_name": "iceage_chief_elite",
+    "integer_id": -1,
+    "zombie_class": "ZombieIceAgeHunter",
+    "properties_rtid": "RTID(ZombieIceAgeChiefElite@ZombieProperties)",
+    "home_world": "iceage",
+     "categorie": "ice_age",
+    "is_basic_zombie": false,
+    "hitpoints": 4000,
+    "speed": 0.003,
+    "eat_dps": 99999999,
+    "tiene_armadura": false,
+   "tipo_mod": "china",
+    "alias_properties": "ZombieIceAgeChiefElite"
+  },
   {
     "alias_type": "nether_dodo",
     "type_name": "nether_dodo",
