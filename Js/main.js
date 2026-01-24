@@ -558,7 +558,8 @@ isChinaCategory(categoryName) {
     // Lista exacta de categorías chinas
     const exactChinaCategories = [
         'heian',
-        'journey'
+        'journey',
+        'ice_age'
     ];
     
     return exactChinaCategories.includes(categoryName);
