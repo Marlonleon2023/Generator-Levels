@@ -36,8 +36,8 @@ class EnhancedLevelGenerator {
         this.levelData = {
             level_name: "Mi Nivel Personalizado",
             level_number: 1,
-            world: "Moderno",
-            stage: "None",
+            world: "Egipto",
+            stage: "NoneStage",
             visual_effect: "",
             enable_sun_dropper: true,
             enable_seed_slots: false,
@@ -1445,7 +1445,7 @@ isChinaCategory(categoryName) {
                     }, 0);
 
                     // Resaltar el escenario actualmente seleccionado
-                    this.highlightSelectedScenario(this.levelData.stage || "ModernStage");
+                    this.highlightSelectedScenario(this.levelData.stage || "egyptStage");
 
                     // Enfocar el campo de búsqueda
                     const scenarioSearch = document.getElementById('scenarioSearch');
@@ -1702,7 +1702,7 @@ isChinaCategory(categoryName) {
                     }, 0);
 
                     // Resaltar el mundo actualmente seleccionado
-                    this.highlightSelectedWorld(this.levelData.world || "Moderno");
+                    this.highlightSelectedWorld(this.levelData.world || "Egipto");
 
                     // Enfocar el campo de búsqueda (pero no hacer scroll)
                     const worldSearch = document.getElementById('worldSearch');
@@ -1828,7 +1828,7 @@ isChinaCategory(categoryName) {
         // Cuando se abre el modal, marcar la opción seleccionada
         if (worldModal) {
             worldModal.addEventListener('show.bs.modal', () => {
-                const currentWorld = this.levelData.world || "Moderno";
+                const currentWorld = this.levelData.world || "Egipto";
                 this.highlightSelectedWorld(currentWorld);
             });
         }
@@ -1865,7 +1865,7 @@ isChinaCategory(categoryName) {
 
         if (!selectedWorldImage || !selectedWorldName) return;
 
-        const worldName = this.levelData.world || "Moderno";
+        const worldName = this.levelData.world || "Egipto";
 
         // Actualizar imagen
         if (this.worldImages[worldName]) {
@@ -2663,7 +2663,7 @@ loadSavedData() {
     // 2. Resetear valores específicos que podrían haber sido guardados incorrectamente
     this.levelData.level_name = "Mi Nivel Personalizado";
     this.levelData.level_number = 1;
-    this.levelData.world = "Moderno";
+    this.levelData.world = "Egipto";
     this.levelData.stage = "None";
     this.levelData.visual_effect = "";
     this.levelData.enable_sun_dropper = true;
@@ -3532,12 +3532,12 @@ updateSeedSlotsControl() {
         // Solo resetear si el escenario actual no está en la lista del mundo
         // (ignorando separadores)
         const isValidStage = worldScenarios.some(s =>
-            s !== "---StagesHexius---" && s === currentStage
+            s !== "NoneStage" && s === currentStage
         );
 
         if (currentStage && !isValidStage) {
             // Si no es válido, seleccionar el primero disponible
-            const firstStage = worldScenarios.find(s => s !== "---StagesHexius---");
+            const firstStage = worldScenarios.find(s => s !== "NoneStage");
             if (firstStage) {
                 this.levelData.stage = firstStage;
                 this.updateSelectedScenarioDisplay();
@@ -5162,7 +5162,7 @@ generateJson() {
             this.levelData = {
                 level_name: "Mi Nivel Personalizado",
                 level_number: 1,
-                world: "Moderno",
+                world: "Egipto",
                 stage: "None",
                 visual_effect: "",
                 enable_sun_dropper: true,

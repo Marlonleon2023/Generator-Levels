@@ -78,9 +78,10 @@ export const RAILCART_DISPLAY_NAMES = {
 };
 
 // Imágenes de mundos
+
 export const WORLD_IMAGES = {
+     "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.webp`,
     "Moderno": `${PATHS.IMAGES.MUNDOS}modern.webp`,
-    "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.webp`,
     "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.webp`,
     "Futuro": `${PATHS.IMAGES.MUNDOS}future.webp`,
     "Eighties": `${PATHS.IMAGES.MUNDOS}eighties.webp`,
@@ -95,6 +96,7 @@ export const WORLD_IMAGES = {
 
 // Imágenes de escenarios (stages)
 export const STAGE_IMAGES = {
+    "NoneStage": `${PATHS.IMAGES.BOARD}NoneStage.webp`,
     "ModernStage": `${PATHS.IMAGES.BOARD}ModernStage.webp`,
     "EgyptStage": `${PATHS.IMAGES.BOARD}EgyptStage.webp`,
     "PirateStage": `${PATHS.IMAGES.BOARD}PirateStage.webp`,
@@ -155,6 +157,7 @@ export const MOWER_IMAGES = {
 };
 
 export const WORLDS = {
+    
     "Moderno": ["ModernStage"],
     "Egipto": ["EgyptStage"],
     "Pirata": ["PirateStage"],
