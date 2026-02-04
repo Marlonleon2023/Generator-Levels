@@ -106,6 +106,12 @@ export const STAGE_IMAGES = {
     "FutureStage": `${PATHS.IMAGES.BOARD}FutureStage.webp`,
     "BeachStage": `${PATHS.IMAGES.BOARD}BeachStage.webp`,
 
+    "HeianStage": `${PATHS.IMAGES.BOARD}HeianStage.webp`,
+    "HeianNightStage": `${PATHS.IMAGES.BOARD}HeianNightStage.webp`,
+    "KongfuStage": `${PATHS.IMAGES.BOARD}KongfuStage.webp`,
+    "FairyStage": `${PATHS.IMAGES.BOARD}FairyStage.webp`,
+    "FairyNightStage": `${PATHS.IMAGES.BOARD}FairyNightStage.webp`,
+
     /* Extra stages */
     "RiftStage": `${PATHS.IMAGES.BOARD}RiftStage.webp`,
     "FoodfightStage": `${PATHS.IMAGES.BOARD}FoodfightStage.webp`,
@@ -140,6 +146,9 @@ export const MOWER_IMAGES = {
     "BeachMowers": `${PATHS.IMAGES.MOWERS}BeachMowers.webp`,
     "RomanMowers": `${PATHS.IMAGES.MOWERS}RomanMowers.webp`,
     "RenaiMowers": `${PATHS.IMAGES.MOWERS}RenaiMowers.webp`,
+    "HeianMowers": `${PATHS.IMAGES.MOWERS}HeianMowers.webp`,
+    "KongfuMowers": `${PATHS.IMAGES.MOWERS}KongfuMowers.webp`,
+    "FairyMowers": `${PATHS.IMAGES.MOWERS}FairyMowers.webp`,
 
     /* Carnival */
     "CarnivalMowers": `${PATHS.IMAGES.MOWERS}CarnivalMowers.webp`
@@ -165,7 +174,7 @@ export const WORLDS = {
 // Tipos de podadoras disponibles
 export const MOWER_TYPES = [
     "ModernMowers", "EgyptMowers","DarkMowers","LostCityMowers","EightiesMowers", "DinoMowers", "PirateMowers", "CarnivalMowers",
-    "FutureMowers", "RomanMowers", "IceageMowers", "BeachMowers", "RenaiMowers"
+    "FutureMowers", "RomanMowers", "IceageMowers", "BeachMowers", "RenaiMowers" ,"FairyMowers","KongfuMowers","HeianMowers"
 ];
 
 // Nombres amigables para las podadoras
