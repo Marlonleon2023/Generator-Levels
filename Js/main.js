@@ -25,6 +25,8 @@ import { ZombieDataLoader } from './zombieDataLoader.js';
 
 import { TabStateManager } from './TabStateManager.js';
 
+import { ConveyorManager } from './conveyor-manager.js';
+
 
 class EnhancedLevelGenerator {
     constructor() {
@@ -75,11 +77,14 @@ class EnhancedLevelGenerator {
         this.colors = COLORS;
         this.zombieCategories = {}
         this.modConfig = MOD_CONFIG;
+        
 
 
         this.tabStateManager = null;
 
         this.rewardManager = new RewardManager(this);
+
+        this.conveyorManager = new ConveyorManager(this);
 
 
 
@@ -2031,6 +2036,16 @@ isChinaCategory(categoryName) {
 
 
             this.debugZombieData();
+
+              try {
+            // Inicializar conveyor manager si aún no está inicializado
+              if (this.conveyorManager && typeof this.conveyorManager.initialize === 'function') {
+        this.conveyorManager.initialize();
+        console.log('✓ ConveyorManager inicializado');
+    }
+} catch (e) {
+    console.warn('Error inicializando ConveyorManager:', e);
+}
 
             // 6. Inicializar componentes que necesitan datos (con try-catch)
             try {
@@ -4261,78 +4276,87 @@ updateSeedSlotsControl() {
     }
 
     updatePreview() {
-        // Función auxiliar para obtener valores de elementos DOM de manera segura
-        const getElementValue = (id, defaultValue = '') => {
-            const element = document.getElementById(id);
-            return element && element.value !== undefined ? element.value : defaultValue;
-        };
+    // Función auxiliar para obtener valores de elementos DOM de manera segura
+    const getElementValue = (id, defaultValue = '') => {
+        const element = document.getElementById(id);
+        return element && element.value !== undefined ? element.value : defaultValue;
+    };
 
-        const getElementIntValue = (id, defaultValue = 0) => {
-            const element = document.getElementById(id);
-            return element && element.value !== undefined ? parseInt(element.value) || defaultValue : defaultValue;
-        };
+    const getElementIntValue = (id, defaultValue = 0) => {
+        const element = document.getElementById(id);
+        return element && element.value !== undefined ? parseInt(element.value) || defaultValue : defaultValue;
+    };
 
-        const getElementBoolValue = (id, defaultValue = true) => {
-            const element = document.getElementById(id);
-            return element ? element.checked : defaultValue;
-        };
+    const getElementBoolValue = (id, defaultValue = true) => {
+        const element = document.getElementById(id);
+        return element ? element.checked : defaultValue;
+    };
 
-        // Obtener valores de manera segura
-        this.levelData.level_name = getElementValue('levelName', 'Mi Nivel Personalizado');
-        this.levelData.level_number = getElementIntValue('levelNumber', 1);
+    // Obtener valores de manera segura
+    this.levelData.level_name = getElementValue('levelName', 'Mi Nivel Personalizado');
+    this.levelData.level_number = getElementIntValue('levelNumber', 1);
+    this.levelData.visual_effect = getElementValue('effectSelect', '');
+    this.levelData.starting_sun = getElementIntValue('startingSun', 50);
+    this.levelData.zombie_level = getElementIntValue('zombieLevel', 1);
+    this.levelData.grid_level = getElementIntValue('gridLevel', 1);
+    this.levelData.wave_count = getElementIntValue('waveCount', 10);
+    this.levelData.flag_wave_interval = getElementIntValue('flagInterval', 4);
+    this.levelData.spawn_col_start = getElementIntValue('spawnColStart', 6);
+    this.levelData.spawn_col_end = getElementIntValue('spawnColEnd', 9);
+    this.levelData.wave_spending_points = getElementIntValue('wavePoints', 150);
+    this.levelData.wave_spending_point_increment = getElementIntValue('waveIncrement', 75);
+    this.levelData.enable_sun_dropper = getElementBoolValue('enableSunDropper', true);
 
-        // CORREGIDO: Ya no busca stageSelect, usa el valor actual almacenado
-        // stage se actualiza a través de selectScenario()
-        // this.levelData.stage ya contiene el valor correcto
-
-        this.levelData.visual_effect = getElementValue('effectSelect', '');
-        //  this.levelData.mower_type = getElementValue('mowerSelect', 'ModernMowers');
-        this.levelData.starting_sun = getElementIntValue('startingSun', 50);
-        this.levelData.zombie_level = getElementIntValue('zombieLevel', 1);
-        this.levelData.grid_level = getElementIntValue('gridLevel', 1);
-        this.levelData.wave_count = getElementIntValue('waveCount', 10);
-        this.levelData.flag_wave_interval = getElementIntValue('flagInterval', 4);
-        this.levelData.spawn_col_start = getElementIntValue('spawnColStart', 6);
-        this.levelData.spawn_col_end = getElementIntValue('spawnColEnd', 9);
-        this.levelData.wave_spending_points = getElementIntValue('wavePoints', 150);
-        this.levelData.wave_spending_point_increment = getElementIntValue('waveIncrement', 75);
-        this.levelData.enable_sun_dropper = getElementBoolValue('enableSunDropper', true);
-
-        // También obtener seed_selection_method si existe
-        const seedMethodElement = document.getElementById('seedSelectionMethod');
-        if (seedMethodElement) {
-            this.levelData.seed_selection_method = seedMethodElement.value || 'chooser';
-        }
-
-        // Actualizar módulos del tablero si existe el boardManager
-        if (this.boardManager) {
-            this.boardManager.updateBoardModules();
-        } else if (window.boardManager) {
-            window.boardManager.updateBoardModules();
-        }
-
-        // Generar y mostrar JSON
-        const json = this.generateJson();
-        const preview = document.getElementById('jsonPreview');
-
-        if (preview) {
-            const jsonString = JSON.stringify(json, null, 2);
-            preview.textContent = jsonString;
-            this.highlightJson(preview);
-
-            // Guardar preview automáticamente
-            localStorage.setItem('pvz_tab_preview', JSON.stringify({
-                json_content: jsonString,
-                timestamp: new Date().toISOString()
-            }));
-        } else {
-            console.warn('Elemento jsonPreview no encontrado');
-        }
-
-        this.levelData.mower_type
-
-        this.updateStats();
+    // Obtener seed_selection_method si existe
+    const seedMethodElement = document.getElementById('seedSelectionMethod');
+    if (seedMethodElement) {
+        this.levelData.seed_selection_method = seedMethodElement.value || 'chooser';
     }
+
+    // IMPORTANTE: Si el método es conveyor, asegurarse de que el conveyor manager actualice sus datos
+    if (this.levelData.seed_selection_method === 'conveyor' && this.conveyorManager) {
+        // Forzar la actualización de los datos del conveyor
+        this.conveyorManager.updateLevelData();
+        
+        // Debug: mostrar estado del conveyor
+        console.log('Conveyor debug:', {
+            method: this.levelData.seed_selection_method,
+            conveyorConfig: this.levelData.conveyor_config,
+            conveyorModule: this.conveyorManager.getConveyorModule()
+        });
+    }
+
+    // Actualizar módulos del tablero si existe el boardManager
+    if (this.boardManager) {
+        this.boardManager.updateBoardModules();
+    } else if (window.boardManager) {
+        window.boardManager.updateBoardModules();
+    }
+
+    // Generar y mostrar JSON
+    const json = this.generateJson();
+    const preview = document.getElementById('jsonPreview');
+
+    if (preview) {
+        const jsonString = JSON.stringify(json, null, 2);
+        preview.textContent = jsonString;
+        this.highlightJson(preview);
+
+        // Debug: mostrar qué módulos se están generando
+        console.log('Módulos generados:', this.generateModules());
+        console.log('Objetos de wave generados:', this.generateWaveObjects());
+
+        // Guardar preview automáticamente
+        localStorage.setItem('pvz_tab_preview', JSON.stringify({
+            json_content: jsonString,
+            timestamp: new Date().toISOString()
+        }));
+    } else {
+        console.warn('Elemento jsonPreview no encontrado');
+    }
+
+    this.updateStats();
+}
 
     highlightJson(element) {
         const text = element.textContent;
@@ -4368,70 +4392,76 @@ updateSeedSlotsControl() {
         });
     }
 
-    generateModules() {
-        const modules = [
-            "RTID(ZombiesDeadWinCon@LevelModules)",
-            "RTID(StandardIntro@LevelModules)",
-            "RTID(DefaultZombieWinCondition@LevelModules)"
+   generateModules() {
+    const modules = [
+        "RTID(ZombiesDeadWinCon@LevelModules)",
+        "RTID(StandardIntro@LevelModules)",
+        "RTID(DefaultZombieWinCondition@LevelModules)"
+    ];
+
+    // 1. SunDropper va después de los módulos básicos
+    if (this.levelData.enable_sun_dropper) {
+        modules.splice(2, 0, "RTID(DefaultSunDropper@LevelModules)");
+    }
+
+    // 2. SeedBank o ConveyorBelt según el método de selección
+    if (this.levelData.seed_selection_method === 'conveyor') {
+        // Si es conveyor, incluir ConveyorBelt y NO SeedBank
+        modules.push("RTID(ConveyorBelt@CurrentLevel)");
+    } else {
+        // Si NO es conveyor, incluir SeedBank
+        modules.push("RTID(SeedBank@CurrentLevel)");
+    }
+
+    // 3. Módulos de colocación del tablero (si existen)
+    if (window.boardManager) {
+        const boardModules = window.boardManager.getAllModules();
+
+        // Orden específico para los módulos de colocación
+        const placementOrder = [
+            "MountingPlants",
+            "MountingZombies",
+            "MountingGravestones",
+            "MountingSliders",
+            "MountingPotions",
+            "MountingOthers",
+            "MountingMolds",
+            "MountingRails"
         ];
 
-        // 1. SunDropper va después de los módulos básicos
-        if (this.levelData.enable_sun_dropper) {
-            modules.splice(2, 0, "RTID(DefaultSunDropper@LevelModules)");
-        }
+        placementOrder.forEach(moduleName => {
+            const moduleExists = boardModules.some(module =>
+                module.aliases?.[0] === moduleName
+            );
 
-        // 2. SeedBank va después de los módulos básicos
-        modules.push("RTID(SeedBank@CurrentLevel)");
-
-        // 3. Módulos de colocación del tablero (si existen)
-        if (window.boardManager) {
-            const boardModules = window.boardManager.getAllModules();
-
-            // Orden específico para los módulos de colocación
-            const placementOrder = [
-                "MountingPlants",
-                "MountingZombies",
-                "MountingGravestones",
-                "MountingSliders",
-                "MountingPotions",
-                "MountingOthers",
-                "MountingMolds",
-                "MountingRails"
-            ];
-
-            placementOrder.forEach(moduleName => {
-                const moduleExists = boardModules.some(module =>
-                    module.aliases?.[0] === moduleName
-                );
-
-                if (moduleExists) {
-                    modules.push(`RTID(${moduleName}@CurrentLevel)`);
-                }
-            });
-        }
-
-        // 4. ChallengeModule (si hay desafíos)
-        const enabledChallenges = this.challengesData.challenges.filter(c => c.enabled);
-        const hasProtectedPlants = window.boardManager?.boardModules?.protectedPlants?.length > 0;
-        const hasRegularChallenges = this.challengesData.enabled && enabledChallenges.length > 0;
-
-        if (hasProtectedPlants || hasRegularChallenges) {
-            modules.push("RTID(ChallengeModule@CurrentLevel)");
-        }
-
-        // 5. NewWaves va después de los desafíos
-        modules.push("RTID(NewWaves@CurrentLevel)");
-
-        // 6. Efectos visuales
-        if (this.levelData.visual_effect) {
-            modules.push(this.levelData.visual_effect);
-        }
-
-        // 7. Podadoras al final
-        modules.push(`RTID(${this.levelData.mower_type}@LevelModules)`);
-
-        return modules;
+            if (moduleExists) {
+                modules.push(`RTID(${moduleName}@CurrentLevel)`);
+            }
+        });
     }
+
+    // 4. ChallengeModule (si hay desafíos)
+    const enabledChallenges = this.challengesData.challenges.filter(c => c.enabled);
+    const hasProtectedPlants = window.boardManager?.boardModules?.protectedPlants?.length > 0;
+    const hasRegularChallenges = this.challengesData.enabled && enabledChallenges.length > 0;
+
+    if (hasProtectedPlants || hasRegularChallenges) {
+        modules.push("RTID(ChallengeModule@CurrentLevel)");
+    }
+
+    // 5. NewWaves va después de los desafíos
+    modules.push("RTID(NewWaves@CurrentLevel)");
+
+    // 6. Efectos visuales
+    if (this.levelData.visual_effect) {
+        modules.push(this.levelData.visual_effect);
+    }
+
+    // 7. Podadoras al final
+    modules.push(`RTID(${this.levelData.mower_type}@LevelModules)`);
+
+    return modules;
+}
 
     generateChallengeObjects() {
         const objects = [];
@@ -4523,83 +4553,98 @@ updateSeedSlotsControl() {
     }
 
     generateWaveObjects() {
-        const objects = [
-            {
-                "aliases": ["SeedBank"],
-                "objclass": "SeedBankProperties",
-                "objdata": {
-                    "SelectionMethod": this.levelData.seed_selection_method || "chooser",
-                    ...(this.levelData.enable_seed_slots && {
-                        "OverrideSeedSlotsCount": this.levelData.seed_slots_count
-                    }),
-                    // SIEMPRE incluir PresetPlantList si hay plantas preseleccionadas
-                    ...(this.plantManager &&
-                        this.plantManager.selectedPlants.length > 0 && {
-                        "PresetPlantList": this.plantManager.getSelectedPlantsForJson()
-                    }),
-                    // SIEMPRE incluir PlantExcludeList si hay plantas excluidas
-                    ...(this.plantManager &&
-                        this.plantManager.excludedPlants.length > 0 && {
-                        "PlantExcludeList": this.plantManager.getExcludedPlantsForJson()
-                    })
-                }
-            },
-            {
-                "aliases": ["NewWaves"],
-                "objclass": "WaveManagerModuleProperties",
-                "objdata": {
-                    "WaveManagerProps": "RTID(WaveManagerProps@CurrentLevel)"
-                }
-            },
-            {
-                "aliases": ["WaveManagerProps"],
-                "objclass": "WaveManagerProperties",
-                "objdata": {
-                    "MaxNextWaveHealthPercentage": 0.28,
-                    "FlagWaveInterval": this.levelData.flag_wave_interval.toString(),
-                    ...(this.levelData.use_underground_zombies && { "SpawnColEnd": this.levelData.spawn_col_end }),
-                    ...(this.levelData.use_underground_zombies && { "SpawnColStart": this.levelData.spawn_col_start }),
-                    "WaveCount": this.levelData.wave_count.toString(),
-                    "WaveSpendingPointIncrement": this.levelData.wave_spending_point_increment,
-                    "WaveSpendingPoints": this.levelData.wave_spending_points,
-                    "Waves": Array.from({ length: this.levelData.wave_count }, (_, i) => [`RTID(Wave${i + 1}@CurrentLevel)`])
-                }
+    const objects = [];
+
+    // 1. SeedBank o ConveyorBelt según el método de selección
+    if (this.levelData.seed_selection_method === 'conveyor') {
+        // Agregar objeto ConveyorBelt
+        if (this.conveyorManager && typeof this.conveyorManager.getConveyorModule === 'function') {
+            const conveyorModule = this.conveyorManager.getConveyorModule();
+            if (conveyorModule) {
+                objects.push(conveyorModule);
             }
-        ];
-
-        // Agregar las oleadas individuales
-        this.levelData.waves.forEach((wave, i) => {
-            if (i < this.levelData.wave_count) {
-                let waveObj;
-
-                if (wave.objclass === "SpawnZombiesFromGroundSpawnerProps") {
-                    waveObj = {
-                        "aliases": [`Wave${i + 1}`],
-                        "objclass": "SpawnZombiesFromGroundSpawnerProps",
-                        "objdata": {
-                            "AdditionalPlantfood": wave.plant_food || 0,
-                            "ColumnStart": wave.column_start || 2,
-                            "ColumnEnd": wave.column_end || 4,
-                            "Zombies": wave.zombies || []
-                        }
-                    };
-                } else {
-                    waveObj = {
-                        "aliases": [`Wave${i + 1}`],
-                        "objclass": "SpawnZombiesJitteredWaveActionProps",
-                        "objdata": {
-                            "AdditionalPlantfood": wave.plant_food || 0,
-                            "Zombies": wave.zombies || []
-                        }
-                    };
-                }
-
-                objects.push(waveObj);
+        }
+    } else {
+        // Agregar objeto SeedBank
+        objects.push({
+            "aliases": ["SeedBank"],
+            "objclass": "SeedBankProperties",
+            "objdata": {
+                "SelectionMethod": this.levelData.seed_selection_method || "chooser",
+                ...(this.levelData.enable_seed_slots && {
+                    "OverrideSeedSlotsCount": this.levelData.seed_slots_count
+                }),
+                // SIEMPRE incluir PresetPlantList si hay plantas preseleccionadas
+                ...(this.plantManager &&
+                    this.plantManager.selectedPlants.length > 0 && {
+                    "PresetPlantList": this.plantManager.getSelectedPlantsForJson()
+                }),
+                // SIEMPRE incluir PlantExcludeList si hay plantas excluidas
+                ...(this.plantManager &&
+                    this.plantManager.excludedPlants.length > 0 && {
+                    "PlantExcludeList": this.plantManager.getExcludedPlantsForJson()
+                })
             }
         });
-
-        return objects;
     }
+
+    // 2. NewWaves y WaveManagerProps (siempre se incluyen)
+    objects.push({
+        "aliases": ["NewWaves"],
+        "objclass": "WaveManagerModuleProperties",
+        "objdata": {
+            "WaveManagerProps": "RTID(WaveManagerProps@CurrentLevel)"
+        }
+    });
+
+    objects.push({
+        "aliases": ["WaveManagerProps"],
+        "objclass": "WaveManagerProperties",
+        "objdata": {
+            "MaxNextWaveHealthPercentage": 0.28,
+            "FlagWaveInterval": this.levelData.flag_wave_interval.toString(),
+            ...(this.levelData.use_underground_zombies && { "SpawnColEnd": this.levelData.spawn_col_end }),
+            ...(this.levelData.use_underground_zombies && { "SpawnColStart": this.levelData.spawn_col_start }),
+            "WaveCount": this.levelData.wave_count.toString(),
+            "WaveSpendingPointIncrement": this.levelData.wave_spending_point_increment,
+            "WaveSpendingPoints": this.levelData.wave_spending_points,
+            "Waves": Array.from({ length: this.levelData.wave_count }, (_, i) => [`RTID(Wave${i + 1}@CurrentLevel)`])
+        }
+    });
+
+    // 3. Agregar las oleadas individuales
+    this.levelData.waves.forEach((wave, i) => {
+        if (i < this.levelData.wave_count) {
+            let waveObj;
+
+            if (wave.objclass === "SpawnZombiesFromGroundSpawnerProps") {
+                waveObj = {
+                    "aliases": [`Wave${i + 1}`],
+                    "objclass": "SpawnZombiesFromGroundSpawnerProps",
+                    "objdata": {
+                        "AdditionalPlantfood": wave.plant_food || 0,
+                        "ColumnStart": wave.column_start || 2,
+                        "ColumnEnd": wave.column_end || 4,
+                        "Zombies": wave.zombies || []
+                    }
+                };
+            } else {
+                waveObj = {
+                    "aliases": [`Wave${i + 1}`],
+                    "objclass": "SpawnZombiesJitteredWaveActionProps",
+                    "objdata": {
+                        "AdditionalPlantfood": wave.plant_food || 0,
+                        "Zombies": wave.zombies || []
+                    }
+                };
+            }
+
+            objects.push(waveObj);
+        }
+    });
+
+    return objects;
+}
 
 generateJson() {
     // Obtener módulos del BoardManager si existe

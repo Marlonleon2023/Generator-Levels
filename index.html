@@ -11,6 +11,7 @@
     <link href="/Styles/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="/Styles/style.css">
     <link rel="stylesheet" href="/Styles/board.css">
+     <link rel="stylesheet" href="/Styles/sty-Scroll.css">
 </head>
 
 <body>
@@ -236,18 +237,64 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-bold">Método de Selección de Plantas:</label>
-                                            <select class="form-select" id="seedSelectionMethod">
-                                                <option value="chooser">Elegir plantas (chooser)</option>
-                                                <option value="preset">Plantas preestablecidas (preset)</option>
-                                            </select>
-                                            <div class="form-text small">
-                                                "chooser": El jugador elige las plantas<br>
-                                                "preset": Plantas predefinidas (Ya las plantas secionadas al comenzar no
-                                                de deja selecionar mas plantas)
-                                            </div>
-                                        </div>
+                                        <!-- En la pestaña basic, en el select de seedSelectionMethod -->
+                                       <!-- En la pestaña basic, después del select de seedSelectionMethod -->
+<div class="col-md-6">
+    <label class="form-label fw-bold">Método de Selección de Plantas:</label>
+    <select class="form-select" id="seedSelectionMethod">
+        <option value="chooser">Elegir plantas (chooser)</option>
+        <option value="preset">Plantas preestablecidas (preset)</option>
+        <option value="conveyor">Cinta transportadora (conveyor)</option>
+    </select>
+    <div class="form-text small">
+        "chooser": El jugador elige las plantas<br>
+        "preset": Plantas predefinidas<br>
+        "conveyor": Plantas aparecen automáticamente en cinta
+    </div>
+</div>
+
+
+
+<!-- Contenedor para configuración de cinta transportadora -->
+<div id="conveyorConfigContainer" class="mt-3">
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-white">
+            <h6 class="mb-0"><i class="bi bi-cone-striped me-2"></i>Configuración de Cinta Transportadora</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Velocidad base:</label>
+                    <input type="number" class="form-control" id="conveyorBaseSpeed" value="100" min="10" max="500">
+                    <div class="form-text">Velocidad de la cinta (10-500)</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Retraso inicial (seg):</label>
+                    <input type="number" class="form-control" id="conveyorInitialDelay" value="3" min="1" max="10" step="0.5">
+                    <div class="form-text">Tiempo antes de que aparezca la primera planta</div>
+                </div>
+                
+                <div class="col-12">
+                    <label class="form-label fw-bold">Plantas en la cinta:</label>
+                    <div class="mb-3">
+                        <button class="btn btn-sm btn-primary" id="addConveyorPlantBtn">
+                            <i class="bi bi-plus-circle me-1"></i>Añadir Planta
+                        </button>
+                    </div>
+                    
+                    <div id="conveyorPlantsList" class="conveyor-plants-list">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No hay plantas configuradas para la cinta transportadora
+                        </div>
+                    </div>
+                </div>
+                
+             
+            </div>
+        </div>
+    </div>
+</div>
 
                                         <!-- En la pestaña basic, después del campo startingSun o enableSunDropper -->
                                         <div class="col-md-4">
@@ -1719,6 +1766,9 @@
         </div>
     </div>
 </div>
+
+
+
     
     <!-- Modal personalizado para selección de escenario -->
     <!-- Modal personalizado para selección de escenario -->
@@ -1825,6 +1875,8 @@
     <script src="/Js/RTONConverter.js"></script>
     <script src="/Js/RTONAJSON.js"></script>
     <script type="module" src="/Js/board-manager.js"></script>
+
+<script type="module" src="/Js/conveyor-manager.js"></script>
     <script src="/Js/footer.js"></script>
 
 

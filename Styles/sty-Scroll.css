@@ -1,0 +1,458 @@
+
+
+
+/* conveyor-plants-vertical.css */
+/* Estilos para la cinta transportadora - VERSIÓN VERTICAL MEJORADA */
+
+/* Contenedor principal vertical */
+.conveyor-plants-vertical {
+    
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    margin-top: 15px;
+}
+
+/* Mensaje cuando no hay plantas */
+.conveyor-plants-vertical .alert-info {
+    margin: 0;
+    border-radius: 8px;
+    text-align: center;
+    padding: 20px;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/* Cada ítem de planta en diseño vertical */
+.conveyor-plant-item-vertical {
+    display: flex;
+    align-items: stretch;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    min-height: 100px;
+    position: relative;
+}
+
+.conveyor-plant-item-vertical:hover {
+    border-color: #86b7fe;
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.15);
+    transform: translateY(-3px);
+}
+
+.conveyor-plant-item-vertical.selected {
+    border-color: #0d6efd;
+    background: linear-gradient(135deg, #e7f1ff 0%, #cfe2ff 100%);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+/* Contenido de la planta */
+.vertical-plant-content {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 20px;
+    padding-right: 15px;
+}
+
+/* Imagen de la planta */
+.vertical-plant-image {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.conveyor-plant-img-vertical {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 3px solid #dee2e6;
+    padding: 5px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.conveyor-plant-item-vertical:hover .conveyor-plant-img-vertical {
+    border-color: #0d6efd;
+  
+}
+
+/* Detalles de la planta */
+.vertical-plant-details {
+    flex-grow: 1;
+    min-width: 0;
+      transform: scale(0.8);
+}
+
+/* Encabezado de la planta */
+.vertical-plant-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.vertical-plant-name {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: -0.3px;
+}
+
+.vertical-plant-header .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Configuración de la planta */
+.vertical-plant-config {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+}
+
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 4px 0;
+}
+
+.config-item:last-child {
+    margin-bottom: 0;
+}
+
+.config-label {
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.config-label:before {
+    content: "•";
+    color: #0d6efd;
+    font-size: 16px;
+}
+
+.config-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #212529;
+    background: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    min-width: 50px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.conveyor-plant-item-vertical:hover .config-value {
+    border-color: #86b7fe;
+    background-color: #f8f9ff;
+}
+
+/* Controles */
+.vertical-plant-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    justify-content: center;
+    padding-left: 15px;
+    border-left: 2px dashed #dee2e6;
+    min-width: 100px;
+}
+
+.edit-plant-btn-vertical {
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.edit-plant-btn-vertical:hover {
+    background: linear-gradient(135deg, #e0a800 0%, #d39e00 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(224, 168, 0, 0.3);
+}
+
+.remove-plant-btn-vertical {
+    padding: 8px;
+    font-size: 13px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.remove-plant-btn-vertical:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Modal de edición */
+.edit-plant-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 4px solid #ffc107;
+    padding: 8px;
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+}
+
+/* Grid de plantas en modal */
+#conveyorPlantsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.plant-card {
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.plant-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0d6efd, #6c757d);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.plant-card:hover {
+    border-color: #0d6efd;
+    background-color: #f8f9fa;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.plant-card:hover:before {
+    opacity: 1;
+}
+
+.plant-card.selected {
+    border-color: #0d6efd;
+    background: linear-gradient(135deg, #e7f1ff 0%, #cfe2ff 100%);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+    transform: translateY(-3px);
+}
+
+.plant-card.selected:before {
+    opacity: 1;
+}
+
+.plant-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    transition: transform 0.3s ease;
+}
+
+.plant-card:hover .plant-img {
+    transform: scale(1.1);
+}
+
+.plant-name {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 600;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .conveyor-plant-item-vertical {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+    }
+    
+    .vertical-plant-content {
+        flex-direction: column;
+        text-align: center;
+        padding-right: 0;
+        width: 100%;
+    }
+    
+    .vertical-plant-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .vertical-plant-controls {
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        padding-left: 0;
+        border-left: none;
+        border-top: 2px dashed #dee2e6;
+        padding-top: 15px;
+        min-width: auto;
+    }
+    
+    .conveyor-plant-img-vertical {
+        width: 80px;
+        height: 80px;
+    }
+    
+    #conveyorPlantsGrid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .conveyor-plants-vertical {
+        padding: 10px;
+    }
+    
+    .conveyor-plant-item-vertical {
+        padding: 15px;
+    }
+    
+    .config-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .config-value {
+        align-self: stretch;
+    }
+    
+    #conveyorPlantsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Scrollbar personalizado */
+.conveyor-plants-vertical::-webkit-scrollbar {
+    width: 8px;
+}
+
+.conveyor-plants-vertical::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.conveyor-plants-vertical::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    border-radius: 4px;
+}
+
+.conveyor-plants-vertical::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+}
+
+/* Animaciones */
+@keyframes plantAdded {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.conveyor-plant-item-vertical {
+    animation: plantAdded 0.4s ease-out forwards;
+}
+
+/* Efectos de estado */
+.vertical-plant-content:active {
+    transform: scale(0.98);
+}
+
+/* Indicador de que es clickeable */
+.vertical-plant-content {
+    position: relative;
+}
+
+.vertical-plant-content:after {
+    content: '🖱️ Click para editar';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #0d6efd;
+    color: white;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.conveyor-plant-item-vertical:hover .vertical-plant-content:after {
+    opacity: 1;
+    transform: translateY(0);
+}
