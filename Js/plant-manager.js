@@ -1,11 +1,10 @@
-// PlantManager.js - Versión corregida para usar constants/resources.js
+// PlantManager.js - Versión con buscador agregado
 class PlantManager {
     constructor() {
         this.allPlants = [];
         this.selectedPlants = [];
         this.excludedPlants = [];
         this.maxSelectedPlants = 8;
-        
         
         // Verificar si las constantes están disponibles
         this.PATHS = window.APP_CONSTANTS?.PATHS || {};
@@ -99,8 +98,6 @@ class PlantManager {
         return fallbackUrl;
     }
 
-    // El resto de los métodos se mantienen igual...
-
     cleanupModal(mode) {
         const modalId = mode === 'select' ? 'selectPlantsModal' : 'excludePlantsModal';
         const modal = document.getElementById(modalId);
@@ -175,7 +172,7 @@ class PlantManager {
             existingModal.remove();
         }
 
-        // 3. Crear estructura del modal
+        // 3. Crear estructura del modal con buscador
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
         modal.id = modalId;
@@ -193,11 +190,37 @@ class PlantManager {
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
+            
+            <!-- Barra de búsqueda -->
+            <div class="modal-search-bar">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control" 
+                           id="plantSearch-${mode}" 
+                           placeholder="Buscar plantas..." 
+                           aria-label="Buscar plantas">
+                    <button class="btn btn-outline-secondary" type="button" id="clearSearch-${mode}">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </div>
+            
             <div class="modal-body">
                 <div class="row g-3" id="plantGrid-${mode}">
                     <!-- Plantas se cargarán aquí -->
                 </div>
+                
+                <!-- Estado vacío para búsqueda -->
+                <div id="noResults-${mode}" class="empty-state" style="display: none;">
+                    <i class="bi bi-search display-1 text-muted mb-3"></i>
+                    <h5>No se encontraron plantas</h5>
+                    <p class="text-muted">Intenta con otro término de búsqueda</p>
+                </div>
             </div>
+            
             <div class="modal-footer">
                 <div class="d-flex justify-content-between w-100 align-items-center">
                     <div>
@@ -225,7 +248,10 @@ class PlantManager {
         // 5. Cargar plantas en el grid
         this.loadPlantGrid(mode, availablePlants);
 
-        // 6. Función para cerrar el modal
+        // 6. Configurar eventos del buscador
+        this.setupSearchEvents(mode);
+
+        // 7. Función para cerrar el modal
         const closeModal = () => {
             modal.classList.remove('active');
             setTimeout(() => {
@@ -238,7 +264,7 @@ class PlantManager {
             }, 300);
         };
 
-        // 7. Configurar eventos
+        // 8. Configurar eventos
         const closeBtn = modal.querySelector('.modal-close-btn');
         const cancelBtn = modal.querySelector(`#cancel${mode.charAt(0).toUpperCase() + mode.slice(1)}Btn`);
         const confirmBtn = modal.querySelector(`#confirm${mode.charAt(0).toUpperCase() + mode.slice(1)}Btn`);
@@ -271,12 +297,12 @@ class PlantManager {
         };
         document.addEventListener('keydown', handleEscape);
 
-        // 8. Mostrar el modal con animación
+        // 9. Mostrar el modal con animación
         setTimeout(() => {
             modal.classList.add('active');
         }, 10);
 
-        // 9. Limpiar event listener cuando se cierra
+        // 10. Limpiar event listener cuando se cierra
         const cleanup = () => {
             document.removeEventListener('keydown', handleEscape);
             // Restaurar el transform original del body si aún no se ha hecho
@@ -295,13 +321,70 @@ class PlantManager {
         cancelBtn.addEventListener('click', cleanup);
         confirmBtn.addEventListener('click', cleanup);
 
-        // 10. Enfocar el primer elemento del modal para accesibilidad
+        // 11. Enfocar el buscador para accesibilidad
         setTimeout(() => {
-            const firstPlantCard = modal.querySelector('.plant-select-card');
-            if (firstPlantCard) {
-                firstPlantCard.focus();
+            const searchInput = modal.querySelector(`#plantSearch-${mode}`);
+            if (searchInput) {
+                searchInput.focus();
             }
         }, 50);
+    }
+
+    setupSearchEvents(mode) {
+        const searchInput = document.getElementById(`plantSearch-${mode}`);
+        const clearBtn = document.getElementById(`clearSearch-${mode}`);
+        const noResultsElement = document.getElementById(`noResults-${mode}`);
+        
+        if (!searchInput || !clearBtn) return;
+        
+        // Evento de búsqueda en tiempo real
+        searchInput.addEventListener('input', (e) => {
+            this.filterPlants(mode, e.target.value.toLowerCase().trim());
+        });
+        
+        // Evento para limpiar búsqueda
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            this.filterPlants(mode, '');
+            searchInput.focus();
+        });
+        
+        // Evento para tecla Escape en el buscador
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                this.filterPlants(mode, '');
+            }
+        });
+    }
+    
+    filterPlants(mode, searchTerm) {
+        const container = document.getElementById(`plantGrid-${mode}`);
+        const noResultsElement = document.getElementById(`noResults-${mode}`);
+        const cards = container.querySelectorAll('.plant-select-card');
+        
+        if (!container || cards.length === 0) return;
+        
+        let visibleCount = 0;
+        
+        cards.forEach(card => {
+            const plantName = card.dataset.plant.toLowerCase();
+            const shouldShow = !searchTerm || plantName.includes(searchTerm);
+            
+            card.style.display = shouldShow ? '' : 'none';
+            if (shouldShow) visibleCount++;
+        });
+        
+        // Mostrar/ocultar mensaje de no resultados
+        if (noResultsElement) {
+            if (visibleCount === 0 && searchTerm) {
+                container.style.display = 'none';
+                noResultsElement.style.display = 'block';
+            } else {
+                container.style.display = '';
+                noResultsElement.style.display = 'none';
+            }
+        }
     }
 
     getAvailablePlantsForMode(mode) {
@@ -331,10 +414,16 @@ class PlantManager {
         const containerId = `plantGrid-${mode}`;
         const container = document.getElementById(containerId);
         const countElement = document.getElementById(`selectedCount-${mode}`);
+        const noResultsElement = document.getElementById(`noResults-${mode}`);
 
         if (!container) return;
 
         container.innerHTML = '';
+
+        // Ocultar mensaje de no resultados inicialmente
+        if (noResultsElement) {
+            noResultsElement.style.display = 'none';
+        }
 
         if (plants.length === 0) {
             container.innerHTML = `
