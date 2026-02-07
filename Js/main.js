@@ -565,7 +565,8 @@ isChinaCategory(categoryName) {
         'heian',
         'journey',
         'ice_age',
-        'renai'
+        'renai',
+        'fairy'
     ];
     
     return exactChinaCategories.includes(categoryName);
