@@ -6266,8 +6266,8 @@
     "integer_id": -1,
     "zombie_class": "ZombieBasic",
     "properties_rtid": "RTID(ZombieJourneyToTheWestFlagDefault@ZombieProperties)",
-    "home_world": "modern",
-    "categorie": "modern",
+   "home_world": "journey",
+    "categorie": "journey",
     "is_basic_zombie": true,
     "hitpoints": 295,
     "speed": 0.185,
@@ -6613,7 +6613,7 @@
     "speed": 0.16,
     "eat_dps": 100,
     "tiene_armadura": false,
-   "tipo_mod": "china",
+   "tipo_mod": "China",
     "alias_properties": "ZombieIceAgeSkiDefault"
   },
   {
@@ -6629,7 +6629,7 @@
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": true,
-   "tipo_mod": "china",
+   "tipo_mod": "China",
     "alias_properties": "ZombieIceageEliteArmor3Default",
     "tipo_armadura": "IceblockCuernosDefault"
   },
@@ -6646,7 +6646,7 @@
     "speed": 0.12,
     "eat_dps": 100,
     "tiene_armadura": false,
-   "tipo_mod": "china",
+   "tipo_mod": "China",
     "alias_properties": "ZombieIceAgeHunterElite"
   },
     {
@@ -6662,7 +6662,7 @@
     "speed": 0.007,
     "eat_dps": 2000,
     "tiene_armadura": false,
-   "tipo_mod": "china",
+   "tipo_mod": "China",
     "alias_properties": "ZombieIceAgeChief"
   },
   {
@@ -6678,7 +6678,7 @@
     "speed": 0.003,
     "eat_dps": 99999999,
     "tiene_armadura": false,
-   "tipo_mod": "china",
+   "tipo_mod": "China",
     "alias_properties": "ZombieIceAgeChiefElite"
   },
   {
@@ -6710,7 +6710,7 @@
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-   "tipo_mod": "china",
+   "tipo_mod": "China",
     "alias_properties": "ZombieIceageWalrusDefault"
   },
 
@@ -6728,7 +6728,7 @@
     "speed": 0.195,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiWorkerDefault"
   },
   {
@@ -6744,7 +6744,7 @@
     "speed": 0.195,
     "eat_dps": 100,
     "tiene_armadura": true,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiArmor1Default",
     "tipo_armadura": "ConeDefault"
   },
@@ -6761,7 +6761,7 @@
     "speed": 0.195,
     "eat_dps": 100,
     "tiene_armadura": true,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiArmor2Default",
     "tipo_armadura": "BucketDefault"
   },
@@ -6778,7 +6778,7 @@
     "speed": 0.195,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiFlagDefault"
   },
   {
@@ -6794,7 +6794,7 @@
     "speed": 0.24,
     "eat_dps": 0,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiGargantuar"
   },
   {
@@ -6810,7 +6810,7 @@
     "speed": 0.22,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiImpDefault"
   },
   {
@@ -6826,7 +6826,7 @@
     "speed": 1.65,
     "eat_dps": 200,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiBalletDefault"
   },
   {
@@ -6842,7 +6842,7 @@
     "speed": 0.45,
     "eat_dps": 200,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiBalletXDefault"
   },
   {
@@ -6858,7 +6858,7 @@
     "speed": 0.92,
     "eat_dps": 190,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiBalletImpDefault"
   },
   {
@@ -6874,7 +6874,7 @@
     "speed": 0.105,
     "eat_dps": 80,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiRollerDefault"
   },
   {
@@ -6890,7 +6890,7 @@
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieRenaiPerfumerDefault"
   },
 
@@ -7961,13 +7961,13 @@
     "zombie_class": "ZombieBasic",
     "properties_rtid": "RTID(ZombieFairyTaleDefault@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": true,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieFairyTaleDefault"
   },
   {
@@ -7977,13 +7977,13 @@
     "zombie_class": "ZombieBasic",
     "properties_rtid": "RTID(ZombieFairyTaleArmor1Default@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": true,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieFairyTaleArmor1Default"
   },
   {
@@ -7993,13 +7993,13 @@
     "zombie_class": "ZombieBasic",
     "properties_rtid": "RTID(ZombieFairyTaleArmor2Default@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": true,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieFairyTaleArmor2Default"
   },
   {
@@ -8009,13 +8009,13 @@
     "zombie_class": "ZombieBasic",
     "properties_rtid": "RTID(ZombieTutorialFlagDefault@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": true,
     "hitpoints": 190,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieTutorialFlagDefault"
   },
   {
@@ -8025,13 +8025,13 @@
     "zombie_class": "ZombieGargantuar",
     "properties_rtid": "RTID(ZombieFairyTaleGargantuar@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": false,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieFairyTaleGargantuar"
   },
   {
@@ -8041,13 +8041,13 @@
     "zombie_class": "ZombieImp",
     "properties_rtid": "RTID(ZombieFairyTaleImpDefault@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": false,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieFairyTaleImpDefault"
   },
   {
@@ -8057,13 +8057,13 @@
     "zombie_class": "ZombieDarkWizard",
     "properties_rtid": "RTID(ZombieWitchDefault@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": false,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "ZombieWitchDefault"
   },
   {
@@ -8073,13 +8073,13 @@
     "zombie_class": "ZombieBullVeteran",
     "properties_rtid": "RTID(FairyKnightDefault@ZombieProperties)",
     "home_world": "Fairy",
-    "categorie": "Fairy",
+    "categorie": "fairy",
     "is_basic_zombie": false,
     "hitpoints": 270,
     "speed": 0.185,
     "eat_dps": 100,
     "tiene_armadura": false,
-    "tipo_mod": "china",
+    "tipo_mod": "China",
     "alias_properties": "FairyKnightDefault"
   }
 
