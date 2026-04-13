@@ -126,7 +126,8 @@ export const STAGE_IMAGES = {
     "LunarDaylightStage": `${PATHS.IMAGES.BOARD}LunarDaylightStage.webp`,
     "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
 
-
+    "RenaiDayStage": `${PATHS.IMAGES.BOARD}RenaiDayStage.webp`,
+    "RenaiNightStage": `${PATHS.IMAGES.BOARD}RenaiNightStage.webp`,
     "HouseStage": `${PATHS.IMAGES.BOARD}HouseStage.webp`,
     "HouseNightsStage": `${PATHS.IMAGES.BOARD}HouseNightsStage.webp`,
     "RoofStage": `${PATHS.IMAGES.BOARD}RoofStage.webp`,
