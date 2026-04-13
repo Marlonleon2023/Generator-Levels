@@ -123,13 +123,26 @@ export const STAGE_IMAGES = {
     "RomanStage": `${PATHS.IMAGES.BOARD}RomanStage.webp`,
     "CarnivalStage": `${PATHS.IMAGES.BOARD}CarnivalStage.webp`,
     "LunarStage": `${PATHS.IMAGES.BOARD}LunarStage.webp`,
+    "LunarDaylightStage": `${PATHS.IMAGES.BOARD}LunarDaylightStage.webp`,
     "FeastivusStage": `${PATHS.IMAGES.BOARD}FeastivusStage.webp`,
+
+
+    "HouseStage": `${PATHS.IMAGES.BOARD}HouseStage.webp`,
+    "HouseNightsStage": `${PATHS.IMAGES.BOARD}HouseNightsStage.webp`,
+    "RoofStage": `${PATHS.IMAGES.BOARD}RoofStage.webp`,
+    "PoolDayLightStage": `${PATHS.IMAGES.BOARD}PoolDayLightStage.webp`,
+    "SteamStage": `${PATHS.IMAGES.BOARD}SteamStage.webp`,
+    "RoofNightStage": `${PATHS.IMAGES.BOARD}RoofNightStage.webp`,
+    "AtlantisStage": `${PATHS.IMAGES.BOARD}AtlantisStage.webp`,
+    "DeepseaStage": `${PATHS.IMAGES.BOARD}DeepseaStage.webp`,
+    "MarteStage": `${PATHS.IMAGES.BOARD}MarteStage.webp`,
+    "LunaStage": `${PATHS.IMAGES.BOARD}LunaStage.webp`,
+
+
 
     "SummerNightsStage": `${PATHS.IMAGES.BOARD}SummerNightsStage.webp`,
     "SpringStage": `${PATHS.IMAGES.BOARD}SpringStage.webp`,
     "ValenbrainzStage": `${PATHS.IMAGES.BOARD}ValenbrainzStage.webp`,
-
-
     "RiftStageLawnOfDoom": `${PATHS.IMAGES.BOARD}RiftStageLawnOfDoom.webp`
 };
 
@@ -696,6 +709,12 @@ export const STANDARD_WORLDS = {
         internal: "atlantis",
         stages: ["AtlantisStage", "AtlantisStageNight"],
         mowers: "BeachMowers"
+    },
+     "Roof": {
+        display: "Roof",
+        internal: "roof",
+        stages: ["RoofStage"],
+        mowers: "KongfuMowers"
     },
     "Renai": {
         display: "Renai",

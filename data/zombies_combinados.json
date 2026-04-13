@@ -278,22 +278,6 @@
     "alias_properties": "ZombieCamelDefault"
   },
   {
-    "alias_type": "camel_onehump_touch",
-    "type_name": "camel_onehump_touch",
-    "integer_id": 14,
-    "zombie_class": "ZombieCamelTouch",
-    "properties_rtid": "RTID(ZombieCamelTouchDefault@ZombieProperties)",
-    "home_world": "undefined",
-    "categorie": "undefined",
-    "is_basic_zombie": false,
-    "hitpoints": 240,
-    "speed": 0.12,
-    "eat_dps": 100,
-    "tiene_armadura": false,
-    "tipo_mod": "Internacional",
-    "alias_properties": "ZombieCamelTouchDefault"
-  },
-  {
     "alias_type": "camel_twohump_touch",
     "type_name": "camel_twohump_touch",
     "integer_id": 15,

@@ -590,6 +590,7 @@ isChinaCategory(categoryName) {
             'Eighties',
             'Future',
             'Beach',
+            
 
         ];
 
