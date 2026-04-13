@@ -138,6 +138,7 @@ export const STAGE_IMAGES = {
     "DeepseaStage": `${PATHS.IMAGES.BOARD}DeepseaStage.webp`,
     "MarteStage": `${PATHS.IMAGES.BOARD}MarteStage.webp`,
     "LunaStage": `${PATHS.IMAGES.BOARD}LunaStage.webp`,
+    "JourneyStage": `${PATHS.IMAGES.BOARD}JourneyStage.webp`,
 
 
 
