@@ -20,7 +20,7 @@ class RTONAJSON {
 
 	// Устанавливаем RTON и начальные данные
 	set(rton) {
-		// Проверяем начало и конец файла rton (RTON и DONE)
+		// Проверяем начало и конец файла rton (RTON y DONE)
 		if (rton.slice(0, 4).toString() !== [82, 84, 79, 78].toString() || rton.slice(-4).toString() !== [68, 79, 78, 69].toString())
 			throw(`The file is not RTON`);
 
@@ -60,37 +60,37 @@ class RTONAJSON {
 			case 0x08: // int8
 				this._result += this._toInt(1);
 				break;
-			case 0x09: // 0 в int8
+			case 0x09: // 0 en int8
 				this._result += 0;
 				break;
 			case 0x0a: // uint8
 				this._result += this._toUint(1);
 				break;
-			case 0x0b: // 0 в uint8
+			case 0x0b: // 0 en uint8
 				this._result += 0;
 				break;
 			case 0x10: // int16
 				this._result += this._toInt(2);
 				break;
-			case 0x11: // 0 в int16
+			case 0x11: // 0 en int16
 				this._result += 0;
 				break;
 			case 0x12: // uint16
 				this._result += this._toUint(2);
 				break;
-			case 0x13: // 0 в uint16
+			case 0x13: // 0 en uint16
 				this._result += 0;
 				break;
 			case 0x20: // int32
 				this._result += this._toInt(4);
 				break;
-			case 0x21: // 0 в int32
+			case 0x21: // 0 en int32
 				this._result += 0;
 				break;
 			case 0x22: // float
 				this._result += this._toFloat();
 				break;
-			case 0x23: // 0 в float
+			case 0x23: // 0 en float
 				this._result += '0.0';
 				break;
 			case 0x24: // беззнаковое число RTON
@@ -108,25 +108,25 @@ class RTONAJSON {
 			case 0x26: // uint32
 				this._result += this._toUint(4);
 				break;
-			case 0x27: // 0 в uint32
+			case 0x27: // 0 en uint32
 				this._result += 0;
 				break;
 			case 0x40: // int64
 				this._result += this._toInt(8);
 				break;
-			case 0x41: // 0 в int64
+			case 0x41: // 0 en int64
 				this._result += 0;
 				break;
 			case 0x42: // double
 				this._result += this._toDouble();
 				break;
-			case 0x43: // 0 в double
+			case 0x43: // 0 en double
 				this._result += '0.0';
 				break;
 			case 0x46: // uint64
 				this._result += this._toUint64();
 				break;
-			case 0x47: // 0 в uint64
+			case 0x47: // 0 en uint64
 				this._result += 0;
 				break;
 			case 0x81: // строка
@@ -184,7 +184,7 @@ class RTONAJSON {
 
 	// Преобразование строки
 	_toStr(cache = false) {
-		// Получаем длину числа и длину строки
+		// Получаем длину числа y длину строки
 		let len = this._len(this._rton.slice(this._index, this._index + 8));
 		let length = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -207,7 +207,7 @@ class RTONAJSON {
 
 	// Преобразование кэша строки
 	_toStrUncache() {
-		// Получаем длину числа и длину строки
+		// Получаем длину числа y длину строки
 		let len = this._len(this._rton.slice(this._index, this._index + 8));
 		let number = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -226,7 +226,7 @@ class RTONAJSON {
 		// Изменяем индекс
 		this._index += len;
 
-		// Получаем длину числа и длину строки
+		// Получаем длину числа y длину строки
 		len = this._len(this._rton.slice(this._index, this._index + 8));
 		let length = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -237,9 +237,9 @@ class RTONAJSON {
 		let str = new TextDecoder().decode(bytes);
 		str = this._clearStr(str);
 
-		// Добавляем строку в кэш если кэшируемая строка
+		// Добавляем строку в кэш если кэшируемая строка - CORREGIDO
 		if (cache)
-			this._cache_utf.push[str];
+			this._cache_utf.push(str);  // ANTES: this._cache_utf.push[str]
 
 		// Изменяем индекс
 		this._index += len + length;
@@ -249,7 +249,7 @@ class RTONAJSON {
 
 	// Преобразование кэша UTF строки
 	_toUtfUncache() {
-		// Получаем длину числа и длину строки
+		// Получаем длину числа y длину строки
 		let len = this._len(this._rton.slice(this._index, this._index + 8));
 		let number = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -265,7 +265,7 @@ class RTONAJSON {
 		let type = this._rton[this._index++];
 
 		if (type === 0x02) {
-			// Получаем длину числа и длину строки
+			// Получаем длину числа y длину строки
 			let len = this._len(this._rton.slice(this._index, this._index + 8));
 			let length = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -296,7 +296,7 @@ class RTONAJSON {
 			return `RTID(${u2.toString(16)}.${u1.toString(16)}.${uid}@${str1})`;
 
 		} else if (type === 0x03) {
-			// Получаем длину числа и длину строки
+			// Получаем длину числа y длину строки
 			let len = this._len(this._rton.slice(this._index, this._index + 8));
 			let length = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -307,7 +307,7 @@ class RTONAJSON {
 			// Изменяем индекс
 			this._index += len + len + length;
 
-			// Получаем длину числа и длину строки
+			// Получаем длину числа y длину строки
 			len = this._len(this._rton.slice(this._index, this._index + 8));
 			length = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -388,7 +388,7 @@ class RTONAJSON {
 		const floatView = new DataView(bytes.buffer);
 		const float = floatView.getFloat32(0, true);
 
-		// Преобразуем в строку и добавляем конечный 0 если его нет
+		// Преобразуем в строку y добавляем конечный 0 если его нет
 		let str = float.toString();
 		str = str.indexOf('.') === -1 ? str + ".0" : str;
 
@@ -407,7 +407,7 @@ class RTONAJSON {
 		const doubleView = new DataView(bytes.buffer);
 		const double = doubleView.getFloat64(0, true);
 
-		// Преобразуем в строку и добавляем конечный 0 если его нет
+		// Преобразуем в строку y добавляем конечный 0 si no lo tiene
 		let str = double.toString();
 		str = str.indexOf('.') === -1 ? str + ".0" : str;
 
@@ -419,7 +419,7 @@ class RTONAJSON {
 
 	// Преобразование беззнакового числа RTON
 	_toUnum() {
-		// Получаем длину числа и само число
+		// Получаем длину числа y само число
 		let len = this._len(this._rton.slice(this._index, this._index + 8));
 		let int = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -431,7 +431,7 @@ class RTONAJSON {
 
 	// Преобразование знакового числа RTON
 	_toNum() {
-		// Получаем длину числа и само число
+		// Получаем длину числа y само число
 		let len = this._len(this._rton.slice(this._index, this._index + 8));
 		let int = this._int(this._rton.slice(this._index, this._index + len));
 
@@ -448,10 +448,10 @@ class RTONAJSON {
 
 	// Преобразование RTON в массив
 	_toArray() {
-		// Увеличиваем индекс из за 0xfd
+		// Увеличиваем индекс debido a 0xfd
 		this._index++;
 
-		// Если пустой массив
+		// Si пустой массив
 		if (this._rton[this._index] === 0x00) {
 			// Изменяем индекс
 			this._index += 2;
@@ -463,7 +463,7 @@ class RTONAJSON {
 		let len = this._len(this._rton.slice(this._index, this._index + 8));
 		let count = this._int(this._rton.slice(this._index, this._index + len));
 
-		// Увеличиваем индекс из за количества элементов
+		// Увеличиваем индекс debido a cantidad de elementos
 		this._index += len;
 
 		this._format++;
@@ -475,19 +475,19 @@ class RTONAJSON {
 			// Запускаем проверку
 			this._type();
 
-			// Если не последний элемент массива
+			// Si no es el último elemento del array
 			if (i + 1 !== count)
 				this._result += ",\n";
 		}
 		this._format--;
 
-		// Увеличиваем индекс из за 0xfe
+		// Увеличиваем индекс debido a 0xfe
 		this._index++;
 	}
 
 	// Преобразование RTON в объект
 	_toObject() {
-		// Если пустой объект
+		// Si пустой объект
 		if (this._rton[this._index] === 0xff) {
 			// Изменяем индекс
 			this._index++;
@@ -515,7 +515,7 @@ class RTONAJSON {
 		}
 		this._format--;
 
-		// Увеличиваем индекс из за 0xff
+		// Увеличиваем индекс debido a 0xff
 		this._index++;
 	}
 
@@ -546,8 +546,8 @@ class RTONAJSON {
 	_clearStr(str) {
 		str = str.replaceAll(/\r\n|\r|\n/gi, '\\n');
 		str = str.replaceAll(/\t/gi, "\\t");
-		str = str.replaceAll('"', '\"');
-
+		str = str.replaceAll('"', '\\"');  // CORREGIDO: antes era '\"' que no escapa correctamente
+		
 		return str;
 	}
 }

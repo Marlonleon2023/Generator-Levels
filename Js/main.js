@@ -84,6 +84,7 @@ class EnhancedLevelGenerator {
         this.rewardManager = new RewardManager(this);
 
         this.conveyorManager = new ConveyorManager(this);
+        
 
 
         // 3. SISTEMA DE ZOMBIES
@@ -2716,182 +2717,210 @@ loadSavedData() {
     }
 
     convertJsonToRton() {
-        try {
-            const jsonInput = document.getElementById('jsonInput').value;
+    try {
+        const jsonInput = document.getElementById('jsonInput').value;
 
-            if (!jsonInput.trim()) {
-                this.showConverterMessage('Error', 'Por favor ingresa JSON para convertir', 'error');
-                return;
-            }
-
-            const converter = new JSONARTON();
-            converter.set(jsonInput);
-
-            const outputFormat = document.getElementById('outputFormat').value;
-            const result = converter.get(outputFormat === 'hex' ? 'hex' : 'binary');
-
-            let displayResult;
-            let downloadBlob;
-            let fileName;
-            let mimeType;
-
-            if (outputFormat === 'hex') {
-                displayResult = result;
-                downloadBlob = new Blob([result], { type: 'text/plain' });
-                fileName = `converted_${Date.now()}.hex`;
-                mimeType = 'text/plain';
-            } else if (outputFormat === 'array') {
-                displayResult = JSON.stringify(Array.from(result), null, 2);
-                downloadBlob = new Blob([displayResult], { type: 'application/json' });
-                fileName = `converted_${Date.now()}.json`;
-                mimeType = 'application/json';
-            } else if (outputFormat === 'compact') {
-                displayResult = JSON.stringify(Array.from(result));
-                downloadBlob = new Blob([displayResult], { type: 'application/json' });
-                fileName = `converted_${Date.now()}.json`;
-                mimeType = 'application/json';
-            } else {
-                // Formatear como hex legible
-                const hexString = Array.from(result)
-                    .map(b => b.toString(16).padStart(2, '0'))
-                    .join('')
-                    .toUpperCase();
-
-                // Agrupar en líneas de 32 bytes
-                displayResult = '';
-                for (let i = 0; i < hexString.length; i += 32) {
-                    const chunk = hexString.substr(i, 32);
-                    const line = chunk.replace(/(.{2})/g, '$1 ') + '\n';
-                    displayResult += line;
-                }
-
-                // Para descargar RTON binario
-                downloadBlob = result;
-                fileName = `converted_${Date.now()}.rton`;
-                mimeType = 'application/octet-stream';
-            }
-
-            document.getElementById('conversionResult').textContent = displayResult;
-
-            // DESCARGAR AUTOMÁTICAMENTE
-            this.downloadFile(downloadBlob, fileName, mimeType);
-
-            this.showConverterMessage('Éxito', 'JSON convertido a RTON y descargado', 'success');
-
-        } catch (error) {
-            document.getElementById('conversionResult').textContent = `Error: ${error.message}`;
-            this.showConverterMessage('Error', error.message, 'error');
+        if (!jsonInput.trim()) {
+            this.showConverterMessage('Error', 'Por favor ingresa JSON para convertir', 'error');
+            return;
         }
+
+        const converter = new JSONARTON();
+        converter.set(jsonInput);
+
+        const outputFormat = document.getElementById('outputFormat').value;
+        const result = converter.get(outputFormat === 'hex' ? 'hex' : 'binary');
+
+        let displayResult;
+        let downloadBlob;
+        let fileName;
+        let mimeType;
+
+        // DETERMINAR EL NOMBRE DEL ARCHIVO BASADO EN EL NOMBRE ORIGINAL
+        let baseFileName = this.originalFileName || 'converted';
+        
+        // Limpiar el nombre de archivo (eliminar caracteres no válidos)
+        baseFileName = baseFileName.replace(/[<>:"/\\|?*]/g, '');
+        
+        // Eliminar "ACTUALIZADO" o palabras similares si quieres
+        baseFileName = baseFileName.replace(/\s+ACTUALIZADO/i, '');
+        baseFileName = baseFileName.replace(/\s+UPDATED/i, '');
+        
+        if (outputFormat === 'hex') {
+            displayResult = result;
+            downloadBlob = new Blob([result], { type: 'text/plain' });
+            fileName = `${baseFileName}.hex`;
+            mimeType = 'text/plain';
+        } else if (outputFormat === 'array') {
+            displayResult = JSON.stringify(Array.from(result), null, 2);
+            downloadBlob = new Blob([displayResult], { type: 'application/json' });
+            fileName = `${baseFileName}.json`;
+            mimeType = 'application/json';
+        } else if (outputFormat === 'compact') {
+            displayResult = JSON.stringify(Array.from(result));
+            downloadBlob = new Blob([displayResult], { type: 'application/json' });
+            fileName = `${baseFileName}.json`;
+            mimeType = 'application/json';
+        } else {
+            // Formatear como hex legible
+            const hexString = Array.from(result)
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('')
+                .toUpperCase();
+
+            // Agrupar en líneas de 32 bytes
+            displayResult = '';
+            for (let i = 0; i < hexString.length; i += 32) {
+                const chunk = hexString.substr(i, 32);
+                const line = chunk.replace(/(.{2})/g, '$1 ') + '\n';
+                displayResult += line;
+            }
+
+            // Para descargar RTON binario - USAR EL NOMBRE ORIGINAL
+            downloadBlob = result;
+            fileName = `${baseFileName}.rton`;  // ¡Aquí está el cambio clave!
+            mimeType = 'application/octet-stream';
+        }
+
+        document.getElementById('conversionResult').textContent = displayResult;
+
+        // DESCARGAR AUTOMÁTICAMENTE
+        this.downloadFile(downloadBlob, fileName, mimeType);
+
+        this.showConverterMessage('Éxito', `JSON convertido a RTON y descargado como ${fileName}`, 'success');
+        
+        // Resetear el nombre original después de usarlo
+        this.originalFileName = null;
+
+    } catch (error) {
+        document.getElementById('conversionResult').textContent = `Error: ${error.message}`;
+        this.showConverterMessage('Error', error.message, 'error');
     }
+}
 
     convertRtonToJson() {
-        try {
-            const rtonInput = document.getElementById('rtonInput').value.trim();
+    try {
+        const rtonInput = document.getElementById('rtonInput').value.trim();
 
-            if (!rtonInput) {
-                this.showConverterMessage('Error', 'Por favor ingresa RTON para convertir', 'error');
-                return;
-            }
-
-            // Convertir hex string a Uint8Array
-            let bytes;
-            if (rtonInput.includes(' ')) {
-                // Si tiene espacios, limpiar
-                const cleanHex = rtonInput.replace(/\s+/g, '');
-                bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-            } else {
-                // Asumir que es hex sin espacios
-                bytes = new Uint8Array(rtonInput.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-            }
-
-            const converter = new RTONAJSON();
-            const success = converter.set(bytes);
-
-            if (!success) {
-                throw new Error('No se pudo procesar el RTON');
-            }
-
-            const jsonResult = converter.get();
-            const outputFormat = document.getElementById('outputFormat').value;
-
-            let displayResult;
-            let downloadResult;
-
-            if (outputFormat === 'pretty') {
-                displayResult = JSON.stringify(JSON.parse(jsonResult), null, 2);
-                downloadResult = displayResult;
-            } else if (outputFormat === 'compact') {
-                displayResult = jsonResult;
-                downloadResult = displayResult;
-            } else {
-                displayResult = jsonResult;
-                downloadResult = displayResult;
-            }
-
-            document.getElementById('conversionResult').textContent = displayResult;
-
-            // DESCARGAR AUTOMÁTICAMENTE
-            const blob = new Blob([downloadResult], { type: 'application/json' });
-            const fileName = `converted_${Date.now()}.json`;
-            this.downloadFile(blob, fileName, 'application/json');
-
-            this.showConverterMessage('Éxito', 'RTON convertido a JSON y descargado', 'success');
-
-        } catch (error) {
-            document.getElementById('conversionResult').textContent = `Error: ${error.message}`;
-            this.showConverterMessage('Error', error.message, 'error');
+        if (!rtonInput) {
+            this.showConverterMessage('Error', 'Por favor ingresa RTON para convertir', 'error');
+            return;
         }
+
+        // Convertir hex string a Uint8Array
+        let bytes;
+        if (rtonInput.includes(' ')) {
+            const cleanHex = rtonInput.replace(/\s+/g, '');
+            bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+        } else {
+            bytes = new Uint8Array(rtonInput.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+        }
+
+        const converter = new RTONAJSON();
+        const success = converter.set(bytes);
+
+        if (!success) {
+            throw new Error('No se pudo procesar el RTON');
+        }
+
+        const jsonResult = converter.get();
+        const outputFormat = document.getElementById('outputFormat').value;
+
+        let displayResult;
+        let downloadResult;
+
+        if (outputFormat === 'pretty') {
+            displayResult = JSON.stringify(JSON.parse(jsonResult), null, 2);
+            downloadResult = displayResult;
+        } else if (outputFormat === 'compact') {
+            displayResult = jsonResult;
+            downloadResult = displayResult;
+        } else {
+            displayResult = jsonResult;
+            downloadResult = displayResult;
+        }
+
+        document.getElementById('conversionResult').textContent = displayResult;
+
+        // USAR EL NOMBRE ORIGINAL DEL ARCHIVO
+        let baseFileName = this.originalFileName || 'converted';
+        baseFileName = baseFileName.replace(/[<>:"/\\|?*]/g, '');
+        const fileName = `${baseFileName}.json`;
+        
+        // DESCARGAR AUTOMÁTICAMENTE
+        const blob = new Blob([downloadResult], { type: 'application/json' });
+        this.downloadFile(blob, fileName, 'application/json');
+
+        this.showConverterMessage('Éxito', `RTON convertido a JSON y descargado como ${fileName}`, 'success');
+        
+        // Resetear el nombre original después de usarlo
+        this.originalFileName = null;
+
+    } catch (error) {
+        document.getElementById('conversionResult').textContent = `Error: ${error.message}`;
+        this.showConverterMessage('Error', error.message, 'error');
     }
+}
 
-    loadJsonFile() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
+loadJsonFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
 
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-            try {
-                const text = await file.text();
-                document.getElementById('jsonInput').value = text;
-                this.showConverterMessage('Archivo cargado', `JSON cargado: ${file.name}`, 'success');
-            } catch (error) {
-                this.showConverterMessage('Error', `Error al cargar archivo: ${error.message}`, 'error');
-            }
-        };
+        try {
+            const text = await file.text();
+            document.getElementById('jsonInput').value = text;
+            
+            // GUARDAR EL NOMBRE ORIGINAL DEL ARCHIVO
+            this.originalFileName = file.name.replace(/\.json$/i, '');
+            
+            this.showConverterMessage('Archivo cargado', `JSON cargado: ${file.name}`, 'success');
+        } catch (error) {
+            this.showConverterMessage('Error', `Error al cargar archivo: ${error.message}`, 'error');
+        }
+    };
 
-        input.click();
-    }
+    input.click();
+}
+
+
 
     loadRtonFile() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.rton,.bin';
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.rton,.bin';
 
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const bytes = new Uint8Array(arrayBuffer);
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const bytes = new Uint8Array(arrayBuffer);
 
-                // Convertir a hexadecimal para mostrar
-                const hexString = Array.from(bytes)
-                    .map(b => b.toString(16).padStart(2, '0'))
-                    .join('')
-                    .toUpperCase();
+            // Convertir a hexadecimal para mostrar
+            const hexString = Array.from(bytes)
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('')
+                .toUpperCase();
 
-                document.getElementById('rtonInput').value = hexString;
-                this.showConverterMessage('Archivo cargado', `RTON cargado: ${file.name}`, 'success');
-            } catch (error) {
-                this.showConverterMessage('Error', `Error al cargar archivo: ${error.message}`, 'error');
-            }
-        };
+            document.getElementById('rtonInput').value = hexString;
+            
+            // GUARDAR EL NOMBRE ORIGINAL DEL ARCHIVO RTON
+            this.originalFileName = file.name.replace(/\.(rton|bin)$/i, '');
+            
+            this.showConverterMessage('Archivo cargado', `RTON cargado: ${file.name}`, 'success');
+        } catch (error) {
+            this.showConverterMessage('Error', `Error al cargar archivo: ${error.message}`, 'error');
+        }
+    };
 
-        input.click();
-    }
+    input.click();
+}
 
     copyResult() {
         const result = document.getElementById('conversionResult').textContent;
