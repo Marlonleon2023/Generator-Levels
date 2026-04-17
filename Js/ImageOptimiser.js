@@ -124,7 +124,6 @@ class ImageCache {
         
         try {
             await this.loadImage(altUrl, { retry: true, priority: 'low' });
-            console.log(`[ImageCache] Cargado formato alternativo: ${altUrl}`);
         } catch (err) {
             // Silenciar error de formato alternativo
         }
@@ -492,7 +491,6 @@ class OptimizedBoardManager extends BoardManager {
         // Reportar estadísticas
         setTimeout(() => {
             const stats = this.imageCache.getStats();
-            console.log('[ImageCache Stats]', stats);
         }, 3000);
     }
 
@@ -531,7 +529,6 @@ class OptimizedBoardManager extends BoardManager {
         }
         
         this.criticalLoaded = true;
-        console.log(`[Preload] ${imageArray.length} imágenes críticas pre-cargadas`);
     }
 
     collectImageUrlsFromElements(elements, urlSet) {
@@ -572,7 +569,6 @@ class OptimizedBoardManager extends BoardManager {
         const imageArray = Array.from(allImages);
         this.imageCache.preloadImages(imageArray, 'low');
         
-        console.log(`[Preload] ${imageArray.length} imágenes en segundo plano`);
     }
 
     // ==============================
@@ -884,8 +880,6 @@ class OptimizedBoardManager extends BoardManager {
         
         // Optimizar carga de imágenes en modales
         this.optimizePlantModals(plantManager);
-        
-        console.log('[Optimization] PlantManager optimizado');
     }
 
     optimizePlantModals(plantManager) {
@@ -960,7 +954,6 @@ class OptimizedBoardManager extends BoardManager {
         // Limpiar listeners
         super.setupEventListeners = () => {}; // Sobrescribir para no añadir nuevos
         
-        console.log('[OptimizedBoardManager] Destruido');
     }
 
     // ==============================

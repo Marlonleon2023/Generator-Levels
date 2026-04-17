@@ -87,8 +87,6 @@ class BoardManager {
 
     async loadElementData() {
         try {
-            console.log('🔍 Cargando datos de elementos...');
-            
             if (PLANTS && Array.isArray(PLANTS)) {
                 this.availableElements.plants = PLANTS.map(plant => ({
                     alias_type: plant,
@@ -96,7 +94,6 @@ class BoardManager {
                     type: 'plant',
                     imageUrl: this.getPlantImageUrl(plant)
                 }));
-                console.log(`✅ Plantas cargadas desde constants: ${PLANTS.length}`);
             } else {
                 console.warn('⚠️ No se encontró la constante PLANTS o no es un array');
                 this.availableElements.plants = this.loadDefaultPlants();
@@ -109,7 +106,6 @@ class BoardManager {
                     type: 'gravestone',
                     imageUrl: this.getGravestoneImageUrl(grave)
                 }));
-                console.log(`✅ Lápidas cargadas desde constants: ${GRAVESTONES.length}`);
             } else {
                 console.warn('⚠️ No se encontró la constante GRAVESTONES o no es un array');
                 this.availableElements.gravestones = this.loadDefaultGravestones();
@@ -122,7 +118,6 @@ class BoardManager {
                     type: 'slider',
                     imageUrl: this.getSliderImageUrl(slider)
                 }));
-                console.log(`✅ Sliders cargados: ${SLIDERS.length}`);
             } else {
                 console.warn('⚠️ No se encontró la constante SLIDERS o no es un array');
                 this.availableElements.sliders = this.loadDefaultSliders();
@@ -135,7 +130,6 @@ class BoardManager {
                     type: 'potion',
                     imageUrl: this.getPotionImageUrl(potion)
                 }));
-                console.log(`✅ Pociones cargadas: ${POTIONS.length}`);
             } else {
                 console.warn('⚠️ No se encontró la constante POTIONS o no es un array');
                 this.availableElements.potions = this.loadDefaultPotions();
@@ -149,7 +143,6 @@ class BoardManager {
                 type: 'other',
                 imageUrl: this.getOtherImageUrl(item)
             }));
-            console.log(`✅ Elementos varios cargados: ${OTHERS.length}`);
         } else {
             console.warn('⚠️ No se encontró la constante OTHERS o no es un array');
             this.availableElements.others = this.loadDefaultOthers();
@@ -164,7 +157,6 @@ class BoardManager {
                     type: 'mold',
                     imageUrl: this.getMoldImageUrl(mold)
                 }));
-                console.log(`✅ Molds cargados desde constants: ${MOLDS.length}`);
             } else {
                 console.warn('⚠️ No se encontró la constante MOLDS o no es un array');
                 this.availableElements.molds = this.loadDefaultMolds();
@@ -178,7 +170,6 @@ class BoardManager {
                     type: 'railcart',
                     imageUrl: this.getRailcartImageUrl(railcart, false) // railcart image
                 }));
-                console.log(`✅ Railcarts cargados desde constants: ${RAILCARTS.length}`);
             } else {
                 console.warn('⚠️ No se encontró la constante RAILCARTS o no es un array');
                 this.availableElements.railcarts = this.loadDefaultRailcarts();
@@ -193,18 +184,10 @@ class BoardManager {
                     type: 'zombie',
                     imageUrl: this.getZombieImageUrl(zombie.alias_type)
                 }));
-                console.log(`✅ Zombies cargados: ${this.availableElements.zombies.length}`);
             } else {
                 console.warn('⚠️ No se encontraron zombies en levelGenerator');
                 this.availableElements.zombies = this.loadDefaultZombies();
             }
-
-
-            
-
-
-
-            
             console.log('✅ Elementos cargados:', {
                 plantas: this.availableElements.plants.length,
                 zombies: this.availableElements.zombies.length,
@@ -232,13 +215,12 @@ class BoardManager {
 }
 
     loadDefaultElements() {
-        console.log('🔄 Cargando elementos por defecto...');
+      
         this.availableElements.plants = this.loadDefaultPlants();
         this.availableElements.zombies = this.loadDefaultZombies();
         this.availableElements.gravestones = this.loadDefaultGravestones();
         this.availableElements.sliders = this.loadDefaultSliders();
         this.availableElements.potions = this.loadDefaultPotions();
-        console.log('✅ Elementos por defecto cargados');
     }
 
 
@@ -408,14 +390,6 @@ getMoldImageUrl(itemName) {
     
     const normalizedName = itemName.toLowerCase().replace(/\s+/g, '');
     const url = `${this.imagePaths.MOLDS}${normalizedName}.webp`;
-    
-    console.log('🔍 getMoldImageUrl debug:', {
-        input: itemName,
-        normalizedName: normalizedName,
-        imagePaths: this.imagePaths,
-        url: url,
-        fallback: this.fallbackImages.molds
-    });
     
     return url;
 }
@@ -2345,7 +2319,6 @@ setupRailcartPartsDialogListeners(row, col) {
     
     partOptions.forEach(option => {
         option.addEventListener('click', () => {
-            console.log('🚀 Clic en parte:', option.dataset.part);
             
             // Remover selección de todas las opciones
             partOptions.forEach(opt => {
@@ -2356,7 +2329,6 @@ setupRailcartPartsDialogListeners(row, col) {
             option.classList.add('selected');
             selectedPart = option.dataset.part;
             
-            console.log('✅ Parte seleccionada:', selectedPart);
             
             // Habilitar y actualizar botón
             confirmBtn.disabled = false;
@@ -2365,16 +2337,10 @@ setupRailcartPartsDialogListeners(row, col) {
     });
     
     confirmBtn.addEventListener('click', () => {
-        console.log('🔍 Intentando colocar parte:', selectedPart);
-        
         if (!selectedPart) {
             this.showToast('Error', 'Selecciona una parte primero', 'error');
             return;
         }
-        
-        console.log('🚀 Llamando a placeRailcartPart con:', {
-            row, col, selectedPart
-        });
         
         this.placeRailcartPart(row, col, selectedPart);
     });
@@ -2382,19 +2348,13 @@ setupRailcartPartsDialogListeners(row, col) {
     // Inicializar con la primera parte seleccionada
     setTimeout(() => {
         if (partOptions.length > 0) {
-            console.log('🔄 Seleccionando primera opción automáticamente');
             partOptions[0].click();
         }
     }, 100);
 }
 
 // MODIFICAR placeRailcartPart para recibir la parte como parámetro
-placeRailcartPart(row, col, selectedPart) {
-    console.log('🎯 Ejecutando placeRailcartPart:', {
-        row, col, selectedPart,
-        railcartType: this.railcartElements.type
-    });
-    
+placeRailcartPart(row, col, selectedPart) {    
     const railcartType = this.railcartElements.type;
     if (!railcartType) {
         this.showToast('Error', 'No hay estilo de vagón seleccionado', 'error');
@@ -2414,15 +2374,9 @@ placeRailcartPart(row, col, selectedPart) {
         p.Part === selectedPart
     );
     
-    console.log('🔍 Buscando parte existente en esta celda:', {
-        existingPartIndex,
-        parts: this.railcartElements.parts
-    });
-    
     if (existingPartIndex >= 0) {
         // Si ya existe la misma parte en la misma celda, eliminarla (toggle)
         this.railcartElements.parts.splice(existingPartIndex, 1);
-        console.log('🗑️ Eliminando parte existente');
     } else {
         // Agregar nueva parte - PERMITIR MÚLTIPLES PARTES DEL MISMO TIPO
         const newPart = {
@@ -2431,8 +2385,6 @@ placeRailcartPart(row, col, selectedPart) {
             Row: row.toString()
         };
         this.railcartElements.parts.push(newPart);
-        console.log('➕ Agregando nueva parte:', newPart);
-        
         // Si es un vagón (cart), agregar riel automáticamente en la misma posición
         if (selectedPart === 'cart') {
             // Agregar un riel en la misma fila y columna
@@ -2448,14 +2400,10 @@ placeRailcartPart(row, col, selectedPart) {
                     RowStart: row.toString(),
                     RowEnd: row.toString()
                 });
-                console.log('🛤️ Agregando riel específico para vagón');
             }
         }
     }
-    
-    console.log('✅ Partes después de modificar:', this.railcartElements.parts);
-    console.log('✅ Rieles después de modificar:', this.railcartElements.rails);
-    
+        
     // Actualizar UI
     this.renderBoard();
     this.updatePreview();
@@ -2489,13 +2437,10 @@ clearRailcartParts(partType = null) {
                 return remainingCartColumns.includes(parseInt(rail.Column));
             });
         }
-        
-        console.log(`🧹 Limpiadas ${beforeCount - afterCount} partes de tipo ${partType}`);
     } else {
         // Limpiar todo
         this.railcartElements.parts = [];
         this.railcartElements.rails = [];
-        console.log('🧹 Limpiadas todas las partes de railcart');
     }
     
     this.renderBoard();
@@ -3551,13 +3496,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function initBoardManager() {
         if (!window.boardManager) {
-            console.log('🚀 Inicializando BoardManager...');
             window.boardManager = new BoardManager(window.levelGenerator);
             
             setTimeout(() => {
                 if (window.boardManager) {
                     window.boardManager.initialize();
-                    console.log('✅ BoardManager inicializado correctamente');
                 }
             }, 300);
         } else if (window.boardManager && !window.boardManager.initialized) {

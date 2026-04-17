@@ -30,7 +30,6 @@ import { ConveyorManager } from './conveyor-manager.js';
 
 class EnhancedLevelGenerator {
     constructor() {
-        console.log('🔧 Constructor de EnhancedLevelGenerator llamado');
 
         // 1. DATOS DEL NIVEL (Configuración principal)
         this.levelData = {
@@ -86,11 +85,6 @@ class EnhancedLevelGenerator {
 
         this.conveyorManager = new ConveyorManager(this);
 
-
-
-        console.log('✓ Recursos y constantes cargados');
-        console.log(`- Mundos: ${Object.keys(this.worldImages).length}`);
-        console.log(`- Categorías de zombies: ${Object.keys(this.zombieCategories).length}`);
 
         // 3. SISTEMA DE ZOMBIES
         this.zombieDataLoader = new ZombieDataLoader();
@@ -168,29 +162,23 @@ class EnhancedLevelGenerator {
         this.initializationComplete = false;
         this.initializationError = null;
 
-        console.log('✓ Propiedades inicializadas');
-
         // 8. INICIALIZACIÓN DIFERIDA - NO INICIAR INMEDIATAMENTE
         // En lugar de llamar init() aquí, programamos la inicialización
 
         // Solo inicializar componentes que NO dependen del DOM
         this.setupConverterListeners();
-        console.log('✓ Listeners del convertidor configurados (sin DOM)');
 
         // Programar la inicialización principal cuando el DOM esté listo
         this.initPromise = this.scheduleInitialization();
 
-        console.log('🚀 Constructor completado - Inicialización programada');
     }
 
     scheduleInitialization() {
         return new Promise((resolve, reject) => {
             const initWhenReady = () => {
-                console.log('⏳ Verificando estado del DOM para inicialización...');
 
                 // Si el DOM ya está listo
                 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                    console.log('✓ DOM ya está listo, iniciando...');
                     this.init()
                         .then(() => {
                             console.log('✅ Inicialización completada exitosamente');
@@ -204,9 +192,7 @@ class EnhancedLevelGenerator {
                 }
                 // Si el DOM aún se está cargando, esperar
                 else if (document.readyState === 'loading') {
-                    console.log('⌛ DOM aún cargando, esperando evento DOMContentLoaded...');
                     document.addEventListener('DOMContentLoaded', () => {
-                        console.log('✓ DOMContentLoaded disparado, iniciando...');
                         this.init()
                             .then(() => {
                                 console.log('✅ Inicialización completada exitosamente');
@@ -221,10 +207,8 @@ class EnhancedLevelGenerator {
                 }
                 // Estado desconocido
                 else {
-                    console.log('⚠ Estado del DOM desconocido:', document.readyState);
                     // Intentar igualmente después de un breve retraso
                     setTimeout(() => {
-                        console.log('🔄 Intentando inicialización después de retraso...');
                         this.init()
                             .then(() => {
                                 console.log('✅ Inicialización completada exitosamente');
@@ -258,8 +242,6 @@ class EnhancedLevelGenerator {
     }
 
     initializeNewZombieSelection() {
-        console.log('Inicializando nueva selección de zombies...');
-
         // Asegurar que el DOM esté listo
         const checkDOM = () => {
             const categoriesPanel = document.getElementById('zombieCategoriesPanel');
@@ -285,8 +267,6 @@ class EnhancedLevelGenerator {
 
     // Configurar la interfaz de usuario
     setupNewZombieSelectionUI() {
-        console.log('Configurando UI de selección de zombies...');
-
         const categoriesPanel = document.getElementById('zombieCategoriesPanel');
         const contentPanel = document.getElementById('zombieCategoriesContent');
 
@@ -301,13 +281,10 @@ class EnhancedLevelGenerator {
 
         // Verificar que tengamos categorías
         if (!this.zombieCategories || Object.keys(this.zombieCategories).length === 0) {
-            console.log('No hay categorías disponibles');
             categoriesPanel.innerHTML = '<div class="text-center p-4 text-danger">No hay categorías disponibles</div>';
             contentPanel.innerHTML = '<div class="text-center p-4 text-danger">No hay zombies disponibles</div>';
             return;
         }
-
-        console.log(`Generando UI con ${Object.keys(this.zombieCategories).length} categorías`);
 
         // Generar botones de categorías
         this.generateCategoryButtons();
@@ -327,8 +304,6 @@ generateCategoryButtons() {
         return;
     }
 
-    console.log('=== GENERANDO BOTONES DE CATEGORÍAS ===');
-    console.log('Categorías disponibles:', Object.keys(this.zombieCategories));
 
     // ORDEN MANUAL - ESTO ES IMPERATIVO
     const manualWorldOrder = [
@@ -361,7 +336,6 @@ generateCategoryButtons() {
         }
     });
 
-    console.log('Mundos en orden manual:', worldCategories);
 
     // 2. Crear sección de Mundos
     if (worldCategories.length > 0) {
@@ -402,7 +376,6 @@ generateCategoryButtons() {
     const shownWorlds = new Set(worldCategories);
     const remainingCategories = allCategories.filter(cat => !shownWorlds.has(cat));
 
-    console.log('Categorías restantes:', remainingCategories);
 
     // 4. Clasificar las demás categorías - AQUÍ ESTÁ EL CAMBIO
     const modCats = [];
@@ -555,7 +528,6 @@ generateCategoryButtons() {
         categoriesPanel.appendChild(modSection);
     }
 
-    console.log('=== FIN GENERACIÓN BOTONES ===');
 }
 
 
@@ -563,9 +535,9 @@ isChinaCategory(categoryName) {
     // Lista exacta de categorías chinas
     const exactChinaCategories = [
         'heian',
-        'kongfu',
         'ice_age',
         'renai',
+        'kongfu',
         'fairy',
         'journey',
     ];
@@ -576,8 +548,6 @@ isChinaCategory(categoryName) {
 
     // En el método groupCategoriesDynamically()
     groupCategoriesDynamically() {
-        console.log('=== INICIANDO groupCategoriesDynamically ===');
-
         // ORDEN EXACTO como quieres que aparezcan (basado en lo que muestras)
         const worldOrder = [
             'Modern',
@@ -595,8 +565,6 @@ isChinaCategory(categoryName) {
 
         ];
 
-        console.log('Mundos en orden deseado:', worldOrder);
-        console.log('Todas las categorías disponibles:', Object.keys(this.zombieCategories));
 
         // Grupo inicial
         const categoryGroups = {
@@ -4655,10 +4623,8 @@ generateJson() {
 
     if (this.boardManager && typeof this.boardManager.getAllModules === 'function') {
         boardModules = this.boardManager.getAllModules();
-        console.log('Módulos del BoardManager:', boardModules);
     } else if (window.boardManager && typeof window.boardManager.getAllModules === 'function') {
         boardModules = window.boardManager.getAllModules();
-        console.log('Módulos del BoardManager (window):', boardModules);
     }
 
     const levelJson = {
@@ -4707,7 +4673,6 @@ generateJson() {
 
     if (seedBankObject) {
         levelJson.objects.push(seedBankObject);
-        console.log('SeedBank agregado en posición 2');
     }
 
     // **3. AGREGAR MÓDULOS DE TABLERO (EXCLUYENDO ProtectThePlant)**
@@ -4729,7 +4694,6 @@ generateJson() {
         const moldLocationsModule = boardModules.find(m => m.aliases?.[0] === "MoldLocationsCustom");
         if (moldLocationsModule) {
             placementModules.push(moldLocationsModule);
-            console.log('✅ MoldLocationsCustom agregado (después de MountingMolds)');
         }
         
         // Agregar el resto de módulos de colocación (evitando duplicados)
@@ -4772,7 +4736,6 @@ generateJson() {
     );
     if (challengeModuleObject) {
         levelJson.objects.push(challengeModuleObject);
-        console.log('✅ ChallengeModule agregado PRIMERO');
     }
 
     // **4.2 SEGUNDO: ProtectThePlant (si existe en challengeObjects)**
@@ -4781,7 +4744,6 @@ generateJson() {
     );
     if (protectPlantObject) {
         levelJson.objects.push(protectPlantObject);
-        console.log('✅ ProtectThePlant agregado SEGUNDO (después de ChallengeModule)');
     }
 
     // **4.3 FINALMENTE: Otros desafíos individuales (excluyendo los ya procesados)**
@@ -4792,12 +4754,10 @@ generateJson() {
     
     if (otherChallenges.length > 0) {
         levelJson.objects.push(...otherChallenges);
-        console.log(`${otherChallenges.length} desafíos individuales agregados`);
     }
 
     // **5. AGREGAR OTROS OBJETOS DE WAVE (NewWaves, WaveManagerProps, Waves)**
     levelJson.objects.push(...otherWaveObjects);
-    console.log(`${otherWaveObjects.length} objetos de wave agregados al final`);
 
     return levelJson;
 }
@@ -5403,11 +5363,8 @@ generateJson() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🌐 DOM completamente cargado - Verificando aplicación...');
-
     // Si levelGenerator aún no existe, crearlo
     if (!window.levelGenerator) {
-        console.log('🔧 Creando nueva instancia de EnhancedLevelGenerator...');
         window.levelGenerator = new EnhancedLevelGenerator();
 
         // Verificar el estado después de un momento
@@ -5425,7 +5382,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Si ya existe pero no está inicializado, intentar forzar inicialización
         if (!window.levelGenerator.initializationComplete) {
-            console.log('🔄 Reintentando inicialización...');
             window.levelGenerator.init().catch(e => {
                 console.error('Error al reintentar:', e);
             });

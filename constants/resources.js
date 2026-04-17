@@ -11,7 +11,6 @@ export const PATHS = {
         BOARD: "Assets/Board/",
         MOWERS: "Assets/Mowers/",
         DESAFIOS: "Assets/Desafios/",
-        DESAFIOS: "Assets/Desafios/",
         PLANTS: "Assets/Plants/",
         ZOMBIES: "Assets/Zombies/",
         REWARDS: "Assets/Rewards/",
@@ -42,7 +41,7 @@ export const POTIONS = [
 
 
 export const OTHERS = [
-   'backpack',
+'backpack',
 'boulder_trap_falling_forward',
 'crater',
 'flame_spreader_trap',
@@ -80,7 +79,7 @@ export const RAILCART_DISPLAY_NAMES = {
 // Imágenes de mundos
 
 export const WORLD_IMAGES = {
-     "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.webp`,
+    "Egipto": `${PATHS.IMAGES.MUNDOS}egypt.webp`,
     "Moderno": `${PATHS.IMAGES.MUNDOS}modern.webp`,
     "Pirata": `${PATHS.IMAGES.MUNDOS}pirate.webp`,
     "Futuro": `${PATHS.IMAGES.MUNDOS}future.webp`,
@@ -89,7 +88,6 @@ export const WORLD_IMAGES = {
     "Iceage": `${PATHS.IMAGES.MUNDOS}iceage.webp`,
     "Atlantis": `${PATHS.IMAGES.MUNDOS}atlantis.webp`,
     "Renai": `${PATHS.IMAGES.MUNDOS}renai.webp`,
-
     /* Circus / Carnival */
     "Carnival": `${PATHS.IMAGES.MUNDOS}circus.webp`
 };
@@ -132,6 +130,7 @@ export const STAGE_IMAGES = {
     "HouseNightsStage": `${PATHS.IMAGES.BOARD}HouseNightsStage.webp`,
     "RoofStage": `${PATHS.IMAGES.BOARD}RoofStage.webp`,
     "PoolDayLightStage": `${PATHS.IMAGES.BOARD}PoolDayLightStage.webp`,
+    "PoolNightStage": `${PATHS.IMAGES.BOARD}PoolNightStage.webp`,
     "SteamStage": `${PATHS.IMAGES.BOARD}SteamStage.webp`,
     "RoofNightStage": `${PATHS.IMAGES.BOARD}RoofNightStage.webp`,
     "AtlantisStage": `${PATHS.IMAGES.BOARD}AtlantisStage.webp`,
@@ -269,10 +268,17 @@ export const MOD_CONFIG = {
             icon: '🎨', // Emoji paleta
             description: 'Texturas alternativas'
         },
-        'unofficial': { 
-            name: 'unofficial', 
-            displayName: 'No Oficial', 
-            color: '#607D8B', 
+        'spacio': { 
+            name: 'spacio', 
+            displayName: 'Spacio', 
+            color: '#17d747', 
+            icon: '⚠️', // Emoji advertencia
+            description: 'Contenido Space'
+        },
+        'tiemdifciles': { 
+            name: 'tiemdifciles', 
+            displayName: 'TiemDifciles', 
+            color: '#a1d717', 
             icon: '⚠️', // Emoji advertencia
             description: 'Contenido no oficial'
         },
@@ -285,7 +291,7 @@ export const MOD_CONFIG = {
         }
     },
     modIndicators: [
-        'hex', "reflourished"
+        'hex', "reflourished", "TiemDifciles"
     ],
     colorPalette: [
         '#667eea', '#764ba2', '#4CAF50', '#FF9800', 
