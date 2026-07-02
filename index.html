@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1000">
+    <meta name="description" content="Generador de niveles personalizados para Plants vs. Zombies 2. Crea niveles con zombies, oleadas, escenarios y más. Editor completo de niveles PvZ2.">
+    <meta name="keywords" content="PVZ2, Plants vs Zombies 2, generador niveles, creador niveles, level editor, PvZ2 level generator, plantas vs zombies">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="TU_CODIGO">
+    <meta property="og:title" content="Generador de Niveles PvZ2">
+    <meta property="og:description" content="Crea y personaliza niveles de Plants vs. Zombies 2 con facilidad. Editor completo con zombies, oleadas, escenarios y más.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://generatorleves-hexius.netlify.app/">
+    <meta property="og:image" content="/Assets/Icons/Logo-Editor.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Generador de Niveles PvZ2 - Crea niveles personalizados para Plants vs. Zombies 2</title>
+    <link rel="stylesheet" href="/Styles/sweetalert2.min.css">
+    <link href="/Styles/bootstrap.min.css" rel="stylesheet">
+    <link href="/Styles/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Styles/main.css">
+    <link rel="stylesheet" href="/Styles/board.css">
+    <link rel="stylesheet" href="/Styles/scroll.css">
+</head>
+
+<body>
+
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <div class="container-dev">
+
+        <div class="d-flex justify-content-between align-items-center pt-2 px-3" style="position:relative; z-index:1050;">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold fs-4" style="color:#4a6fa5; letter-spacing:1px;">Editor de Niveles</span>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <button type="button" class="btn btn-light btn-sm" id="darkModeToggle" title="Modo Oscuro" onclick="toggleDarkMode()">
+                    <i class="bi bi-moon-fill" id="darkModeIcon"></i>
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                        <span id="currentLanguage">🌐 ES</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item active" href="#" onclick="changeLanguage('es')">🇪🇸 Español</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">🇬🇧 English</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid mt-1">
+            <!-- Pestañas principales -->
+            <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic"
+                        type="button" role="tab">
+                        <i class="bi bi-gear me-1"></i><span data-translate="basicConfig">Configuración Básica</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="waves-tab" data-bs-toggle="tab" data-bs-target="#waves" type="button"
+                        role="tab">
+                        <i class="bi bi-robot me-1"></i><span data-translate="wavesAndZombies">Zombies y Oleadas</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="challenges-tab" data-bs-toggle="tab" data-bs-target="#challenges"
+                        type="button" role="tab">
+                        <i class="bi bi-trophy me-1"></i><span data-translate="challenges">Desafíos</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="board-tab" data-bs-toggle="tab" data-bs-target="#board" type="button"
+                        role="tab">
+                        <i class="bi bi-grid-3x3 me-1"></i><span data-translate="scenario">Escenario</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview"
+                        type="button" role="tab">
+                        <i class="bi bi-eye me-1"></i><span data-translate="preview">Vista Previa</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="converter-tab" data-bs-toggle="tab" data-bs-target="#converter"
+                        type="button" role="tab">
+                        <i class="bi bi-arrow-left-right me-1"></i><span data-translate="converter">Convertidor</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button"
+                        role="tab">
+                        <i class="bi bi-graph-up me-1"></i><span data-translate="statistics">Estadísticas</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Pestaña: Configuración Básica -->
+                <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <!-- Configuración Principal -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-sliders me-2"></i><span data-translate="mainLevelConfig">Configuración Principal del Nivel</span></h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <!-- Fila 1: Nombre del Nivel -->
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold" data-translate="levelName">Nombre del Nivel:</label>
+                                            <input type="text" class="form-control form-control-lg" id="levelName"
+                                                data-translate-value="myCustomLevel"
+                                                data-translate-placeholder="enterLevelName"
+                                                value="Mi Nivel Personalizado"
+                                                placeholder="Ingresa un nombre para el nivel">
+                                        </div>
+
+                                        <!-- Fila 2: Número, Sol Inicial, Nivel Zombies, Nivel Gravestone -->
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold" data-translate="levelNumber">Número de Nivel:</label>
+                                            <input type="number" class="form-control" id="levelNumber" value="1" min="1" max="100">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold" data-translate="startingSun">Sol Inicial:</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="startingSun" value="50" min="0" max="1000">
+                                                <span class="input-group-text">☀️⛅🌤️</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold" data-translate="zombieLevel">Nivel Zombies:</label>
+                                            <input type="number" class="form-control" id="zombieLevel" value="1" min="1" max="10">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold" data-translate="gravestoneLevel">Nivel Gravestone:</label>
+                                            <input type="number" class="form-control" id="gridLevel" value="1" min="1" max="10">
+                                        </div>
+
+                                        <!-- Fila 3: Mundo + Escenario -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold d-flex align-items-center">
+                                                <i class="bi bi-globe-americas me-2"></i><span data-translate="world">Mundo:</span>
+                                            </label>
+                                            <div class="world-selection-container">
+                                                <div class="selected-world-card" id="selectedWorldCard">
+                                                    <div class="world-image-container">
+                                                        <img id="selectedWorldImage"
+                                                            src="Assets/Mundos/egypt.webp" alt="Mundo"
+                                                            class="world-img loading" loading="lazy"
+                                                            onload="this.classList.remove('loading')"
+                                                            onerror="this.src='Assets/Mundos/egypt.webp'; this.classList.remove('loading')">
+                                                        <div class="world-overlay">
+                                                            <span class="world-name" id="selectedWorldName" data-translate="egypt">Egipto</span>
+                                                            <i class="bi bi-chevron-down ms-2"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold d-flex align-items-center">
+                                                <i class="bi bi-grid-3x3 me-2"></i><span data-translate="scenarioLabel">Escenario:</span>
+                                            </label>
+                                            <div class="scenario-selection-container">
+                                                <div class="selected-scenario-card" id="selectedScenarioCard">
+                                                    <div class="scenario-image-container">
+                                                        <img id="selectedScenarioImage"
+                                                            src="Assets/Board/NoneStage.webp"
+                                                            alt="Escenario" class="scenario-img loading" loading="lazy"
+                                                            onload="this.classList.remove('loading')"
+                                                            onerror="this.src='Assets/Board/NoneStage.webp'; this.classList.remove('loading')">
+                                                        <div class="scenario-overlay">
+                                                            <span class="scenario-name" id="selectedScenarioName" data-translate="selectScenario">Seleccionar Escenario</span>
+                                                            <i class="bi bi-chevron-down ms-2"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Fila 4: Efecto Visual + Podadoras -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" data-translate="visualEffect">Efecto Visual:</label>
+                                            <select class="form-select" id="effectSelect">
+                                                <option value="" data-translate="noEffect">Sin efecto</option>
+                                                <option value="RTID(VolcanoPattern1@LevelModules)" data-translate="volcano">🌋 Volcán</option>
+                                                <option value="RTID(SnowRain@LevelModules)" data-translate="snow">❄️ Nieve</option>
+                                                <option value="RTID(PoolDay@LevelModules)" data-translate="waterDay">💧 Agua Día</option>
+                                                <option value="RTID(PoolNight@LevelModules)" data-translate="waterNight">🌙 Agua Noche</option>
+                                                <option value="RTID(TormPattern1@LevelModules)" data-translate="storm">⛈️ Tormenta</option>
+                                                <option value="RTID(RainPattern2@LevelModules)" data-translate="rain">🌧️ Lluvia</option>
+                                                <option value="RTID(AtlantisPattern1@LevelModules)" data-translate="atlantis">🐚 Atlantis</option>
+                                                <option value="RTID(WestNight@LevelModules)" data-translate="fogWest">🌫️ Fog West</option>
+                                                <option value="RTID(EgyptSandStormT@LevelModules)" data-translate="stormEgypt">🌪️ Torm Egypt</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" data-translate="mowers">Podadoras:</label>
+                                            <div class="mower-selection-container">
+                                                <div class="selected-mower-card" id="selectedMowerCard">
+                                                    <div class="mower-image-container">
+                                                        <img id="selectedMowerImage"
+                                                            src="Assets/Mowers/ModernMowers.webp"
+                                                            alt="Podadoras" class="mower-img loading" loading="lazy"
+                                                            onload="this.classList.remove('loading')"
+                                                            onerror="this.src='Assets/Mowers/Modern.webp'; this.classList.remove('loading')">
+                                                        <div class="mower-overlay">
+                                                            <span class="mower-name" id="selectedMowerName" data-translate="modern">Modernas</span>
+                                                            <i class="bi bi-chevron-down ms-2"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Fila 4b: Selección Plantas + FixedPlantLevel -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" data-translate="plantSelectionMethod">Selección Plantas:</label>
+                                            <select class="form-select" id="seedSelectionMethod">
+                                                <option value="chooser" data-translate="choosePlants">Elegir (chooser)</option>
+                                                <option value="preset" data-translate="presetPlants">Predefinidas (preset)</option>
+                                                <option value="conveyor" data-translate="conveyorPlants">Cinta (conveyor)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" data-translate="fixedPlantLevel">FixedPlantLevel:</label>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="enableFixedPlantLevel">
+                                                <label class="form-check-label" for="enableFixedPlantLevel" data-translate="enableFixedPlantLevel">Fijar nivel de plantas</label>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="fixedPlantLevel" value="0" min="0" max="20" disabled>
+                                                <span class="input-group-text" data-translate="levelUnit">nivel</span>
+                                            </div>
+                                            <div class="form-text small" data-translate="fixedPlantLevelHint">Fija el nivel de todas las plantas (0 = nivel del jugador)</div>
+                                        </div>
+                                        <!-- Fila 4c: Caída de Soles + Ranuras de Semillas -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" data-translate="sunDrop">Caída de Soles:</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="enableSunDropper" checked>
+                                                <label class="form-check-label" for="enableSunDropper" data-translate="periodicDrop">Caída periódica</label>
+                                            </div>
+                                            <div class="form-text small" data-translate="disableSunDropHint">Desactívalo para niveles sin soles del cielo</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold" data-translate="seedSlots">Ranuras de Semillas:</label>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="enableSeedSlots" checked>
+                                                <label class="form-check-label" for="enableSeedSlots" data-translate="customizeSlots">Personalizar ranuras</label>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="seedSlotsCount" value="8" min="1" max="10" disabled>
+                                                <span class="input-group-text" data-translate="slotsUnit">ranuras</span>
+                                            </div>
+                                            <div class="form-text small" data-translate="defaultSlotsHint">Desactívalo para usar el valor por defecto (normalmente 8)</div>
+                                        </div>
+
+                                        <!-- Modo ZombossBattle -->
+                                        <div class="col-12">
+                                            <div class="card shadow-sm border-danger">
+                                                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center py-2">
+                                                    <h6 class="mb-0"><i class="bi bi-robot me-2"></i>Modo ZombossBattle</h6>
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="enableZombossBattle">
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="zombossBattleContent" style="display:none;">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">Zomboss seleccionado:</label>
+                                                            <div class="input-group">
+                                                                 <input type="text" class="form-control" id="zombossMechType" value="" placeholder="Selecciona un Zomboss" readonly>
+                                                                <button class="btn btn-outline-danger" type="button" id="selectZombossMechBtn">
+                                                                    <i class="bi bi-robot me-1"></i>Seleccionar
+                                                                </button>
+                                                            </div>
+                                                            <small class="text-muted" id="zombossSelectedCount">0 zombies seleccionados</small>
+                                                        </div>
+                                                        <div id="zombossPreviewContainer" class="mb-3" style="min-height:40px;">
+                                                            <div class="d-flex flex-wrap gap-2" id="zombossPreviewList"></div>
+                                                        </div>
+                                                        <div class="alert alert-warning small mb-0">
+                                                            <i class="bi bi-info-circle me-1"></i>
+                                                            Al activar ZombossBattle se oculta la pestaña Zombies/Oleadas y se activa la Cinta Transportadora automáticamente.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Conveyor Config -->
+                                        <div id="conveyorConfigContainer" class="col-12">
+                                            <div class="card shadow-sm mt-2">
+                                                <div class="card-header bg-warning text-white py-2">
+                                                    <h6 class="mb-0"><i class="bi bi-cone-striped me-2"></i><span data-translate="conveyorConfig">Configuración de Cinta Transportadora</span></h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row g-3">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label" data-translate="baseSpeed">Velocidad base:</label>
+                                                            <input type="number" class="form-control" id="conveyorBaseSpeed" value="100" min="10" max="500">
+                                                            <div class="form-text" data-translate="beltSpeed">Velocidad de la cinta (10-500)</div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label" data-translate="initialDelay">Retraso inicial (seg):</label>
+                                                            <input type="number" class="form-control" id="conveyorInitialDelay" value="3" min="1" max="10" step="0.5">
+                                                            <div class="form-text" data-translate="firstPlantDelay">Tiempo antes de que aparezca la primera planta</div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <label class="form-label fw-bold" data-translate="plantsOnBelt">Plantas en la cinta:</label>
+                                                            <div class="mb-3">
+                                                                <button class="btn btn-sm btn-primary" id="addConveyorPlantBtn">
+                                                                    <i class="bi bi-plus-circle me-1"></i><span data-translate="addPlant">Añadir Planta</span>
+                                                                </button>
+                                                            </div>
+                                                            <div id="conveyorPlantsList" class="conveyor-plants-list">
+                                                                <div class="alert alert-info">
+                                                                    <i class="bi bi-info-circle me-2"></i>
+                                                                    <span data-translate="noConveyorPlants">No hay plantas configuradas para la cinta transportadora</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Pirate Planks -->
+                                        <div class="col-12">
+                                            <div class="card shadow-sm border-info">
+                                                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center py-2">
+                                                    <h6 class="mb-0"><i class="bi bi-layers me-2"></i>Pirate Planks (Tablas)</h6>
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="enablePiratePlanks">
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="piratePlankRowsContainer" style="display:none;">
+                                                        <label class="form-label">Filas con tablas:</label>
+                                                            <div class="d-flex gap-3 flex-wrap">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <label class="form-check-label mb-0" for="plankRow0">Fila 0</label>
+                                                                    <input class="form-check-input plank-row-check mt-0" type="checkbox" value="0" id="plankRow0" checked>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <label class="form-check-label mb-0" for="plankRow1">Fila 1</label>
+                                                                    <input class="form-check-input plank-row-check mt-0" type="checkbox" value="1" id="plankRow1" checked>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <label class="form-check-label mb-0" for="plankRow2">Fila 2</label>
+                                                                    <input class="form-check-input plank-row-check mt-0" type="checkbox" value="2" id="plankRow2" checked>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <label class="form-check-label mb-0" for="plankRow3">Fila 3</label>
+                                                                    <input class="form-check-input plank-row-check mt-0" type="checkbox" value="3" id="plankRow3" checked>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <label class="form-check-label mb-0" for="plankRow4">Fila 4</label>
+                                                                    <input class="form-check-input plank-row-check mt-0" type="checkbox" value="4" id="plankRow4" checked>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Fila 7: Recompensas -->
+                                        <div class="col-12">
+                                            <hr class="my-2">
+                                            <label class="form-label fw-bold" data-translate="rewards">Recompensas:</label>
+                                            <div class="rewards-container">
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <div class="card shadow-sm h-100">
+                                                            <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                                                                <h6 class="mb-0"><i class="bi bi-award me-2"></i><span data-translate="firstVictory">Primera Victoria</span></h6>
+                                                                <button class="btn btn-sm btn-outline-primary add-reward-btn" data-reward-type="first">
+                                                                    <i class="bi bi-plus-circle me-1"></i><span data-translate="add">Añadir</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="card-body p-3" id="firstRewardContainer">
+                                                                <div class="text-center text-muted py-2">
+                                                                    <i class="bi bi-gift display-6 mb-2"></i>
+                                                                    <p class="mb-0" data-translate="noRewardConfigured">No hay recompensa configurada</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="card shadow-sm h-100">
+                                                            <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                                                                <h6 class="mb-0"><i class="bi bi-repeat me-2"></i><span data-translate="replayability">Rejugabilidad</span></h6>
+                                                                <button class="btn btn-sm btn-outline-success add-reward-btn" data-reward-type="replay">
+                                                                    <i class="bi bi-plus-circle me-1"></i><span data-translate="add">Añadir</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="card-body p-3" id="replayRewardContainer">
+                                                                <div class="text-center text-muted py-2">
+                                                                    <i class="bi bi-arrow-repeat display-6 mb-2"></i>
+                                                                    <p class="mb-0" data-translate="noRewardConfigured">No hay recompensa configurada</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <!-- Configuración de Plantas -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0" data-translate="plantConfig">Configuración de Plantas</h5>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="enablePlantSelection" checked>
+                                        <label class="form-check-label" for="enablePlantSelection"></label>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="plantConfigSection">
+                                    <!-- Selección de Plantas -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="mb-0" data-translate="presetPlantsMax">Pre-set Plants (max 8)</h6>
+                                            <button class="btn btn-sm btn-outline-primary" id="selectPlantsBtn">
+                                                <i class="bi bi-plus-circle me-1"></i><span data-translate="select">Seleccionar</span>
+                                            </button>
+                                        </div>
+                                        <div class="selected-plants-container" id="selectedPlantsContainer">
+                                            <div class="alert alert-secondary text-center py-3 mb-0">
+                                                <p class="mb-0" data-translate="noPlantsSelected">No hay plantas seleccionadas</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Plantas Excluidas -->
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="mb-0" data-translate="excludedPlants">Excluded Plants</h6>
+                                            <button class="btn btn-sm btn-outline-danger" id="excludePlantsBtn">
+                                                <i class="bi bi-dash-circle me-1"></i><span data-translate="exclude">Excluir</span>
+                                            </button>
+                                        </div>
+                                        <div class="excluded-plants-container" id="excludedPlantsContainer">
+                                            <div class="alert alert-secondary text-center py-3 mb-0">
+                                                <p class="mb-0" data-translate="noPlantsExcluded">No hay plantas excluidas</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Zombie Resistances -->
+                            <div class="card shadow-sm mt-3">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-shield-plus me-2"></i>Resistencia de Zombies</h5>
+                                    <div class="form-check form-switch mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="enableZombieResistances">
+                                    </div>
+                                </div>
+                                <div class="card-body" id="zombieResistanceConfigSection">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="mb-0">Familias</h6>
+                                        <button class="btn btn-sm btn-outline-primary" id="selectFamiliesBtn" disabled>
+                                            <i class="bi bi-plus-circle me-1"></i>Seleccionar
+                                        </button>
+                                    </div>
+                                    <div id="selectedFamiliesContainer"></div>
+                                </div>
+                            </div>
+
+                            <!-- Panel de Ayuda -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i><span data-translate="quickInfo">Información Rápida</span></h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <h6><i class="bi bi-lightbulb me-2"></i><span data-translate="tip">Consejo:</span></h6>
+                                        <p class="mb-0" data-translate="previewTip">Asegúrate de generar el nivel para poder previsualizarlo correctamente.</p>
+                                    </div>
+                                    <div class="alert alert-warning">
+                                        <h6><i class="bi bi-exclamation-triangle me-2"></i><span data-translate="note">Nota:</span></h6>
+                                        <p class="mb-0" data-translate="undergroundNote">Las oleadas subterráneas aparecerán según la configuración de frecuencia establecida.</p>
+                                    </div>
+                                    <div class="alert alert-success">
+                                        <h6><i class="bi bi-check-circle me-2"></i><span data-translate="suggestion">Sugerencia:</span></h6>
+                                        <p class="mb-0" data-translate="balancedTip">Para niveles balanceados, selecciona 4-6 zombies del mismo mundo.</p>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <h6><i class="bi bi-info-circle-fill me-2"></i><span data-translate="importantNote">Nota Importante:</span></h6>
+                                        <p class="mb-0" data-translate="conveyorWarning">Recuerda: Si activas la cinta transportadora, desactiva la caída de soles.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Configuración de Spawn -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-bounding-box me-2"></i><span data-translate="spawnConfig">Configuración de Spawn</span></h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label" data-translate="spawnColStart">Columna inicial de spawn:</label>
+                                            <input type="number" class="form-control" id="spawnColStart" value="6" min="0" max="9">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" data-translate="spawnColEnd">Columna final de spawn:</label>
+                                            <input type="number" class="form-control" id="spawnColEnd" value="9" min="0" max="9">
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-grid">
+                                                <button class="btn btn-primary" id="autoDetectBtn">
+                                                    <i class="bi bi-magic me-2"></i><span data-translate="autoDetect">Auto-Detectar Configuración</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Zombies y Oleadas -->
+                <div class="tab-pane fade" id="waves" role="tabpanel">
+
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-flag me-2"></i><span data-translate="wavesConfig">Configuración de Oleadas</span></h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold" data-translate="waveCount">N° Oleadas:</label>
+                                    <input type="number" class="form-control" id="waveCount" value="10" min="1" max="20">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold" data-translate="flagInterval">Intervalo Bandera:</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="flagInterval" value="4" min="1" max="10">
+                                        <span class="input-group-text">🏁</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold" data-translate="wavePoints">Puntos Oleada:</label>
+                                    <input type="number" class="form-control" id="wavePoints" value="150" min="50" max="500">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold" data-translate="waveIncrement">Incremento Puntos:</label>
+                                    <input type="number" class="form-control" id="waveIncrement" value="75" min="10" max="200">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-light p-0">
+                                    <div class="border-bottom px-3 py-2 bg-light-subtle">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="mb-0"><i class="bi bi-robot me-2"></i><span data-translate="zombieManagement">Gestión de Zombies y Oleadas</span></h5>
+                                                <small class="text-muted" data-translate="zombieWaveManagementHint">Selecciona zombies y configura las oleadas para tu nivel</small>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-primary px-3 py-2">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    <span id="tabZombiesCount">0</span> <span data-translate="selected">seleccionados</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <ul class="nav nav-tabs px-3" id="zombiesTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active py-3 px-4" id="select-tab"
+                                                data-bs-toggle="tab" data-bs-target="#select-panel" type="button" role="tab">
+                                                <i class="bi bi-robot me-2 fs-5"></i>
+                                                <span class="fw-medium" data-translate="zombieSelection">Selección de Zombies</span>
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link py-3 px-4" id="selected-tab" data-bs-toggle="tab"
+                                                data-bs-target="#selected-panel" type="button" role="tab">
+                                                <i class="bi bi-check-circle me-2 fs-5"></i>
+                                                <span class="fw-medium" data-translate="selectedZombies">Zombies Seleccionados</span>
+                                                <span class="badge bg-success ms-2" id="tabSelectedCount">0</span>
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link py-3 px-4" id="waves-inner-tab" data-bs-toggle="tab"
+                                                data-bs-target="#waves-panel" type="button" role="tab">
+                                                <i class="bi bi-lightning-charge me-2 fs-5"></i>
+                                                <span class="fw-medium" data-translate="wavesConfig">Configuración de Oleadas</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content" id="zombiesTabContent">
+
+                                    <!-- TAB 1: Selección de Zombies -->
+                                    <div class="tab-pane fade show active" id="select-panel" role="tabpanel">
+                                        <div class="p-9">
+                                            <div class="card shadow-sm border">
+                                                <div class="card-header bg-light-subtle py-3">
+                                                    <div class="row align-items-center">
+                        <div class="col-lg-4">
+                                                            <h6 class="mb-0"><i class="bi bi-search me-2"></i><span data-translate="searchZombies">Buscar Zombies</span></h6>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text bg-white border-end-0">
+                                                                    <i class="bi bi-search text-muted"></i>
+                                                                </span>
+                                                                <input type="text" class="form-control border-start-0"
+                                                                    id="zombieSearchGlobal"
+                                                                    data-translate-placeholder="searchAllZombies"
+                                                                    placeholder="Buscar zombie en todas las categorías...">
+                                                                <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="d-flex justify-content-end gap-2">
+                                                                <button class="btn btn-success btn-sm" id="addSelectedZombiesBtn">
+                                                                    <i class="bi bi-plus-circle me-1"></i><span data-translate="add">Añadir</span>
+                                                                </button>
+                                                                <button class="btn btn-danger btn-sm" id="clearAllZombiesBtn">
+                                                                    <i class="bi bi-eraser me-1"></i><span data-translate="clear">Limpiar</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card-body p-0">
+                                                    <div class="row g-0" style="min-height: 650px;">
+                                                        <div class="col-md-3 border-end bg-light-subtle" style="overflow-y: auto; max-height: 650px;">
+                                                            <div class="p-3">
+                                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                    <h6 class="mb-0"><i class="bi bi-folder me-2"></i><span data-translate="categories">Categorías</span></h6>
+                                                                    <span class="badge bg-secondary" id="categoriesCount">0</span>
+                                                                </div>
+                                                                <div id="zombieCategoriesPanel" class="categories-list"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9" style="overflow-y: auto; max-height: 650px;">
+                                                            <div class="p-3">
+                                                                <div id="zombieCategoriesContent"></div>
+                                                                <div id="noResultsMessage" class="text-center d-none py-5">
+                                                                    <div class="py-5">
+                                                                        <i class="bi bi-search display-4 text-muted mb-3"></i>
+                                                                        <h5 class="text-muted" data-translate="noZombiesFound">No se encontraron zombies</h5>
+                                                                        <p class="text-muted mb-4" data-translate="tryOtherTerms">Intenta con otros términos de búsqueda</p>
+                                                                        <button class="btn btn-outline-primary" id="showAllZombiesBtn">
+                                                                            <i class="bi bi-eye me-1"></i><span data-translate="showAllZombies">Mostrar todos los zombies</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 2: Zombies Seleccionados -->
+                                    <div class="tab-pane fade" id="selected-panel" role="tabpanel">
+                                        <div class="p-3">
+                                            <div class="card shadow-sm border">
+                                                <div class="card-header bg-light-subtle d-flex justify-content-between align-items-center py-3">
+                                                    <div>
+                                                        <h6 class="mb-0"><i class="bi bi-check-circle me-2"></i><span data-translate="selectedZombies">Zombies Seleccionados</span></h6>
+                                                        <small class="text-muted" data-translate="zombiesWillAppear">Estos zombies aparecerán en tu nivel</small>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="selectedZombies" class="row g-3 selected-zombies-grid"></div>
+                                                    <div id="noSelectedZombiesMessage" class="text-center py-5">
+                                                        <i class="bi bi-inboxes display-4 text-muted mb-3"></i>
+                                                        <h5 class="text-muted mb-3" data-translate="noZombiesSelected">No hay zombies seleccionados</h5>
+                                                        <p class="text-muted mb-4" data-translate="goToZombieSelection">Ve a la pestaña "Selección de Zombies" para elegir algunos</p>
+                                                        <button class="btn btn-primary" onclick="document.getElementById('select-tab').click()">
+                                                            <i class="bi bi-arrow-left me-2"></i><span data-translate="goToZombieSelectionBtn">Ir a Selección de Zombies</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 3: Configuración de Oleadas -->
+                                    <div class="tab-pane fade" id="waves-panel" role="tabpanel">
+                                        <div class="p-3">
+                                            <div class="row g-4">
+                                                <div class="col-md-6">
+                                                    <div class="card shadow-sm border h-100">
+                                                        <div class="card-header bg-light-subtle">
+                                                            <h6 class="mb-0"><i class="bi bi-speedometer2 me-2"></i><span data-translate="difficulty">Dificultad</span></h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="mb-4">
+                                                                <label class="form-label fw-bold mb-3" data-translate="selectDifficulty">Selecciona el nivel de dificultad:</label>
+                                                                <div class="btn-group-vertical w-100" role="group" id="difficultyGroup">
+                                                                    <input type="radio" class="btn-check" name="difficulty" id="difficultyEasy" value="facil" autocomplete="off" checked>
+                                                                    <label class="btn btn-outline-success mb-2 px-4 py-3" for="difficultyEasy">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-smile fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold" data-translate="easy">Fácil</div>
+                                                                                <small class="text-muted" data-translate="forBeginners">Para principiantes</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check" name="difficulty" id="difficultyMedium" value="media" autocomplete="off">
+                                                                    <label class="btn btn-outline-warning mb-2 px-4 py-3" for="difficultyMedium">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-neutral fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold" data-translate="medium">Media</div>
+                                                                                <small class="text-muted" data-translate="casualPlayers">Jugadores casuales</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check" name="difficulty" id="difficultyHard" value="dificil" autocomplete="off">
+                                                                    <label class="btn btn-outline-danger mb-2 px-4 py-3" for="difficultyHard">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-frown fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold" data-translate="hard">Difícil</div>
+                                                                                <small class="text-muted" data-translate="forExperts">Para expertos</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check" name="difficulty" id="difficultyExtreme" value="extrema" autocomplete="off">
+                                                                    <label class="btn btn-outline-dark mb-2 px-4 py-3" for="difficultyExtreme">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-emoji-dizzy fs-4 me-3"></i>
+                                                                            <div class="text-start">
+                                                                                <div class="fw-bold" data-translate="extreme">Extrema</div>
+                                                                                <small class="text-muted" data-translate="maxChallenge">Desafío máximo</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="card shadow-sm border h-100">
+                                                        <div class="card-header bg-light-subtle">
+                                                            <h6 class="mb-0"><i class="bi bi-lightning-charge me-2"></i><span data-translate="waveOptions">Opciones de Oleadas</span></h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="mb-4">
+                                                                <label class="form-label fw-bold">
+                                                                    <i class="bi bi-flower1 me-2"></i><span data-translate="plantFoodWaves">Oleadas con Plant Food</span>
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                                                    <input type="text" class="form-control" id="plantFoodWaves" value="3,6,9"
+                                                                        data-translate-placeholder="exampleWaves"
+                                                                        placeholder="Ej: 3,6,9">
+                                                                </div>
+                                                                <div class="form-text" data-translate="separateWithCommas">Separa los números con comas</div>
+                                                            </div>
+                                                            <div class="d-grid gap-2 mt-4">
+                                                                <button class="btn btn-warning btn-lg py-3" id="generateWavesBtn">
+                                                                    <i class="bi bi-lightning-charge me-2"></i><span data-translate="generateWaves">Generar Oleadas</span>
+                                                                </button>
+                                                                <button class="btn btn-success btn-lg py-3" id="generateThematicBtn">
+                                                                    <i class="bi bi-stars me-2"></i><span data-translate="thematicLevel">Nivel Temático</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="mt-4 pt-3 border-top">
+                                                                <div class="alert alert-info mb-0">
+                                                                    <i class="bi bi-info-circle me-2"></i>
+                                                                    <strong><span data-translate="suggestion">Sugerencia:</span></strong> <span data-translate="selectZombiesFirst">Selecciona primero los zombies antes de configurar las oleadas.</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración Tormenta de Arena -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-wind me-2"></i><span data-translate="stormZombies">Tormenta de Arena</span></h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useStorm" data-state-key="storm" data-mechanic="storm" style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label fw-bold fs-5" for="useStorm" data-translate="activateStorm">Activar tormenta de arena</label>
+                            </div>
+                            <div id="stormConfig">
+                                <label class="form-label fw-semibold mb-2" data-translate="stormEvents">Eventos de tormenta:</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="startWaveLabel">Oleada inicial:</label>
+                                        <input type="number" class="form-control" id="stormStartWave" value="1" min="1" max="30">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="stormTotal">Tormentas presentes:</label>
+                                        <input type="number" class="form-control" id="stormEventCount" value="3" min="1" max="20">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="interval">Intervalo:</label>
+                                        <input type="number" class="form-control" id="stormInterval" value="3" min="1" max="20">
+                                    </div>
+                                </div>
+                                <div class="mb-3 small" id="stormWaveSummary"></div>
+                                <label class="form-label fw-semibold mb-2" data-translate="columnsAppear">Columnas de aparición:</label>
+                                <div id="stormColumnGrid" class="mb-3"></div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold" data-translate="stormType">Tipo de tormenta:</label>
+                                        <select class="form-select" id="stormType">
+                                            <option value="sandstorm" data-translate="stormSandstorm">Tormenta de arena</option>
+                                            <option value="snowstorm" data-translate="stormSnowstorm">Tormenta de nieve</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="stormGroupSize">Tamaño de grupo:</label>
+                                        <input type="number" class="form-control" id="stormGroupSize" value="3" min="1" max="10">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="stormTimeBetween">Tiempo entre grupos:</label>
+                                        <input type="number" class="form-control" id="stormTimeBetweenGroups" value="3" min="1" max="15">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="stormMin">Mín zombies/oleada:</label>
+                                        <input type="number" class="form-control" id="stormMin" value="3" min="1" max="10">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="stormMax">Máx zombies/oleada:</label>
+                                        <input type="number" class="form-control" id="stormMax" value="10" min="1" max="30">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración Subterránea -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-arrow-down-up me-2"></i><span data-translate="undergroundZombies">Zombies Subterráneos</span></h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useUnderground" data-state-key="underground" data-mechanic="underground" style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label fw-bold fs-5" for="useUnderground" data-translate="activateUnderground">Activar zombies subterráneos</label>
+                            </div>
+                            <div id="undergroundConfig">
+                                <label class="form-label fw-semibold mb-2" data-translate="undergroundEvents">Eventos subterráneos:</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="startWaveLabel">Oleada inicial:</label>
+                                        <input type="number" class="form-control" id="undergroundStartWave" value="1" min="1" max="30">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="undergroundTotal">Subterráneos presentes:</label>
+                                        <input type="number" class="form-control" id="undergroundEventCount" value="3" min="1" max="20">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="interval">Intervalo:</label>
+                                        <input type="number" class="form-control" id="undergroundInterval" value="3" min="1" max="20">
+                                    </div>
+                                </div>
+                                <div class="mb-3 small" id="undergroundWaveSummary"></div>
+                                <label class="form-label fw-semibold mb-2" data-translate="columnsAppear">Columnas de aparición:</label>
+                                <div id="undergroundColumnGrid" class="mb-3"></div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="undergroundMin">Mín zombies/oleada:</label>
+                                        <input type="number" class="form-control" id="undergroundMin" value="3" min="1" max="10">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="undergroundMax">Máx zombies/oleada:</label>
+                                        <input type="number" class="form-control" id="undergroundMax" value="8" min="1" max="20">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración Viento de Hielo -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-snow me-2"></i><span data-translate="frostwind">Viento de Hielo</span></h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useFrostwind" data-state-key="frostwind" data-mechanic="frostwind" style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label fw-bold fs-5" for="useFrostwind" data-translate="activateFrostwind">Activar viento de hielo</label>
+                            </div>
+                            <div id="frostwindConfig">
+                                <label class="form-label fw-semibold mb-2" data-translate="frostwindEvents">Eventos de viento de hielo:</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="startWaveLabel">Oleada inicial:</label>
+                                        <input type="number" class="form-control" id="frostwindStartWave" value="1" min="1" max="30">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="frostwindTotal">Frost presentes:</label>
+                                        <input type="number" class="form-control" id="frostwindEventCount" value="3" min="1" max="20">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="interval">Intervalo:</label>
+                                        <input type="number" class="form-control" id="frostwindInterval" value="3" min="1" max="20">
+                                    </div>
+                                </div>
+                                <div class="mb-3 small" id="frostwindWaveSummary"></div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="frostwindDirection">Dirección del viento:</label>
+                                        <select class="form-select" id="frostwindDirection">
+                                            <option value="right" data-translate="frostwindRight">→ Derecha</option>
+                                            <option value="left" data-translate="frostwindLeft">← Izquierda</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="frostwindRows">Filas afectadas:</label>
+                                        <div id="frostwindRows" class="d-flex flex-wrap gap-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Configuración Marea -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-water me-2"></i><span data-translate="tide">Marea</span></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="useTide" data-state-key="tide" data-mechanic="tide" style="width: 3em; height: 1.5em;">
+                            <label class="form-check-label fw-bold fs-5" for="useTide" data-translate="activateTide">Activar marea</label>
+                        </div>
+                        <div id="tideConfig">
+                            <label class="form-label fw-semibold mb-2" data-translate="tideEvents">Eventos de marea:</label>
+                            <div class="row g-3 mb-3">
+                                <div class="col-4">
+                                    <label class="form-label" data-translate="startWaveLabel">Oleada inicial:</label>
+                                    <input type="number" class="form-control" id="tideStartWave" value="1" min="1" max="30">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label" data-translate="tideTotal">Cambios de marea:</label>
+                                    <input type="number" class="form-control" id="tideEventCount" value="3" min="1" max="20">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label" data-translate="interval">Intervalo:</label>
+                                    <input type="number" class="form-control" id="tideInterval" value="3" min="1" max="20">
+                                </div>
+                            </div>
+                            <div class="mb-3 small" id="tideWaveSummary"></div>
+                            <div class="mb-3" id="tideWaveAmounts">
+                                <label class="form-label fw-semibold" data-translate="tideWaveAmounts">Cantidad de cambio por oleada:</label>
+                                <div class="d-flex flex-wrap gap-2" id="tideWaveAmountsContainer"></div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold" data-translate="tideChangeType">Tipo de cambio:</label>
+                                    <select class="form-select" id="tideChangeType">
+                                        <option value="absolute" data-translate="tideAbsolute">Absoluto</option>
+                                        <option value="relative" data-translate="tideRelative">Relativo</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold" data-translate="tideStartingLocation">Posición inicial marea:</label>
+                                    <input type="number" class="form-control" id="tideStartingLocation" value="7" min="1" max="9">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración Marea Baja -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-arrow-down-circle me-2"></i><span data-translate="lowtide">Marea Baja</span></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="useLowtide" data-state-key="lowtide" data-mechanic="lowtide" style="width: 3em; height: 1.5em;">
+                            <label class="form-check-label fw-bold fs-5" for="useLowtide" data-translate="activateLowtide">Activar marea baja</label>
+                        </div>
+                        <div id="lowtideConfig">
+                            <label class="form-label fw-semibold mb-2" data-translate="lowtideEvents">Eventos de marea baja:</label>
+                            <div class="row g-3 mb-3">
+                                <div class="col-4">
+                                    <label class="form-label" data-translate="startWaveLabel">Oleada inicial:</label>
+                                    <input type="number" class="form-control" id="lowtideStartWave" value="1" min="1" max="30">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label" data-translate="lowtideTotal">Mareas bajas:</label>
+                                    <input type="number" class="form-control" id="lowtideEventCount" value="3" min="1" max="20">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label" data-translate="interval">Intervalo:</label>
+                                    <input type="number" class="form-control" id="lowtideInterval" value="3" min="1" max="20">
+                                </div>
+                            </div>
+                            <div class="mb-3 small" id="lowtideWaveSummary"></div>
+                            <label class="form-label fw-semibold mb-2" data-translate="columnsAppear">Columnas de aparición:</label>
+                            <div id="lowtideColumnGrid" class="mb-3"></div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label" data-translate="lowtideGroupSize">Tamaño de grupo:</label>
+                                    <input type="number" class="form-control" id="lowtideGroupSize" value="1" min="1" max="10">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" data-translate="lowtideTimeBefore">Tiempo antes:</label>
+                                    <input type="text" class="form-control" id="lowtideTimeBefore" value="0.5">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" data-translate="lowtideTimeBetween">Tiempo entre grupos:</label>
+                                    <input type="text" class="form-control" id="lowtideTimeBetween" value="0.25">
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label" data-translate="lowtideZombieCount">Cantidad de zombies:</label>
+                                    <input type="number" class="form-control" id="lowtideZombieCount" value="3" min="1" max="20">
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold" data-translate="lowtideZombieType">Tipo de zombie:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="lowtideZombieName" readonly placeholder="Seleccionar zombie...">
+                                        <button type="button" class="btn btn-outline-primary" id="selectLowtideZombieBtn">
+                                            <i class="bi bi-search"></i> <span data-translate="selectZombie">Seleccionar</span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" id="clearLowtideZombieBtn">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración Lluvia de Paracaidistas -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-cloud-rain me-2"></i><span data-translate="parachuteRain">Lluvia de Paracaidistas</span></h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useParachuteRain" data-state-key="parachuterain" data-mechanic="parachuterain" style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label fw-bold fs-5" for="useParachuteRain" data-translate="activateParachuteRain">Activar lluvia de paracaidistas</label>
+                            </div>
+                            <div id="parachuteConfig">
+                                <label class="form-label fw-semibold mb-2" data-translate="parachuteEvents">Eventos de lluvia:</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="startWaveLabel">Oleada inicial:</label>
+                                        <input type="number" class="form-control" id="parachuteStartWave" value="1" min="1" max="30">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="parachuteTotal">Eventos:</label>
+                                        <input type="number" class="form-control" id="parachuteEventCount" value="3" min="1" max="20">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label" data-translate="interval">Intervalo:</label>
+                                        <input type="number" class="form-control" id="parachuteInterval" value="3" min="1" max="20">
+                                    </div>
+                                </div>
+                                <div class="mb-3 small" id="parachuteWaveSummary"></div>
+                                <label class="form-label fw-semibold mb-2" data-translate="columnsAppear">Columnas de aparición:</label>
+                                <div id="parachuteColumnGrid" class="mb-3"></div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="parachuteGroupSize">Tamaño de grupo:</label>
+                                        <input type="number" class="form-control" id="parachuteGroupSize" value="2" min="1" max="10">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" data-translate="parachuteSpiderCount">Cantidad de zombies:</label>
+                                        <input type="number" class="form-control" id="parachuteSpiderCount" value="4" min="1" max="30">
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label" data-translate="parachuteTimeBeforeSpawn">Tiempo antes de caer:</label>
+                                        <input type="text" class="form-control" id="parachuteTimeBeforeSpawn" value="1">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" data-translate="parachuteTimeBetweenGroups">Tiempo entre grupos:</label>
+                                        <input type="text" class="form-control" id="parachuteTimeBetweenGroups" value="0.2">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" data-translate="parachuteZombieFallTime">Duración caída:</label>
+                                        <input type="text" class="form-control" id="parachuteZombieFallTime" value="1.5">
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label fw-semibold" data-translate="parachuteZombieType">Tipo de zombie paracaidista:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="parachuteZombieName" readonly placeholder="Seleccionar zombie...">
+                                            <button type="button" class="btn btn-outline-primary" id="selectParachuteZombieBtn">
+                                                <i class="bi bi-search"></i> <span data-translate="selectZombie">Seleccionar</span>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" id="clearParachuteZombieBtn">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" data-translate="parachuteWaveMessage">Mensaje de inicio:</label>
+                                        <input type="text" class="form-control" id="parachuteWaveMessage" placeholder="[WARNING_PARACHUTERAIN]">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+
+                <!-- Pestaña: Desafíos -->
+                <div class="tab-pane fade" id="challenges" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-trophy me-2"></i><span data-translate="challengesConfig">Configuración de Desafíos</span></h5>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="challengesEnabled" style="width: 3em; height: 1.5em;" checked>
+                                            <label class="form-check-label fw-bold" for="challengesEnabled" data-translate="activateChallenges">Activar desafíos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-4" id="challengesContainer">
+
+                                        <!-- ZombieDistance -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_zombieDistance" checked data-challenge="ZombieDistance">
+                                                        <label class="form-check-label fw-bold" for="challenge_zombieDistance">
+                                                            <span data-translate="zombieDistance">Distancia de Zombies</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isLine.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="zombieDistanceDesc">No permitir que zombies se acerquen más de:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="zombieDistance_value" value="5.5" min="1" max="10" step="0.1" data-challenge="ZombieDistance">
+                                                        <span class="input-group-text" data-translate="tiles">casillas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- SunUsed -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_sunUsed" checked data-challenge="SunUsed">
+                                                        <label class="form-check-label fw-bold" for="challenge_sunUsed">
+                                                            <span data-translate="sunUsed">Sol Usado Máximo</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isSunUsed.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="sunUsedDesc">Usar máximo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="sunUsed_value" value="500" min="50" max="5000" step="50" data-challenge="SunUsed">
+                                                        <span class="input-group-text">☀️</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- SunProduced -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_sunProduced" checked data-challenge="SunProduced">
+                                                        <label class="form-check-label fw-bold" for="challenge_sunProduced">
+                                                            <span data-translate="sunProduced">Sol Producido</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isSunProduced.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="sunProducedDesc">Producir al menos:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="sunProduced_value" value="500" min="50" max="5000" step="50" data-challenge="SunProduced">
+                                                        <span class="input-group-text">☀️</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- SunHoldout -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_sunHoldout" checked data-challenge="SunHoldout">
+                                                        <label class="form-check-label fw-bold" for="challenge_sunHoldout">
+                                                            <span data-translate="sunHoldout">Retener Sol</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isSunHoldout.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="sunHoldoutDesc">Mantener mínimo 50 sol por:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="sunHoldout_value" value="60" min="10" max="300" step="5" data-challenge="SunHoldout">
+                                                        <span class="input-group-text" data-translate="seconds">segundos</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- KillZombies -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_killZombies" checked data-challenge="KillZombies">
+                                                        <label class="form-check-label fw-bold" for="challenge_killZombies">
+                                                            <span data-translate="killZombies">Matar Zombies Rápido</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isKillZombies.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="killZombiesDesc">Matar zombies en tiempo:</p>
+                                                    <div class="row g-2">
+                                                        <div class="col-6">
+                                                            <div class="input-group">
+                                                                <input type="number" class="form-control challenge-input" id="killZombies_count" value="15" min="5" max="50" data-challenge="KillZombies">
+                                                                <span class="input-group-text" data-translate="zombiesUnit">zombies</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="input-group">
+                                                                <input type="number" class="form-control challenge-input" id="killZombies_time" value="10" min="5" max="60" data-challenge="KillZombies">
+                                                                <span class="input-group-text" data-translate="sec">seg</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- PlantsLost -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_plantsLost" checked data-challenge="PlantsLost">
+                                                        <label class="form-check-label fw-bold" for="challenge_plantsLost">
+                                                            <span data-translate="plantsLost">Plantas Perdidas Máx</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isPlantsLost.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="plantsLostDesc">Perder máximo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="plantsLost_value" value="5" min="0" max="20" data-challenge="PlantsLost">
+                                                        <span class="input-group-text" data-translate="plantsUnit">plantas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- SimultaneousPlants -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_simultaneousPlants" checked data-challenge="SimultaneousPlants">
+                                                        <label class="form-check-label fw-bold" for="challenge_simultaneousPlants">
+                                                            <span data-translate="simultaneousPlants">Plantas Simultáneas</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isPlantsSimultaneous.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="simultaneousPlantsDesc">Máximo plantas al mismo tiempo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="simultaneousPlants_value" value="15" min="5" max="30" data-challenge="SimultaneousPlants">
+                                                        <span class="input-group-text" data-translate="plantsUnit">plantas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- SaveMowers -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card challenge-card">
+                                                <div class="card-body">
+                                                    <div class="form-check form-switch mb-3">
+                                                        <input class="form-check-input challenge-checkbox" type="checkbox" id="challenge_saveMowers" checked data-challenge="SaveMowers">
+                                                        <label class="form-check-label fw-bold" for="challenge_saveMowers">
+                                                            <span data-translate="saveMowers">Salvar Podadoras</span>
+                                                            <span class="challenge-icon" style="background-image: url('Assets/Desafios/isMowers.webp');"></span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-muted small mb-3" data-translate="saveMowersDesc">Mantener mínimo:</p>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control challenge-input" id="saveMowers_value" value="3" min="1" max="5" data-challenge="SaveMowers">
+                                                        <span class="input-group-text" data-translate="mowersUnit">podadoras</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <h6><i class="bi bi-info-circle me-2"></i><span data-translate="challengesInfo">Información sobre Desafíos</span></h6>
+                                        <div class="alert alert-info">
+                                            <p class="mb-2"><strong data-translate="challengesDescription">Los desafíos son objetivos secundarios que el jugador puede completar:</strong></p>
+                                            <ul class="mb-0">
+                                                <li data-translate="challengesStar1">Aparecerán como estrellas en la selección de nivel</li>
+                                                <li data-translate="challengesStar2">Completarlos otorga recompensas adicionales</li>
+                                                <li data-translate="challengesStar3">Pueden activarse/desactivarse individualmente</li>
+                                                <li data-translate="challengesStar4">Si todos están desactivados, no aparecerá la pestaña de estrellas</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Convertidor -->
+                <div class="tab-pane fade" id="converter" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="bi bi-arrow-left-right me-2"></i><span data-translate="jsonRtonConverter">Convertidor JSON ↔ RTON</span></h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <div class="card h-100">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h6 class="mb-0"><i class="bi bi-arrow-right-circle me-2"></i><span data-translate="jsonToRton">JSON a RTON</span></h6>
+                                                </div>
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold" data-translate="inputJson">JSON de entrada:</label>
+                                                        <textarea class="form-control font-monospace" id="jsonInput" rows="12"
+                                                            data-translate-placeholder="pasteJson"
+                                                            placeholder='Pega tu JSON aquí. Ejemplo: {"key": "value"}'></textarea>
+                                                    </div>
+                                                    <div class="mt-auto">
+                                                        <div class="d-grid gap-2">
+                                                            <button class="btn btn-primary" id="jsonToRtonBtn">
+                                                                <i class="bi bi-arrow-right me-2"></i><span data-translate="convertToRton">Convertir a RTON</span>
+                                                            </button>
+                                                            <button class="btn btn-outline-secondary" id="loadJsonFileBtn">
+                                                                <i class="bi bi-upload me-2"></i><span data-translate="loadJsonFile">Cargar archivo JSON</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="card h-100">
+                                                <div class="card-header bg-success text-white">
+                                                    <h6 class="mb-0"><i class="bi bi-arrow-left-circle me-2"></i><span data-translate="rtonToJson">RTON a JSON</span></h6>
+                                                </div>
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold" data-translate="inputRton">RTON de entrada (hexadecimal):</label>
+                                                        <textarea class="form-control font-monospace" id="rtonInput" rows="12"
+                                                            data-translate-placeholder="pasteRton"
+                                                            placeholder="Pega tu RTON en hexadecimal aquí. Ejemplo: 52544F4E00000000..."></textarea>
+                                                    </div>
+                                                    <div class="mt-auto">
+                                                        <div class="d-grid gap-2">
+                                                            <button class="btn btn-success" id="rtonToJsonBtn">
+                                                                <i class="bi bi-arrow-left me-2"></i><span data-translate="convertToJson">Convertir a JSON</span>
+                                                            </button>
+                                                            <button class="btn btn-outline-secondary" id="loadRtonFileBtn">
+                                                                <i class="bi bi-upload me-2"></i><span data-translate="loadRtonFile">Cargar archivo RTON</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="card mt-4">
+                                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                    <h6 class="mb-0"><i class="bi bi-code-slash me-2"></i><span data-translate="result">Resultado</span></h6>
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-sm btn-outline-primary" id="copyResultBtn">
+                                                            <i class="bi bi-clipboard me-1"></i><span data-translate="copy">Copiar</span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-success" id="downloadResultBtn">
+                                                            <i class="bi bi-download me-1"></i><span data-translate="download">Descargar</span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-secondary" id="clearResultBtn">
+                                                            <i class="bi bi-trash me-1"></i><span data-translate="clear">Limpiar</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold" data-translate="outputFormat">Formato de salida:</label>
+                                                        <select class="form-select" id="outputFormat">
+                                                            <option value="pretty" data-translate="formattedJson">JSON formateado</option>
+                                                            <option value="compact" data-translate="compactJson">JSON compacto</option>
+                                                            <option value="hex" data-translate="hexRton">Hexadecimal RTON</option>
+                                                            <option value="array" data-translate="byteArray">Array de bytes</option>
+                                                        </select>
+                                                    </div>
+                                                    <pre id="conversionResult" class="json-preview mb-0"
+                                                        style="max-height: 300px; overflow-y: auto; min-height: 200px;"
+                                                        data-translate="resultWillAppear">Resultado aparecerá aquí...</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Escenario -->
+                <div class="tab-pane fade" id="board" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex align-items-center justify-content-between">
+                                    <h5 class="mb-0"><i class="bi bi-grid-3x3 me-2"></i><span data-translate="boardTitle">Tablero del Escenario (5x9)</span></h5>
+                                    <div class="d-flex align-items-center gap-2" id="boardStageIndicator">
+                                        <img id="boardStageIndicatorImg" src="Assets/Board/NoneStage.webp" alt="" style="width:48px;height:30px;object-fit:cover;border-radius:4px;display:none;">
+                                        <span class="badge bg-secondary fs-6" id="boardStageIndicatorName" data-translate="selectScenario">Seleccionar Escenario</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="board-container mb-4" id="boardContainer">
+                                        <div id="board-controls" class="mb-3">
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <div class="btn-group" role="group"></div>
+                                                <div class="btn-group ms-auto" role="group">
+                                                    <button type="button" class="btn btn-danger" id="btn-clear-board">
+                                                        <i class="bi bi-eraser me-1"></i><span data-translate="clearAll">Limpiar Todo</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modificadores para plantas -->
+                                            <div class="modifiers-section d-none" id="plant-modifiers">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="check-defeat">
+                                                    <label class="form-check-label" for="check-defeat">
+                                                        <i class="bi bi-shield-check me-1"></i><span data-translate="plantWithDefeat">Planta con derrota</span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="check-frozen">
+                                                    <label class="form-check-label" for="check-frozen">
+                                                        <i class="bi bi-snow me-1"></i><span data-translate="frozen">Congelada</span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="number" id="plant-level" min="0" max="20" style="width: 80px;"
+                                                        data-translate-placeholder="levelPlayer"
+                                                        placeholder="Nivel (0=jugador)">
+                                                </div>
+                                            </div>
+
+                                            <!-- Modificadores para zombies -->
+                                            <div class="modifiers-section d-none" id="zombie-modifiers">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="check-zombie-frozen">
+                                                    <label class="form-check-label" for="check-zombie-frozen">
+                                                        <i class="bi bi-snow me-1"></i><span data-translate="frozenMasc">Congelado</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <table class="table table-bordered board-table" id="game-board"></table>
+                                    </div>
+
+                                    <div class="accordion" id="board-accordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseBoardJson">
+                                                    <i class="bi bi-code-slash me-2"></i><span data-translate="modulesPreview">Vista previa de módulos generados</span>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseBoardJson" class="accordion-collapse collapse">
+                                                <div class="accordion-body">
+                                                    <pre id="board-json-preview" class="json-preview mb-0" style="max-height: 300px; overflow-y: auto;"></pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Vista Previa -->
+                <div class="tab-pane fade" id="preview" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-code-slash me-2"></i><span data-translate="jsonPreview">Vista Previa JSON</span></h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3" style="min-width: 120px;">
+                                            <select class="form-select form-select-sm" id="formatSelect">
+                                                <option value="json">JSON</option>
+                                                <option value="rton">RTON</option>
+                                            </select>
+                                        </div>
+                                        <div class="btn-group ms-2">
+                                            <button class="btn btn-primary" id="generateLevelBtn">
+                                                <i class="bi bi-play-circle me-2"></i><span data-translate="generateLevel">Generar Nivel</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary" id="copyJsonBtn">
+                                                <i class="bi bi-clipboard me-1"></i><span data-translate="copy">Copiar</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" id="saveLevelBtn">
+                                                <i class="bi bi-download me-1"></i><span data-translate="download">Descargar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-3">
+                                    <pre id="jsonPreview" class="json-preview mb-0" style="max-height: 500px; overflow-y: auto;"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestaña: Estadísticas -->
+                <div class="tab-pane fade" id="stats" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i><span data-translate="levelStats">Estadísticas del Nivel</span></h5>
+                                    <button class="btn btn-sm btn-outline-primary" id="updateStatsBtn">
+                                        <i class="bi bi-arrow-clockwise me-1"></i><span data-translate="update">Actualizar</span>
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="statsContent" class="stats-content">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="bi bi-graph-up display-1 mb-3"></i>
+                                            <h4 data-translate="generateToSeeStats">Genera un nivel para ver estadísticas</h4>
+                                            <p data-translate="clickGenerateForStats">Haz clic en "Generar Nivel" para calcular las estadísticas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Lawn Modifier -->
+        <div class="lawn-modal modal fade" id="editCellModal-${row}-${col}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-sliders me-2"></i><span data-translate="lawnModifier">Lawn Modifier - Editar Celda</span>
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" data-translate="elementType">Tipo de Elemento</label>
+                                <select class="form-select lawn-element-type">
+                                    <option value="plants" data-translate="plant">Plantas</option>
+                                    <option value="zombies" data-translate="zombies">Zombies</option>
+                                    <option value="gravestones" data-translate="gravestones">Lápidas</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-translate="search">Buscar</label>
+                                <input type="text" class="form-control lawn-element-search"
+                                    data-translate-placeholder="searchElement"
+                                    placeholder="Buscar elemento...">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 data-translate="availableElements">Elementos Disponibles</h6>
+                            <div class="elements-grid lawn-elements-list" style="max-height: 250px; overflow-y: auto;"></div>
+                        </div>
+
+                        <div class="modifiers-section lawn-plant-modifiers">
+                            <h6 data-translate="plantModifiers">Modificadores de Plantas</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="lawn-plant-level" class="form-label" data-translate="levelPlayerEq">Nivel (0 = jugador)</label>
+                                    <input type="number" class="form-control lawn-plant-level" min="0" max="10" value="0">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input lawn-check-frozen" type="checkbox">
+                                        <label class="form-check-label" data-translate="frozen">Congelada</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input lawn-check-defeat" type="checkbox">
+                                        <label class="form-check-label" data-translate="enGarde">En garde</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modifiers-section lawn-zombie-modifiers" style="display: none;">
+                            <h6 data-translate="zombieModifiers">Modificadores de Zombies</h6>
+                            <div class="form-check">
+                                <input class="form-check-input lawn-check-zombie-frozen" type="checkbox">
+                                <label class="form-check-label" data-translate="frozenMasc">Congelado</label>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span class="lawn-current-cell-info" data-translate="cellInfo">Celda</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translate="cancel">Cancelar</button>
+                        <button type="button" class="btn btn-danger lawn-btn-remove">
+                            <i class="bi bi-trash me-1"></i><span data-translate="delete">Eliminar</span>
+                        </button>
+                        <button type="button" class="btn btn-success lawn-btn-add">
+                            <i class="bi bi-plus-circle me-2"></i><span data-translate="add">Añadir</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para mensajes -->
+        <div class="modal fade" id="messageModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle" data-translate="message">Mensaje</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalMessage"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-translate="accept">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="minimalist-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h5 class="footer-title">
+                            <i class="bi bi-controller me-2"></i><span data-translate="footerTitle">Generador de Niveles PvZ2</span>
+                        </h5>
+                        <p class="footer-description" data-translate="footerDescription">
+                            Herramienta para crear niveles personalizados de Plants vs Zombies 2. Genera configuraciones JSON/RTON compatibles con el juego.
+                        </p>
+                    </div>
+
+                    <div class="footer-section">
+                        <h6 class="footer-subtitle" data-translate="quickLinks">Enlaces Rápidos</h6>
+                        <ul class="footer-links">
+                            <li><a href="#basic" class="footer-link" onclick="showTab('basic')">
+                                <i class="bi bi-gear me-1"></i><span data-translate="configuration">Configuración</span>
+                            </a></li>
+                            <li><a href="#waves" class="footer-link" onclick="showTab('waves')">
+                                <i class="bi bi-robot me-1"></i><span data-translate="zombies">Zombies</span>
+                            </a></li>
+                            <li><a href="#preview" class="footer-link" onclick="showTab('preview')">
+                                <i class="bi bi-eye me-1"></i><span data-translate="previewTab">Vista Previa</span>
+                            </a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h6 class="footer-subtitle" data-translate="resources">Recursos</h6>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="https://github.com" target="_blank" class="footer-link">
+                                    <i class="bi bi-github me-1"></i><span data-translate="github">GitHub</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://plantsvszombies.fandom.com" target="_blank" class="footer-link">
+                                    <i class="bi bi-book me-1"></i><span data-translate="wikiPvz">Wiki PvZ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="footer-link" id="exportSettingsFooterBtn">
+                                    <i class="bi bi-download me-1"></i><span data-translate="exportConfig">Exportar Config</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="Importan-footer">
+                    <span data-translate="unofficialProject">Este es un proyecto no oficial para uso educativo y personal.</span>
+                </div>
+
+                <hr class="footer-divider">
+
+                <div class="footer-bottom">
+                    <div class="copyright">
+                        <i class="bi bi-c-circle me-1"></i>
+                        <span id="current-year" data-translate="year">2025</span> - <span data-translate="creatorCredit">Generador de Niveles PvZ2 Creador LeoPvz2</span>
+                    </div>
+                    <div class="footer-stats">
+                        <span class="stat-item">
+                            <i class="bi bi-eye me-1"></i>
+                            <span id="view-count" data-translate="loading">Cargando...</span> <span data-translate="visits">visitas</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+                            <span id="last-update" data-translate="version">v1.0.0</span>
+                        </span>
+                    </div>
+                    <div class="footer-actions">
+                        <button class="btn-footer-action" id="backToTopBtn">
+                            <i class="bi bi-arrow-up-circle me-1"></i><span data-translate="backToTop">Volver arriba</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Barra de acciones flotante -->
+        <div class="floating-actions">
+            <div class="container-fluid">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center flex-wrap gap-2 p-2">
+                            <button class="btn btn-primary" id="generateLevelBtn2">
+                                <i class="bi bi-play-circle me-2"></i><span data-translate="generateLevel">Generar Nivel</span>
+                            </button>
+                            <button class="btn btn-outline-primary" id="loadConfigBtn">
+                                <i class="bi bi-upload me-2"></i><span data-translate="loadConfig">Cargar Config</span>
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear me-2"></i><span data-translate="options">Opciones</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item" id="resetBtn">
+                                        <i class="bi bi-arrow-clockwise me-2"></i><span data-translate="reset">Restablecer</span>
+                                    </button></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item" id="exportSettingsBtn">
+                                        <i class="bi bi-save me-2"></i><span data-translate="exportConfiguration">Exportar Configuración</span>
+                                    </button></li>
+                                    <li><button class="dropdown-item" id="importSettingsBtn">
+                                        <i class="bi bi-file-earmark me-2"></i><span data-translate="importConfiguration">Importar Configuración</span>
+                                    </button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Recompensa -->
+    <div class="reward-modal-overlay" id="rewardModalOverlay" style="display: none;">
+        <div class="reward-container-modal" id="rewardModal" style="max-width: 700px;">
+            <div class="reward-container-modal-header bg-success text-white">
+                <div class="d-flex align-items-center w-100 mb-2">
+                    <h5 class="reward-container-modal-title mb-0">
+                        <i class="bi bi-gift me-2"></i><span data-translate="selectReward">Seleccionar Recompensa</span>
+                    </h5>
+                    <button type="button" class="reward-container-modal-close ms-auto" id="rewardModalClose">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2 w-100 flex-wrap">
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="rewardType" id="rewardTypePlant" autocomplete="off" checked value="unlock_plant">
+                        <label class="btn btn-outline-light btn-sm" for="rewardTypePlant">
+                            <i class="bi bi-flower1 me-1"></i><span data-translate="plant">Planta</span>
+                        </label>
+                        <input type="radio" class="btn-check" name="rewardType" id="rewardTypeCollectable" autocomplete="off" value="collectable">
+                        <label class="btn btn-warning btn-sm" for="rewardTypeCollectable" style="color: black;">
+                            <i class="bi bi-coin me-1"></i><span data-translate="collectable">Coleccionable</span>
+                        </label>
+                    </div>
+                    <div class="search-container flex-grow-1" style="min-width: 180px;">
+                        <input type="text" class="form-control form-control-sm" id="rewardSearch"
+                            data-translate-placeholder="searchReward"
+                            placeholder="Buscar recompensa...">
+                    </div>
+                </div>
+            </div>
+            <div class="reward-container-modal-body">
+                <div class="reward-panel" id="plantRewardPanel">
+                    <div class="plants-grid-container" style="max-height: 300px; overflow-y: auto;">
+                        <div class="plants-grid" id="plantsGrid"></div>
+                    </div>
+                </div>
+                <div class="collectables-grid-container" id="collectableRewardPanel">
+                    <h6><i class="bi bi-collection me-2"></i><span data-translate="collectable">Seleccionar Coleccionable:</span></h6>
+                    <div class="collectables-grid" id="collectablesGridContent"></div>
+                </div>
+            </div>
+            <div class="reward-container-modal-footer">
+                <button type="button" class="btn btn-secondary" id="rewardModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-success" id="saveRewardBtn">
+                    <i class="bi bi-check-circle me-2"></i><span data-translate="saveReward">Guardar Recompensa</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cinta Transportadora -->
+    <div class="conveyor-modal-overlay" id="conveyorModalOverlay" style="display: none;">
+        <div class="conveyor-modal" id="conveyorModal">
+            <div class="conveyor-modal-header bg-primary text-white">
+                <h5 class="conveyor-modal-title mb-0">
+                    <i class="bi bi-plus-circle me-2"></i><span data-translate="selectConveyorPlant">Seleccionar Planta</span>
+                </h5>
+                <button type="button" class="conveyor-modal-close" id="conveyorModalClose">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="conveyor-modal-body" id="conveyorModalBody"></div>
+            <div class="conveyor-modal-footer">
+                <button type="button" class="btn btn-secondary" id="conveyorModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="conveyorSaveBtn">
+                    <i class="bi bi-check-circle me-1"></i><span data-translate="addPlant">Añadir Planta</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Escenario -->
+    <div class="custom-modal-overlay" id="scenarioModalOverlay">
+        <div class="custom-modal" id="scenarioModal">
+            <div class="custom-modal-header bg-success text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-grid-3x3 me-2"></i><span data-translate="selectScenario">Seleccionar Escenario</span>
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="scenarioSearch"
+                        data-translate-placeholder="searchScenario"
+                        placeholder="Buscar escenario...">
+                </div>
+                <button type="button" class="custom-modal-close" id="scenarioModalClose"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="scenarioGrid"></div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="scenarioModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-success" id="scenarioModalAccept" data-translate="accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Podadoras -->
+    <div class="custom-modal-overlay" id="mowerModalOverlay">
+        <div class="custom-modal" id="mowerModal">
+            <div class="custom-modal-header bg-warning text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-scissors me-2"></i><span data-translate="selectMowers">Seleccionar Podadoras</span>
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="mowerSearch"
+                        data-translate-placeholder="searchMowers"
+                        placeholder="Buscar podadoras...">
+                </div>
+                <button type="button" class="custom-modal-close" id="mowerModalClose"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="mower-grid-container" id="mowerGrid"></div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="mowerModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-warning" id="mowerModalAccept" data-translate="accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Mundo -->
+    <div class="custom-modal-overlay" id="worldModalOverlay">
+        <div class="custom-modal" id="worldModal">
+            <div class="custom-modal-header bg-primary text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-globe-americas me-2"></i><span data-translate="selectWorld">Seleccionar Mundo</span>
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="worldSearch"
+                        data-translate-placeholder="searchWorld"
+                        placeholder="Buscar mundo...">
+                </div>
+                <button type="button" class="custom-modal-close" id="worldModalClose"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="worldGrid"></div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="worldModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="worldModalAccept" data-translate="accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ZombossMech -->
+    <div class="custom-modal-overlay" id="zombossMechModalOverlay">
+        <div class="custom-modal" id="zombossMechModal">
+            <div class="custom-modal-header bg-danger text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-robot me-2"></i><span>Seleccionar Zomboss Mech</span>
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="zombossMechSearch"
+                        placeholder="Buscar zomboss...">
+                </div>
+                <button type="button" class="custom-modal-close" id="zombossMechModalClose"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="zombossMechGrid"></div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="zombossMechModalCancel"><span data-translate="cancel">Cancelar</span></button>
+                <button type="button" class="btn btn-danger" id="zombossMechModalAccept"><span data-translate="accept">Aceptar</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Seleccionar Zombie para Marea Baja -->
+    <div class="custom-modal-overlay" id="lowtideZombieModalOverlay">
+        <div class="custom-modal" id="lowtideZombieModal">
+            <div class="custom-modal-header bg-info text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-emoji-dizzy me-2"></i><span data-translate="selectLowtideZombie">Seleccionar Zombie para Marea Baja</span>
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="lowtideZombieSearch"
+                        data-translate-placeholder="searchZombie"
+                        placeholder="Buscar zombie...">
+                </div>
+                <button type="button" class="custom-modal-close" id="lowtideZombieModalClose"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="lowtideZombieGrid"></div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="lowtideZombieModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-info" id="lowtideZombieModalAccept" data-translate="accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Seleccionar Zombie para Lluvia de Paracaidistas -->
+    <div class="custom-modal-overlay" id="parachuteZombieModalOverlay">
+        <div class="custom-modal" id="parachuteZombieModal">
+            <div class="custom-modal-header bg-info text-white">
+                <h5 class="custom-modal-title">
+                    <i class="bi bi-cloud-rain me-2"></i><span data-translate="selectParachuteZombie">Seleccionar Zombie Paracaidista</span>
+                </h5>
+                <div class="search-container ms-auto me-3" style="max-width: 200px;">
+                    <input type="text" class="form-control form-control-sm" id="parachuteZombieSearch"
+                        data-translate-placeholder="searchZombie"
+                        placeholder="Buscar zombie...">
+                </div>
+                <button type="button" class="custom-modal-close" id="parachuteZombieModalClose"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="custom-modal-body">
+                <div class="row g-3" id="parachuteZombieGrid"></div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-secondary" id="parachuteZombieModalCancel" data-translate="cancel">Cancelar</button>
+                <button type="button" class="btn btn-info" id="parachuteZombieModalAccept" data-translate="accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="wave-separator">
+        <img src="/Assets/Icons/pvz2font.webp" alt="olas" loading="lazy">
+    </div>
+
+    <script src="/Js/lib/bootstrap.bundle.min.js"></script>
+    <script src="/Js/ui/translations.js"></script>
+    <script src="/Js/lib/sweetalert2.min.js"></script>
+    <script type="module" src="/Js/managers/RewardManager.js"></script>
+    <script type="module" src="/Js/main.js"></script>
+    <script src="/Js/managers/PlantManager.js"></script>
+    <script src="/Js/managers/ZombieResistanceManager.js"></script>
+    <script src="/Js/converters/JSONtoRTON.js"></script>
+    <script src="/Js/converters/RTONtoJSON.js"></script>
+    <script type="module" src="/Js/managers/BoardManager.js"></script>
+    <script type="module" src="/Js/managers/ConveyorManager.js"></script>
+    <script src="/Js/ui/footer.js"></script>
+    <script>
+        fetch("https://generatorleves-hexius.netlify.app/counter/all.json")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("gc-visitas").textContent = data.count;
+            })
+            .catch(() => {
+                document.getElementById("gc-visitas").textContent = "—";
+            });
+    </script>
+
+</body>
+</html>
